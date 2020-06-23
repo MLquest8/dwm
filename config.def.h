@@ -114,6 +114,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
+	{ MODKEY|ShiftMask,             XK_f,      forcefullscreen,     {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
 	{ MODKEY|ShiftMask,             XK_i,      setigaps,       {.i = +2 } },
 	{ MODKEY|ControlMask,           XK_i,      setigaps,       {.i = -2 } },
