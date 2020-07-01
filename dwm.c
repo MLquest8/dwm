@@ -1011,6 +1011,9 @@ forcefullscreen(const Arg *arg)
 {
 	Client *c = selmon->sel;
 
+	if (!ISVISIBLEONTAG(c, c->tags))
+		return;
+
 	if (!c->isforcedfullscreen && (c->isfakefullscreen || !c->isfullscreen)) {
 		c->oldstate = c->isfloating;
 		c->oldbw = c->bw;
@@ -1020,6 +1023,8 @@ forcefullscreen(const Arg *arg)
 		XRaiseWindow(dpy, c->win);
 		c->isforcedfullscreen = 1;
 	} else if (c->isforcedfullscreen){
+		if (c->isfullscreen && !c->isfakefullscreen)
+			setfullscreen(c, !c->isfullscreen);
 		c->isfloating = c->oldstate;
 		c->bw = c->oldbw;
 		c->x = c->oldx;

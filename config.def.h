@@ -4,7 +4,7 @@
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int igappx    = 5;        /* size of inner gaps */
 static const unsigned int ogappx    = 5;        /* size of outer gaps */
-static const int gapsforone	    = 0;	/* 1 enable gaps when only one window is open */
+static const int gapsforone	    	= 0;	/* 1 enable gaps when only one window is open */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
@@ -17,7 +17,7 @@ static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
-static const char unusedcol[]        = "#000000";
+static const char unusedcol[]       = "#000000";
 static const char *colors[][4]      = {
 	/*               fg         bg         border     float */
 	[SchemeSel] =  { col_gray4, col_cyan,  col_gray2, col_cyan }, // Layout symbol and borders selected {text,background,border,floating border}
@@ -53,11 +53,11 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     iscentered   isfloating   isfreesize   isfakefullscreen   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            0,           1,           1,	   0,                 -1 },
+	{ "Gimp",     NULL,       NULL,       0,            0,           1,           1,	       0,                 -1 },
 	{ "firefox",  NULL,       NULL,       0,            0,           0,           0,           1,                 -1 },
-	{ "st",       NULL,       NULL,       0,            0,           0,	      0,	   0,                 -1 },
-	{ "St",       NULL,       NULL,       0,            0,           0,	      0,           0,                 -1 },
-	{ "mpv",      NULL,       NULL,       0,            0,           0,	      0,           0,                 -1 },
+	{ "st",       NULL,       NULL,       0,            0,           0,	          0,	       0,                 -1 },
+	{ "St",       NULL,       NULL,       0,            0,           0,	          0,           0,                 -1 },
+	{ "mpv",      NULL,       NULL,       0,            0,           0,	          0,           0,                 -1 },
 };
 
 /* layout(s) */
