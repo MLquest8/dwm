@@ -11,8 +11,8 @@ typedef struct Fnt {
 	FcPattern *pattern;
 	struct Fnt *next;
 } Fnt;
-
-enum { ColFg, ColBg, ColBorder }; /* Clr scheme index */
+#define                 3
+enum { ColFg, ColBg, ColBorder, ColFloat }; /* Clr scheme index */
 typedef XftColor Clr;
 
 typedef struct {
