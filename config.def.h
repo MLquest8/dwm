@@ -20,22 +20,22 @@ static const char col_cyan[]        = "#005577";
 static const char unusedcol[]        = "#000000";
 static const char *colors[][4]      = {
 	/*               fg         bg         border     float */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2, col_gray2 },
-	[SchemeSel] =  { col_gray4, col_cyan,  col_gray2, col_cyan },
+	[SchemeSel] =  { col_gray4, col_cyan,  col_gray2, col_cyan }, // Layout symbol and borders selected {text,background,border,floating border}
+	[SchemeNorm] = { col_gray3, col_gray1, col_gray2, col_gray2 }, // Layout symbol and borders unselected {text,background,border,floating border}
 	[SchemeStatus]  = { col_gray3, col_gray1,  unusedcol, unusedcol }, // Statusbar right {text,background,not used but cannot be empty}
 	[SchemeTagsSel]  = { col_gray4, col_cyan,  unusedcol, unusedcol }, // Tagbar left selected {text,background,not used but cannot be empty}
     [SchemeTagsNorm]  = { col_gray3, col_gray1,  unusedcol, unusedcol }, // Tagbar left unselected {text,background,not used but cannot be empty}
     [SchemeInfoSel]  = { col_gray4, col_cyan,  unusedcol, unusedcol }, // infobar middle  selected {text,background,not used but cannot be empty}
     [SchemeInfoNorm]  = { col_gray3, col_gray1,  unusedcol, unusedcol }, // infobar middle  unselected {text,background,not used but cannot be empty}
 };
-static const unsigned int barfgalpha = 0xffU;
-static const unsigned int barbgalpha = 0xd0;
-static const unsigned int tbrdralpha = 0xffU;
-static const unsigned int fbrdralpha = 0xffU;
+static const unsigned int barfgalpha = 0xffU; /* Opaque */
+static const unsigned int barbgalpha = 0xd0; /* Transparent */
+static const unsigned int tbrdralpha = 0xffU; /* Opaque */
+static const unsigned int fbrdralpha = 0xffU; /* Opaque */
 static const unsigned int alphas[][4]      = {
 	/*               fg         bg         border     float */
-	[SchemeNorm] = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
 	[SchemeSel]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
+	[SchemeNorm] = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
 	[SchemeStatus]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
 	[SchemeTagsSel]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
 	[SchemeTagsNorm]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
