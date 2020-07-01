@@ -64,8 +64,6 @@
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
 #define TRUNC(X,A,B)            (MAX((A), MIN((X), (B))))
 
-#define OPAQUE                  0xffU
-
 #define MWM_HINTS_FLAGS_FIELD       0
 #define MWM_HINTS_DECORATIONS_FIELD 2
 #define MWM_HINTS_DECORATIONS       (1 << 1)

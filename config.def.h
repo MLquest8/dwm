@@ -18,9 +18,6 @@ static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
 static const char unusedcol[]        = "#000000";
-static const unsigned int baralpha = 0xd0;
-static const unsigned int tborderalpha = OPAQUE;
-static const unsigned int fborderalpha = OPAQUE;
 static const char *colors[][4]      = {
 	/*               fg         bg         border     float */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2, col_gray2 },
@@ -31,15 +28,19 @@ static const char *colors[][4]      = {
     [SchemeInfoSel]  = { col_gray4, col_cyan,  unusedcol, unusedcol }, // infobar middle  selected {text,background,not used but cannot be empty}
     [SchemeInfoNorm]  = { col_gray3, col_gray1,  unusedcol, unusedcol }, // infobar middle  unselected {text,background,not used but cannot be empty}
 };
+static const unsigned int barfgalpha = 0xffU;
+static const unsigned int barbgalpha = 0xd0;
+static const unsigned int tbrdralpha = 0xffU;
+static const unsigned int fbrdralpha = 0xffU;
 static const unsigned int alphas[][4]      = {
 	/*               fg         bg         border     float */
-	[SchemeNorm] = { OPAQUE, baralpha, tborderalpha, fborderalpha },
-	[SchemeSel]  = { OPAQUE, baralpha, tborderalpha, fborderalpha },
-	[SchemeStatus]  = { OPAQUE, baralpha, tborderalpha, fborderalpha },
-	[SchemeTagsSel]  = { OPAQUE, baralpha, tborderalpha, fborderalpha },
-	[SchemeTagsNorm]  = { OPAQUE, baralpha, tborderalpha, fborderalpha },
-	[SchemeInfoSel]  = { OPAQUE, baralpha, tborderalpha, fborderalpha },
-	[SchemeInfoNorm]  = { OPAQUE, baralpha, tborderalpha, fborderalpha },
+	[SchemeNorm] = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
+	[SchemeSel]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
+	[SchemeStatus]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
+	[SchemeTagsSel]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
+	[SchemeTagsNorm]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
+	[SchemeInfoSel]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
+	[SchemeInfoNorm]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
 };
 
 /* tagging */
