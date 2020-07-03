@@ -15,16 +15,18 @@ static const char *fonts[]          = { "FreeMono:size=10", /* Primary        */
                                         "FreeSerif:size=10", /* Secondary     */
                                         "FontAwesome:size=10" }; /* Iconic    */
 /*  DWM color scheme                                                          */
-static const char ltsymfgsel[]      = "#222222"; /* Layout symbol fg selected */
-static const char ltsymbgsel[]      = "#222222"; /* Layout symbol bg selected */
+static const char ltsymfgsel[]      = "#eeeeee"; /* Layout symbol selected fg */
+static const char ltsymbgsel[]      = "#005577"; /* Layout symbol selected bg */
+static const char ltsymfgnrm[]      = "#bbbbbb"; /* Layout symbol normal fg   */
+static const char ltsymbgnrm[]      = "#222222"; /* Layout symbol normal bg   */
 static const char tlbrdrsel[]       = "#444444"; /* Tiled border selected     */
 static const char flbrdrsel[]       = "#005577"; /* Floating border selected  */
-static const char ltsymfgnrm[]      = "#bbbbbb"; /* Layout symbol fg normal   */
-static const char ltsymbgnrm[]      = "#222222"; /* Layout symbol bg normal   */
 static const char tlbrdrnrm[]       = "#444444"; /* Tiled border normal       */
 static const char flbrdrnrm[]       = "#444444"; /* Floating border normal    */
-static const char statusfg[]        = "#bbbbbb"; /* Status bar fg             */
-static const char statusbg[]        = "#222222"; /* Status bar bg             */
+static const char statfgsel[]       = "#bbbbbb"; /* Status bar selected fg    */
+static const char statbgsel[]       = "#005577"; /* Status bar selected bg    */
+static const char statfgnorm[]      = "#bbbbbb"; /* Status bar normal fg      */
+static const char statbgnorm[]      = "#222222"; /* Status bar normal bg      */
 static const char tagsselfg[]       = "#eeeeee"; /* Tags selected fg          */
 static const char tagsselbg[]       = "#005577"; /* Tags selected bg          */
 static const char tagsnormfg[]      = "#bbbbbb"; /* Tags normal fg            */
@@ -38,7 +40,8 @@ static const char *colors[][4]      = {
 /*  Scheme                     Foreground, Background, Tileborder, Fltborder  */
     [SchemeSel]            = { ltsymfgsel, ltsymbgsel, tlbrdrsel,  flbrdrsel  },
     [SchemeNorm]           = { ltsymfgnrm, ltsymbgnrm, tlbrdrnrm,  flbrdrnrm  },
-    [SchemeStatus]         = { statusfg,   statusbg,   unusedcol,  unusedcol  },
+    [SchemeStatusSel]      = { statfgsel,  statbgsel,  unusedcol,  unusedcol  },
+    [SchemeStatusNorm]     = { statfgnorm, statbgnorm, unusedcol,  unusedcol  },
     [SchemeTagsSel]        = { tagsselfg,  tagsselbg,  unusedcol,  unusedcol  },
     [SchemeTagsNorm]       = { tagsnormfg, tagsnormbg, unusedcol,  unusedcol  },
     [SchemeInfoSel]        = { infoselfg,  infoselbg,  unusedcol,  unusedcol  },
@@ -53,7 +56,8 @@ static const unsigned int alphas[][4]      = {
 /*  Scheme                   Foreground, Background, Tiledborder, Floatborder */
     [SchemeSel]          = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
     [SchemeNorm]         = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
-    [SchemeStatus]       = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
+    [SchemeStatusSel]    = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha  },
+    [SchemeStatusNorm]   = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha  },
     [SchemeTagsSel]      = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
     [SchemeTagsNorm]     = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
     [SchemeInfoSel]      = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },

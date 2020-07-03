@@ -73,7 +73,7 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeStatus, SchemeTagsSel, SchemeTagsNorm, SchemeInfoSel, SchemeInfoNorm }; /* color schemes */
+enum { SchemeSel, SchemeNorm, SchemeStatusSel, SchemeStatusNorm, SchemeTagsSel, SchemeTagsNorm, SchemeInfoSel, SchemeInfoNorm }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
@@ -852,7 +852,7 @@ dirtomon(int dir)
 void
 drawbar(Monitor *m)
 {
-	int x, w, wdelta, tw = 0;
+	int sbar, x, w, wdelta, tw = 0;
 	int boxs = drw->fonts->h / 9;
 	int boxw = drw->fonts->h / 6 + 2;
 	unsigned int i, occ = 0, urg = 0;
@@ -860,10 +860,15 @@ drawbar(Monitor *m)
 
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
-		drw_setscheme(drw, scheme[SchemeStatus]);
-		tw = TEXTW(stext) - lrpad + 2; /* 2px right padding */
-		drw_text(drw, m->ww - tw, 0, tw, bh, 0, stext, 0);
+		drw_setscheme(drw, scheme[!selmon->pertag->curtag && m->sel ? SchemeStatusSel : SchemeStatusNorm]);
+		tw = TEXTW(stext);
+		drw_text(drw, m->ww - tw, 0, tw, bh, lrpad / 2, stext, 0);
 	}
+
+    w = TEXTW(m->ltsymbol);
+    sbar = m->ww - tw - w;
+	drw_setscheme(drw, scheme[m->sel ? SchemeSel : SchemeNorm]);
+	drw_text(drw, sbar, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
 	for (c = m->clients; c; c = c->next) {
 		occ |= c->tags;
@@ -883,11 +888,11 @@ drawbar(Monitor *m)
 
 		x += w;
 	}
-	w = blw = TEXTW(m->ltsymbol);
-	drw_setscheme(drw, scheme[SchemeTagsNorm]);
-	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
+	w = blw = TEXTW("user@Archer");
+	drw_setscheme(drw, scheme[!selmon->pertag->curtag ? SchemeSel : SchemeNorm]);
+	x = drw_text(drw, x, 0, w, bh, lrpad / 2, "user@Archer", 0);
 
-	if ((w = m->ww - tw - x) > bh) {
+	if ((w = sbar - x) > bh) {
 		if (m->sel) {
 			drw_setscheme(drw, scheme[m == selmon ? SchemeInfoSel : SchemeInfoNorm]);
 			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
