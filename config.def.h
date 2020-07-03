@@ -1,51 +1,100 @@
-/* See LICENSE file for copyright and license details. */
+/*  See LICENSE file for copyright and license details.                       */
 
-/* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
-static const unsigned int igappx    = 5;        /* size of inner gaps */
-static const unsigned int ogappx    = 5;        /* size of outer gaps */
-static const int gapsforone	    	= 0;	/* 1 enable gaps when only one window is open */
-static const unsigned int snap      = 32;       /* snap pixel */
-static const int showbar            = 1;        /* 0 means no bar */
-static const int topbar             = 1;        /* 0 means bottom bar */
-static const int startontag         = 1;        /* 0 means no tag active on start */
-static const int barheight          = 26;        /* 0 means that dwm will calculate bar height, >= 1 means dwm will "barheight" as bar height */
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
-static const char unusedcol[]       = "#000000";
+/*  DWM settings                                                              */
+/*  DWM appearance settings                                                   */
+static const unsigned int borderpx  = 1; /* Border pixel of windows           */
+static const unsigned int igappx    = 5; /* Size of inner gaps                */
+static const unsigned int ogappx    = 5; /* Size of outer gaps                */
+static const int gapsforone         = 0; /* Gaps for only one window open     */
+static const unsigned int snap      = 32;/* Snap pixel                        */
+static const int showbar            = 1; /* 0 means no bar                    */
+static const int topbar             = 1; /* 0 means bottom bar                */
+static const int startontag         = 1; /* 0 means no tag active on start    */
+static const int barheight          = 26;/* Specific bar height (0 means def) */
+static const char *fonts[]          = { "monospace:size=10", /* Primary font  */
+                                        "Font Awesome:size=10" }; /* FB font  */
+/*  DWM color scheme                                                          */
+static const char ltsymfgsel[]      = "#222222"; /* Layout symbol fg selected */
+static const char ltsymbgsel[]      = "#222222"; /* Layout symbol bg selected */
+static const char tlbrdrsel[]       = "#444444"; /* Tiled border selected     */
+static const char flbrdrsel[]       = "#005577"; /* Floating border selected  */
+static const char ltsymfgnrm[]      = "#bbbbbb"; /* Layout symbol fg normal   */
+static const char ltsymbgnrm[]      = "#222222"; /* Layout symbol bg normal   */
+static const char tlbrdrnrm[]       = "#444444"; /* Tiled border normal       */
+static const char flbrdrnrm[]       = "#444444"; /* Floating border normal    */
+static const char statusfg[]        = "#bbbbbb"; /* Status bar fg             */
+static const char statusbg[]        = "#222222"; /* Status bar bg             */
+static const char tagsselfg[]       = "#eeeeee"; /* Tags selected fg          */
+static const char tagsselbg[]       = "#005577"; /* Tags selected bg          */
+static const char tagsnormfg[]      = "#bbbbbb"; /* Tags normal fg            */
+static const char tagsnormbg[]      = "#222222"; /* Tags normal bg            */
+static const char infoselfg[]       = "#eeeeee"; /* Client info selected fg   */
+static const char infoselbg[]       = "#005577"; /* Client info selected bg   */
+static const char infonormfg[]      = "#bbbbbb"; /* Client info normal fg     */
+static const char infonormbg[]      = "#222222"; /* Client info normal bg     */
+static const char unusedcol[]       = "#000000"; /* Placeholder for the array */
 static const char *colors[][4]      = {
-	/*               fg         bg         border     float */
-	[SchemeSel] =  { col_gray4, col_cyan,  col_gray2, col_cyan }, // Layout symbol and borders selected {text,background,border,floating border}
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2, col_gray2 }, // Layout symbol and borders unselected {text,background,border,floating border}
-	[SchemeStatus]  = { col_gray3, col_gray1,  unusedcol, unusedcol }, // Statusbar right {text,background,not used but cannot be empty}
-	[SchemeTagsSel]  = { col_gray4, col_cyan,  unusedcol, unusedcol }, // Tagbar left selected {text,background,not used but cannot be empty}
-    [SchemeTagsNorm]  = { col_gray3, col_gray1,  unusedcol, unusedcol }, // Tagbar left unselected {text,background,not used but cannot be empty}
-    [SchemeInfoSel]  = { col_gray4, col_cyan,  unusedcol, unusedcol }, // infobar middle  selected {text,background,not used but cannot be empty}
-    [SchemeInfoNorm]  = { col_gray3, col_gray1,  unusedcol, unusedcol }, // infobar middle  unselected {text,background,not used but cannot be empty}
+/*  Scheme                     Foreground, Background, Tileborder, Fltborder  */
+    [SchemeSel]            = { ltsymfgsel, ltsymbgsel, tlbrdrsel,  flbrdrsel  },
+    [SchemeNorm]           = { ltsymfgnrm, ltsymbgnrm, tlbrdrnrm,  flbrdrnrm  },
+    [SchemeStatus]         = { statusfg,   statusbg,   unusedcol,  unusedcol  },
+    [SchemeTagsSel]        = { tagsselfg,  tagsselbg,  unusedcol,  unusedcol  },
+    [SchemeTagsNorm]       = { tagsnormfg, tagsnormbg, unusedcol,  unusedcol  },
+    [SchemeInfoSel]        = { infoselfg,  infoselbg,  unusedcol,  unusedcol  },
+    [SchemeInfoNorm]       = { infonormfg, infonormbg, unusedcol,  unusedcol  },
 };
-static const unsigned int barfgalpha = 0xffU; /* Opaque */
-static const unsigned int barbgalpha = 0xd0; /* Transparent */
-static const unsigned int tbrdralpha = 0xffU; /* Opaque */
-static const unsigned int fbrdralpha = 0xffU; /* Opaque */
+/*  DWM Alpha scheme                                                          */
+static const unsigned int barfgalpha       = 0xffU; /* Opaque foreground      */
+static const unsigned int barbgalpha       = 0xd0;  /* Transparent background */
+static const unsigned int tlbrdralpha      = 0xffU; /* Opaque tiled border    */
+static const unsigned int flbrdralpha      = 0xffU; /* Opaque floating border */
 static const unsigned int alphas[][4]      = {
-	/*               fg         bg         border     float */
-	[SchemeSel]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
-	[SchemeNorm] = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
-	[SchemeStatus]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
-	[SchemeTagsSel]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
-	[SchemeTagsNorm]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
-	[SchemeInfoSel]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
-	[SchemeInfoNorm]  = { barfgalpha, barbgalpha, tbrdralpha, fbrdralpha },
+/*  Scheme                   Foreground, Background, Tiledborder, Floatborder */
+    [SchemeSel]          = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
+    [SchemeNorm]         = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
+    [SchemeStatus]       = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
+    [SchemeTagsSel]      = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
+    [SchemeTagsNorm]     = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
+    [SchemeInfoSel]      = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
+    [SchemeInfoNorm]     = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
 };
-
-/* tagging */
-static const char *tags[] = { "test", "no", "good", "4", "5", "6", "7", "8", "9" };
-static const char *tagsalt[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+/*  DWM tags                                                                  */
+static const char *tags[]     = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tagsalt[]  = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+/*  DWM layouts                                                               */
+static const int dirs[3]         = { DirHor, DirVer, DirVer }; /* Tiling dirs */
+static const float facts[3]      = { 1.1,    1.1,    1.1 }; /* Tiling facts   */
+static const int nmaster         = 1; /* Number of clients in master area     */
+static const int resizehints     = 0; /* 1 means size hints in tiled resizals */
+static const int decorhints      = 1; /* 1 means respect decoration hints     */
+static const int attachdirection = 5; /* 0 default, 1 above, 2 aside, 3 below,
+                                                             4 bottom, 5 top  */
+/*  DWM layout symbols                                                        */
+static const Layout layouts[] = {
+/*  Symbol        Layout                                                      */
+    { "[+]",      tile }, /* Tiling layout with xtile behaviors patched in    */
+    { "[*]",      NULL }, /* No layout function means floating behavior       */
+    { "[M]",      monocle }, /* Classic monocle layout                        */
+};
+/*  Dmenu settings                                                            */
+/*  Dmenu appearance settings                                                 */
+static const char dmenufont[]          = "monospace:size=10";
+/*  Dmenu color scheme                                                        */
+static const char dmenuselfg[]         = "#eeeeee"; /* Dmenu selected fg      */
+static const char dmenuselbg[]         = "#005577"; /* Dmenu selected bg      */
+static const char dmenunrmfg[]         = "#bbbbbb"; /* Dmenu normal fg        */
+static const char dmenunrmbg[]         = "#222222"; /* Dmenu normal bg        */
+/*  Dmenu launch options                                                      */
+static char dmenumon[2] = "0"; /* Component of dmenucmd, manipulated in spawn */
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
+                                  "-sf", dmenuselfg, "-sb", dmenuselbg, /*sel */
+                                  "-nf", dmenunrmfg, "-nb", dmenunrmbg, /*norm*/
+                                  "-p", "Launch", NULL }; /* Dmenu prompt     */
+/*  St settings                                                               */
+/*  St appearance settings                                                    */
+/*  St color scheme                                                           */
+/*  St launch options                                                         */
+static const char *termcmd[]  = { "st", NULL };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -53,30 +102,19 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     iscentered   isfloating   isfreesize   isfakefullscreen   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            0,           1,           1,	       0,                 -1 },
-	{ "firefox",  NULL,       NULL,       0,            0,           0,           0,           1,                 -1 },
-	{ "st",       NULL,       NULL,       0,            0,           0,	          0,	       0,                 -1 },
-	{ "St",       NULL,       NULL,       0,            0,           0,	          0,           0,                 -1 },
-	{ "mpv",      NULL,       NULL,       0,            0,           0,	          0,           0,                 -1 },
-};
-
-/* layout(s) */
-static const int dirs[3]      = { DirHor, DirVer, DirVer }; /* tiling dirs */
-static const float facts[3]   = { 1.1,    1.1,    1.1 };    /* tiling facts */
-static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
-static const int decorhints  = 1;    /* 1 means respect decoration hints */
-static const int attachdirection = 5;    /* 0 default, 1 above, 2 aside, 3 below, 4 bottom, 5 top */
-
-static const Layout layouts[] = {
-	/* symbol     arrange function */
-	{ "[]=",      tile },    /* first entry is default */
-	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
+	{ "Gimp",     NULL,       NULL,       0,            0,           1,           1,           0,                 -1      },
+	{ "firefox",  NULL,       NULL,       0,            0,           0,           0,           1,                 -1      },
+	{ "st",       NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },
+	{ "St",       NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },
+	{ "mpv",      NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },
 };
 
 /* key definitions */
 #define MODKEY Mod1Mask
+#define ALT Mod1Mask
+#define WIN Mod4Mask
+#define CTRL ControlMask
+#define SHIFT ShiftMask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -86,7 +124,6 @@ static const Layout layouts[] = {
 	{ MOD, XK_r, setdirs,  {.v = (int[])  { INC(G * +1),   INC(M * +1),   INC(S * +1) } } }, \
 	{ MOD, XK_h, setfacts, {.v = (float[]){ INC(G * -0.1), INC(M * -0.1), INC(S * -0.1) } } }, \
 	{ MOD, XK_l, setfacts, {.v = (float[]){ INC(G * +0.1), INC(M * +0.1), INC(S * +0.1) } } },
-
 #define STACKKEYS(MOD,ACTION) \
 	{ MOD, XK_j,     ACTION##stack, {.i = INC(+1) } }, \
 	{ MOD, XK_k,     ACTION##stack, {.i = INC(-1) } }, \
@@ -99,18 +136,17 @@ static const Layout layouts[] = {
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
-/* commands */
-static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "st", NULL };
-
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	STACKKEYS(MODKEY,                          focus)
 	STACKKEYS(MODKEY|ShiftMask,                push)
+	TILEKEYS(MODKEY,                                           1, 0, 0)
+	TILEKEYS(MODKEY|ShiftMask,                                 0, 1, 0)
+	TILEKEYS(MODKEY|ControlMask,                               0, 0, 1)
+	TILEKEYS(MODKEY|ShiftMask|ControlMask,                     1, 1, 1)
+	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
@@ -127,12 +163,6 @@ static Key keys[] = {
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
-	TILEKEYS(MODKEY,                                           1, 0, 0)
-	TILEKEYS(MODKEY|ShiftMask,                                 0, 1, 0)
-	TILEKEYS(MODKEY|ControlMask,                               0, 0, 1)
-	TILEKEYS(MODKEY|ShiftMask|ControlMask,                     1, 1, 1)
-	{ MODKEY|ShiftMask,             XK_t,      setdirs,        {.v = (int[]){ DirHor, DirVer, DirVer } } },
-	{ MODKEY|ControlMask,           XK_t,      setdirs,        {.v = (int[]){ DirVer, DirHor, DirHor } } },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
@@ -150,7 +180,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_BackSpace, quit,        {0} },
+	{ MODKEY|ShiftMask|ControlMask,             XK_BackSpace, quit,        {0} },
 };
 
 /* button definitions */
