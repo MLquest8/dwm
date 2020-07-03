@@ -2,18 +2,18 @@
 
 /*  DWM settings                                                              */
 /*  DWM appearance settings                                                   */
-static const unsigned int borderpx  = 1; /* Border pixel of windows           */
-static const unsigned int igappx    = 5; /* Size of inner gaps                */
-static const unsigned int ogappx    = 5; /* Size of outer gaps                */
-static const int gapsforone         = 0; /* Gaps for only one window open     */
-static const unsigned int snap      = 32;/* Snap pixel                        */
 static const int showbar            = 1; /* 0 means no bar                    */
 static const int topbar             = 1; /* 0 means bottom bar                */
-static const int startontag         = 1; /* 0 means no tag active on start    */
 static const int barheight          = 26;/* Specific bar height (0 means def) */
-static const char *fonts[]          = { "FreeMono:size=12", /* Primary font   */
-                                        "FreeSerif:size=12", /* FB font1      */
-                                        "FontAwesome:size=10" }; /* FB font2  */
+static const int startontag         = 1; /* 0 means no tag is active on start */
+static const int gapsforone         = 0; /* Gaps for only one window open     */
+static const unsigned int igappx    = 5; /* Size of inner gaps                */
+static const unsigned int ogappx    = 5; /* Size of outer gaps                */
+static const unsigned int snap      = 32;/* Snap pixel                        */
+static const unsigned int borderpx  = 1; /* Border pixel of windows           */
+static const char *fonts[]          = { "FreeMono:size=10", /* Primary        */
+                                        "FreeSerif:size=10", /* Secondary     */
+                                        "FontAwesome:size=10" }; /* Iconic    */
 /*  DWM color scheme                                                          */
 static const char ltsymfgsel[]      = "#222222"; /* Layout symbol fg selected */
 static const char ltsymbgsel[]      = "#222222"; /* Layout symbol bg selected */
@@ -84,6 +84,7 @@ static const Layout layouts[] = {
 /*  Dmenu settings                                                            */
 /*  Dmenu appearance settings                                                 */
 static const char dmenufont[]          = "FreeMono:size=12";
+static const char dmenuprompt[]        = "Launch";
 /*  Dmenu color scheme                                                        */
 static const char dmenuselfg[]         = "#eeeeee"; /* Dmenu selected fg      */
 static const char dmenuselbg[]         = "#005577"; /* Dmenu selected bg      */
@@ -94,8 +95,7 @@ static char dmenumon[2] = "0"; /* Component of dmenucmd, manipulated in spawn */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
                                   "-sf", dmenuselfg, "-sb", dmenuselbg, /*sel */
                                   "-nf", dmenunrmfg, "-nb", dmenunrmbg, /*norm*/
-                                  "-p", "Launch", NULL }; /* Dmenu prompt     */
-/*  St settings                                                               */
+                                  "-p", dmenuprompt, NULL }; /* NULL to close */
 /*  St appearance settings                                                    */
 /*  St color scheme                                                           */
 /*  St launch options                                                         */
