@@ -1,12 +1,11 @@
-/*  See LICENSE file for copyright and license details.                       */
-
-/*  DWM settings                                                              */
+/*             See LICENSE file for copyright and license details.            */
+/*====================================DWM=====================================*/
 /*  DWM appearance settings                                                   */
 static int gapsforone               = 0; /* Gaps for only one window open     */
 static int hidevactags              = 0; /* Hide vacant tags                  */
 static const int showbar            = 1; /* 0 means no bar                    */
 static const int topbar             = 1; /* 0 means bottom bar                */
-static const int barheight          = 26;/* Specific bar height (0 means def) */
+static const int barheight          = 26;/* Specific bar height (0 for def)   */
 static const int startontag         = 1; /* 0 means no tag is active on start */
 static const unsigned int igappx    = 5; /* Size of inner gaps                */
 static const unsigned int ogappx    = 5; /* Size of outer gaps                */
@@ -71,7 +70,7 @@ static const char *tags[]                    = { "\uF2BE", "\uF09B", "\uF0AC",
 static const char *tagsalt[]                 = { "\uF22D", "\uF22D", "\uF22D",
                                                  "\uF22D", "\uF22D", "\uF22D",
                                                  "\uF22D", "\uF22D", "\uF22D" };
-/*  DWM layouts                                                               */
+/*  DWM layout settings                                                       */
 static const int dirs[3]         = { DirHor, DirVer, DirVer }; /* Tiling dirs */
 static const float facts[3]      = { 1.1,    1.1,    1.1 }; /* Tiling facts   */
 static const int nmaster         = 1; /* Number of clients in master area     */
@@ -86,7 +85,7 @@ static const Layout layouts[] = {
     { "[*]",      NULL }, /* No layout function means floating behavior       */
     { "[M]",      monocle }, /* Classic monocle layout                        */
 };
-/*  Dmenu settings                                                            */
+/*===================================Dmenu====================================*/
 /*  Dmenu appearance settings                                                 */
 static const char dmenufont[]          = "FreeMono:size=12";
 static const char dmenuprompt[]        = "Launch";
@@ -102,9 +101,9 @@ static const char *dmenucmd[] = { "dmenu_run",
                                   "-sf", dmenuselfg, "-sb", dmenuselbg, /*sel */
                                   "-nf", dmenunrmfg, "-nb", dmenunrmbg, /*norm*/
                                   "-p", dmenuprompt, NULL }; /* NULL to close */
-/*  St settings                                                               */
+/*=====================================St=====================================*/
 /*  St appearance settings                                                    */
-static const char stfont[]             = /* St font and its options              */
+static const char stfont[]             = /* St font and its options           */
              "FreeMono:pixelsize=14:antialias=true:autohint=true";
 static const char stalphaf[]           = "0.8"; /* St alpha on fucosed        */
 static const char stalphau[]           = "0.6"; /* St alpha on unfocused      */
@@ -147,20 +146,13 @@ static const char *termcmd[]  = { "st",
                                   "-C", stcoldcs, "-C", stcolrcs,
                                   "-B", stalphaf, "-b", stalphau,
                                   "-f", stfont, NULL };
+/*===================================Extra====================================*/
+/*  Helper for spawning shell commands in the pre dwm-5.0 fashion             */
+#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
-static const Rule rules[] = {
-	/* xprop(1):
-	 *	WM_CLASS(STRING) = instance, class
-	 *	WM_NAME(STRING) = title
-	 */
-	/* class      instance    title       tags mask     iscentered   isfloating   isfreesize   isfakefullscreen   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            0,           1,           1,           0,                 -1      },
-	{ "firefox",  NULL,       NULL,       0,            0,           0,           0,           1,                 -1      },
-	{ "st",       NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },
-	{ "mpv",      NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },
-};
 
-/* key definitions */
+/*====================================Keys====================================*/
+/*  DWM macros                                                                */
 #define MODKEY Mod1Mask
 #define ALT Mod1Mask
 #define WIN Mod4Mask
@@ -172,71 +164,69 @@ static const Rule rules[] = {
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
 #define TILEKEYS(MOD,G,M,S) \
-	{ MOD, XK_r, setdirs,  {.v = (int[])  { INC(G * +1),   INC(M * +1),   INC(S * +1) } } }, \
-	{ MOD, XK_h, setfacts, {.v = (float[]){ INC(G * -0.1), INC(M * -0.1), INC(S * -0.1) } } }, \
-	{ MOD, XK_l, setfacts, {.v = (float[]){ INC(G * +0.1), INC(M * +0.1), INC(S * +0.1) } } },
+	{ MOD, 27, setdirs,  {.v = (int[])  { INC(G * +1),   INC(M * +1),   INC(S * +1)   } } }, \
+	{ MOD, 43, setfacts, {.v = (float[]){ INC(G * -0.1), INC(M * -0.1), INC(S * -0.1) } } }, \
+	{ MOD, 46, setfacts, {.v = (float[]){ INC(G * +0.1), INC(M * +0.1), INC(S * +0.1) } } },
 #define STACKKEYS(MOD,ACTION) \
-	{ MOD, XK_j,     ACTION##stack, {.i = INC(+1) } }, \
-	{ MOD, XK_k,     ACTION##stack, {.i = INC(-1) } }, \
-	{ MOD, XK_grave, ACTION##stack, {.i = PREVSEL } }, \
-	{ MOD, XK_q,     ACTION##stack, {.i = 0 } }, \
-	{ MOD, XK_a,     ACTION##stack, {.i = 1 } }, \
-	{ MOD, XK_z,     ACTION##stack, {.i = 2 } }, \
-	{ MOD, XK_x,     ACTION##stack, {.i = -1 } },
- 
-/* helper for spawning shell commands in the pre dwm-5.0 fashion */
-#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
-
+	{ MOD, 44,     ACTION##stack, {.i = INC(+1) } }, \
+	{ MOD, 45,     ACTION##stack, {.i = INC(-1) } }, \
+	{ MOD, 51,     ACTION##stack, {.i = PREVSEL } }, \
+	{ MOD, 25,     ACTION##stack, {.i = 0 } }, \
+	{ MOD, 38,     ACTION##stack, {.i = 1 } }, \
+	{ MOD, 52,     ACTION##stack, {.i = 2 } }, \
+	{ MOD, 53,     ACTION##stack, {.i = -1 } },
+/*  DWM keys and definitions                                                  */
 static Key keys[] = {
-	/* modifier                     key        function        argument */
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = dmenucmd } },
-	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-	STACKKEYS(MODKEY,                          focus)
-	STACKKEYS(MODKEY|ShiftMask,                push)
-	TILEKEYS(MODKEY,                                           1, 0, 0)
-	TILEKEYS(MODKEY|ShiftMask,                                 0, 1, 0)
-	TILEKEYS(MODKEY|ControlMask,                               0, 0, 1)
-	TILEKEYS(MODKEY|ShiftMask|ControlMask,                     1, 1, 1)
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_f,      forcefullscreen,     {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY|ShiftMask,             XK_i,      setigaps,       {.i = +2 } },
-	{ MODKEY|ControlMask,           XK_i,      setigaps,       {.i = -2 } },
-	{ MODKEY|ShiftMask|ControlMask, XK_i,      setigaps,       {.i = 0  } },
-	{ MODKEY|ShiftMask,             XK_o,      setogaps,       {.i = +2 } },
-	{ MODKEY|ControlMask,           XK_o,      setogaps,       {.i = -2 } },
-	{ MODKEY|ShiftMask|ControlMask, XK_o,      setogaps,       {.i = 0  } },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
-	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY,                       XK_n,      togglealttag,   {0} },
-	{ MODKEY,                       XK_y,      togglegapsforone,   {0} },
-	{ MODKEY,                       XK_u,      togglehidevactags,   {0} },
-	TAGKEYS(                        XK_1,                      0)
-	TAGKEYS(                        XK_2,                      1)
-	TAGKEYS(                        XK_3,                      2)
-	TAGKEYS(                        XK_4,                      3)
-	TAGKEYS(                        XK_5,                      4)
-	TAGKEYS(                        XK_6,                      5)
-	TAGKEYS(                        XK_7,                      6)
-	TAGKEYS(                        XK_8,                      7)
-	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask|ControlMask,             XK_BackSpace, quit,        {0} },
+	/* modifier                     key        function              argument */
+	{ MODKEY,                       36,        spawn,         {.v = termcmd } },
+	{ MODKEY|ShiftMask,             36,        spawn,        {.v = dmenucmd } },
+	{ MODKEY,                       56,        togglebar,                 {0} },
+	{ MODKEY|ShiftMask,             57,        incnmaster,         {.i = +1 } },
+	{ MODKEY|ControlMask,           57,        incnmaster,         {.i = -1 } },
+	{ MODKEY,                       36,        zoom,                      {0} },
+	{ MODKEY|ShiftMask,             23,        view,                      {0} },
+	{ MODKEY|ShiftMask,             41,        forcefullscreen,           {0} },
+	{ MODKEY,                       24,        killclient,                {0} },
+	{ MODKEY|ShiftMask,             31,        setigaps,           {.i = +2 } },
+	{ MODKEY|ControlMask,           31,        setigaps,           {.i = -2 } },
+	{ MODKEY|ShiftMask|ControlMask, 31,        setigaps,           {.i = 0  } },
+	{ MODKEY|ShiftMask,             32,        setogaps,           {.i = +2 } },
+	{ MODKEY|ControlMask,           32,        setogaps,           {.i = -2 } },
+	{ MODKEY|ShiftMask|ControlMask, 32,        setogaps,           {.i = 0  } },
+    { MODKEY,                       32,        togglegapsforone,          {0} },
+	{ MODKEY,                       28,        setlayout,  {.v = &layouts[0]} },
+	{ MODKEY,                       41,        setlayout,  {.v = &layouts[1]} },
+	{ MODKEY,                       58,        setlayout,  {.v = &layouts[2]} },
+	{ MODKEY,                       65,        setlayout,                 {0} },
+	{ MODKEY|ShiftMask,             65,        togglefloating,            {0} },
+	{ MODKEY|ShiftMask,             28,        togglealttag,              {0} },
+	{ MODKEY|ControlMask,           28,        togglehidevactags,         {0} },
+	{ MODKEY,                       19,        view,              {.ui = ~0 } },
+	{ MODKEY|ShiftMask,             19,        tag,               {.ui = ~0 } },
+	{ MODKEY,                       59,        focusmon,           {.i = -1 } },
+	{ MODKEY,                       60,        focusmon,           {.i = +1 } },
+	{ MODKEY|ShiftMask,             59,        tagmon,             {.i = -1 } },
+	{ MODKEY|ShiftMask,             60,        tagmon,             {.i = +1 } },
+	TAGKEYS(                        10,                                    0)
+	TAGKEYS(                        11,                                    1)
+	TAGKEYS(                        12,                                    2)
+	TAGKEYS(                        13,                                    3)
+	TAGKEYS(                        14,                                    4)
+	TAGKEYS(                        15,                                    5)
+	TAGKEYS(                        16,                                    6)
+	TAGKEYS(                        17,                                    7)
+	TAGKEYS(                        18,                                    8)
+	STACKKEYS(MODKEY,                                                  focus)
+	STACKKEYS(MODKEY|ShiftMask,                                         push)
+	TILEKEYS(MODKEY,                                                 1, 0, 0)
+	TILEKEYS(MODKEY|ShiftMask,                                       0, 1, 0)
+	TILEKEYS(MODKEY|ControlMask,                                     0, 0, 1)
+	TILEKEYS(MODKEY|ShiftMask|ControlMask,                           1, 1, 1)
+	{ MODKEY|ControlMask,           9,         quit,                      {0} },
 };
 
-/* button definitions */
+/*===================================Buttons==================================*/
+/*  DWM button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static Button buttons[] = {
 	/* click                event mask      button          function        argument */
@@ -253,3 +243,15 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
 
+/*===================================Rules====================================*/
+static const Rule rules[] = {
+	/* xprop(1):
+	 *	WM_CLASS(STRING) = instance, class
+	 *	WM_NAME(STRING) = title
+	 */
+	/* class      instance    title       tags mask     iscentered   isfloating   isfreesize   isfakefullscreen   monitor */
+	{ "Gimp",     NULL,       NULL,       0,            0,           1,           1,           0,                 -1      },
+	{ "firefox",  NULL,       NULL,       0,            0,           0,           0,           1,                 -1      },
+	{ "st",       NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },
+	{ "mpv",      NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },
+};
