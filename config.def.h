@@ -86,7 +86,6 @@ static const Layout layouts[] = {
     { "[M]",      monocle }, /* Classic monocle layout                        */
 };
 /*  Dmenu settings                                                            */
-static char dmenumon[2] = "0"; /* Component of dmenucmd, manipulated in spawn */
 /*  Dmenu appearance settings                                                 */
 static const char dmenufont[]          = "FreeMono:size=12";
 static const char dmenuprompt[]        = "Launch";
@@ -96,6 +95,7 @@ static const char dmenuselbg[]         = "#005577"; /* Dmenu selected bg      */
 static const char dmenunrmfg[]         = "#bbbbbb"; /* Dmenu normal fg        */
 static const char dmenunrmbg[]         = "#222222"; /* Dmenu normal bg        */
 /*  Dmenu launch options                                                      */
+static char dmenumon[2] = "0"; /* Component of dmenucmd, manipulated in spawn */
 static const char *dmenucmd[] = { "dmenu_run",
                                   "-m", dmenumon, "-fn", dmenufont, /* font   */
                                   "-sf", dmenuselfg, "-sb", dmenuselbg, /*sel */
