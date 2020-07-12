@@ -2,11 +2,11 @@
 
 /*  DWM settings                                                              */
 /*  DWM appearance settings                                                   */
+static int gapsforone               = 0; /* Gaps for only one window open     */
 static const int showbar            = 1; /* 0 means no bar                    */
 static const int topbar             = 1; /* 0 means bottom bar                */
 static const int barheight          = 26;/* Specific bar height (0 means def) */
 static const int startontag         = 1; /* 0 means no tag is active on start */
-static int gapsforone               = 0; /* Gaps for only one window open     */
 static const unsigned int igappx    = 5; /* Size of inner gaps                */
 static const unsigned int ogappx    = 5; /* Size of outer gaps                */
 static const unsigned int snap      = 32;/* Snap pixel                        */
