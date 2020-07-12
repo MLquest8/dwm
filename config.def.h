@@ -6,7 +6,7 @@ static const int showbar            = 1; /* 0 means no bar                    */
 static const int topbar             = 1; /* 0 means bottom bar                */
 static const int barheight          = 26;/* Specific bar height (0 means def) */
 static const int startontag         = 1; /* 0 means no tag is active on start */
-static const int gapsforone         = 0; /* Gaps for only one window open     */
+static int gapsforone               = 0; /* Gaps for only one window open     */
 static const unsigned int igappx    = 5; /* Size of inner gaps                */
 static const unsigned int ogappx    = 5; /* Size of outer gaps                */
 static const unsigned int snap      = 32;/* Snap pixel                        */
@@ -221,6 +221,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY,                       XK_n,      togglealttag,   {0} },
+	{ MODKEY,                       XK_y,      togglegapsforone,   {0} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
