@@ -101,7 +101,12 @@ static const char *dmenucmd[] = { "dmenu_run",
                                   "-sf", dmenuselfg, "-sb", dmenuselbg, /*sel */
                                   "-nf", dmenunrmfg, "-nb", dmenunrmbg, /*norm*/
                                   "-p", dmenuprompt, NULL }; /* NULL to close */
+/*  St settings                                                               */
 /*  St appearance settings                                                    */
+static const char stfont[]             = /* St font and its options              */
+             "FreeMono:pixelsize=14:antialias=true:autohint=true";
+static const char stalphaf[]           = "0.8"; /* St alpha on fucosed        */
+static const char stalphau[]           = "0.6"; /* St alpha on unfocused      */
 /*  St color scheme                                                           */
 static const char stcol0[]             = "#2e3436@0"; /* St color 0           */
 static const char stcol1[]             = "#cc0000@1"; /* St color 1           */
@@ -139,7 +144,8 @@ static const char *termcmd[]  = { "st",
                                   "-C", stcoldbg, "-C", stcoldfg,
                                   "-C", stcolfbg, "-C", stcolubg,
                                   "-C", stcoldcs, "-C", stcolrcs,
-                                  "-B", "0.8", "-b", "0.6", NULL };
+                                  "-B", stalphaf, "-b", stalphau,
+                                  "-f", stfont, NULL };
 
 static const Rule rules[] = {
 	/* xprop(1):
