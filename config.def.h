@@ -86,6 +86,7 @@ static const Layout layouts[] = {
     { "[M]",      monocle }, /* Classic monocle layout                        */
 };
 /*  Dmenu settings                                                            */
+static char dmenumon[2] = "0"; /* Component of dmenucmd, manipulated in spawn */
 /*  Dmenu appearance settings                                                 */
 static const char dmenufont[]          = "FreeMono:size=12";
 static const char dmenuprompt[]        = "Launch";
@@ -95,15 +96,50 @@ static const char dmenuselbg[]         = "#005577"; /* Dmenu selected bg      */
 static const char dmenunrmfg[]         = "#bbbbbb"; /* Dmenu normal fg        */
 static const char dmenunrmbg[]         = "#222222"; /* Dmenu normal bg        */
 /*  Dmenu launch options                                                      */
-static char dmenumon[2] = "0"; /* Component of dmenucmd, manipulated in spawn */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
+static const char *dmenucmd[] = { "dmenu_run",
+                                  "-m", dmenumon, "-fn", dmenufont, /* font   */
                                   "-sf", dmenuselfg, "-sb", dmenuselbg, /*sel */
                                   "-nf", dmenunrmfg, "-nb", dmenunrmbg, /*norm*/
                                   "-p", dmenuprompt, NULL }; /* NULL to close */
 /*  St appearance settings                                                    */
 /*  St color scheme                                                           */
+static const char stcol0[]             = "#2e3436@0"; /* St color 0           */
+static const char stcol1[]             = "#cc0000@1"; /* St color 1           */
+static const char stcol2[]             = "#4e9a06@2"; /* St color 2           */
+static const char stcol3[]             = "#c4a000@3"; /* St color 3           */
+static const char stcol4[]             = "#3465a4@4"; /* St color 4           */
+static const char stcol5[]             = "#75507b@5"; /* St color 5           */
+static const char stcol6[]             = "#06989a@6"; /* St color 6           */
+static const char stcol7[]             = "#d3d7cf@7"; /* St color 7           */
+static const char stcol8[]             = "#555753@8"; /* St color 8           */
+static const char stcol9[]             = "#ef2929@9"; /* St color 9           */
+static const char stcol10[]            = "#8ae234@10"; /* St color 10         */
+static const char stcol11[]            = "#fce94f@11"; /* St color 11         */
+static const char stcol12[]            = "#729fcf@12"; /* St color 12         */
+static const char stcol13[]            = "#ad7fa8@13"; /* St color 13         */
+static const char stcol14[]            = "#34e2e2@14"; /* St color 14         */
+static const char stcol15[]            = "#eeeeec@15"; /* St color 15         */
+/* Colors after [255]                                                         */
+static const char stcoldbg[]           = "#300a24@256"; /* St color 256       */
+static const char stcoldfg[]           = "#eeeeec@257"; /* St color 257       */
+static const char stcolfbg[]           = "#300a24@258"; /* St color 258       */
+static const char stcolubg[]           = "#300a24@259"; /* St color 259       */
+static const char stcoldcs[]           = "#bbbbbb@260"; /* St color 260       */
+static const char stcolrcs[]           = "#bbbbbb@261"; /* St color 261       */
 /*  St launch options                                                         */
-static const char *termcmd[]  = { "st", NULL };
+static const char *termcmd[]  = { "st",
+                                  "-C", stcol0, "-C", stcol1,
+                                  "-C", stcol2, "-C", stcol3,
+                                  "-C", stcol4, "-C", stcol5,
+                                  "-C", stcol6, "-C", stcol7,
+                                  "-C", stcol8, "-C", stcol9,
+                                  "-C", stcol10, "-C", stcol11,
+                                  "-C", stcol12, "-C", stcol13,
+                                  "-C", stcol14, "-C", stcol15,
+                                  "-C", stcoldbg, "-C", stcoldfg,
+                                  "-C", stcolfbg, "-C", stcolubg,
+                                  "-C", stcoldcs, "-C", stcolrcs,
+                                  "-B", "0.8", "-b", "0.6", NULL };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -114,7 +150,6 @@ static const Rule rules[] = {
 	{ "Gimp",     NULL,       NULL,       0,            0,           1,           1,           0,                 -1      },
 	{ "firefox",  NULL,       NULL,       0,            0,           0,           0,           1,                 -1      },
 	{ "st",       NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },
-	{ "St",       NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },
 	{ "mpv",      NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },
 };
 
