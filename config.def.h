@@ -3,6 +3,7 @@
 /*  DWM settings                                                              */
 /*  DWM appearance settings                                                   */
 static int gapsforone               = 0; /* Gaps for only one window open     */
+static int hidevactags              = 0; /* Hide vacant tags                  */
 static const int showbar            = 1; /* 0 means no bar                    */
 static const int topbar             = 1; /* 0 means bottom bar                */
 static const int barheight          = 26;/* Specific bar height (0 means def) */
@@ -222,6 +223,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY,                       XK_n,      togglealttag,   {0} },
 	{ MODKEY,                       XK_y,      togglegapsforone,   {0} },
+	{ MODKEY,                       XK_u,      togglehidevactags,   {0} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
