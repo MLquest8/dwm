@@ -11,8 +11,8 @@ static const unsigned int igappx    = 5; /* Size of inner gaps                */
 static const unsigned int ogappx    = 5; /* Size of outer gaps                */
 static const unsigned int snap      = 32;/* Snap pixel                        */
 static const unsigned int borderpx  = 1; /* Border pixel of windows           */
-static const char *fonts[]          = { "FreeMono:size=10", /* Primary        */
-                                        "FreeSerif:size=10", /* Secondary     */
+static const char *fonts[]          = { "FreeMono:size=12", /* Primary        */
+                                        "FreeSerif:size=12", /* Secondary     */
                                         "FontAwesome:size=10" }; /* Iconic    */
 /*  DWM color scheme                                                          */
 static const char ltsymfgsel[]      = "#eeeeee"; /* Layout symbol selected fg */
