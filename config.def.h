@@ -170,7 +170,10 @@ static Key keys[] = {
 	{ MODKEY,                       60,        focusmon,           {.i = +1 } },
 	{ MODKEY|ShiftMask,             59,        tagmon,             {.i = -1 } },
 	{ MODKEY|ShiftMask,             60,        tagmon,             {.i = +1 } },
-	{ MODKEY|ShiftMask,             23,        view,                      {0} },
+
+	{ MODKEY,                       23,        view,                      {0} },
+	{ MODKEY|ShiftMask,             23,        shiftview,          {.i = +1 } },	
+	{ MODKEY|ControlMask,           23,        shiftview,          {.i = -1 } },
 	{ MODKEY,                       19,        view,              {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             19,        tag,               {.ui = ~0 } },
 	TAGKEYS(                        10,                                    0)
