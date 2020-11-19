@@ -22,6 +22,7 @@
  */
 #include <errno.h>
 #include <locale.h>
+#include <pwd.h>
 #include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -205,6 +206,7 @@ static long getstate(Window w);
 static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
+static void getuserinfo(void);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
@@ -286,6 +288,7 @@ static void zoom(const Arg *arg);
 /* variables */
 static const char broken[] = "broken";
 static char stext[256];
+static char ptext[64];
 static int screen;
 static int sw, sh;           /* X display screen geometry width, height */
 static int bh, blw = 0;      /* bar geometry */
@@ -571,18 +574,21 @@ buttonpress(XEvent *e)
 		for (c = m->clients; c; c = c->next)
 			occ |= c->tags == 255 ? 0 : c->tags;
 		do {
-            /* do not reserve space for vacant tags */
-			if (hidevactags && !(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
-				continue;
-			x += TEXTW(tags[i]);
+		/* do not reserve space for vacant tags */
+		if (hidevactags && !(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
+			continue;
+		x += TEXTW(tags[i]);
         } while (ev->x >= x && ++i < LENGTH(tags));
 		if (i < LENGTH(tags)) {
 			click = ClkTagBar;
 			arg.ui = 1 << i;
-		} else if (ev->x < x + blw)
+		}
+		else if (ev->x < x + blw)
 			click = ClkLtSymbol;
 		else if (ev->x > selmon->ww - TEXTW(stext))
 			click = ClkStatusText;
+		else if (ev->x > selmon->ww - TEXTW(stext) - TEXTW(m->ltsymbol))
+			click = ClkLtSymbol;
 		else
 			click = ClkWinTitle;
 	} else if ((c = wintoclient(ev->window))) {
@@ -877,8 +883,8 @@ drawbar(Monitor *m)
 		drw_text(drw, m->ww - tw, 0, tw, bh, lrpad / 2, stext, 0);
 	}
 
-    w = TEXTW(m->ltsymbol);
-    sbar = m->ww - tw - w;
+	w = TEXTW(m->ltsymbol);
+	sbar = m->ww - tw - w;
 	drw_setscheme(drw, scheme[m->sel ? SchemeSel : SchemeNorm]);
 	drw_text(drw, sbar, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
@@ -904,9 +910,10 @@ drawbar(Monitor *m)
 
 		x += w;
 	}
-	w = blw = TEXTW("user@Archer");
+	
+	w = blw = TEXTW(ptext);
 	drw_setscheme(drw, scheme[!selmon->pertag->curtag ? SchemeSel : SchemeNorm]);
-	x = drw_text(drw, x, 0, w, bh, lrpad / 2, "user@Archer", 0);
+	x = drw_text(drw, x, 0, w, bh, lrpad / 2, ptext, 0);
 
 	if ((w = sbar - x) > bh) {
 		if (m->sel) {
@@ -1135,6 +1142,19 @@ grabkeys(void)
 				         keys[i].mod | modifiers[j], root, True,
 				         GrabModeAsync, GrabModeAsync);
 	}
+}
+
+void
+getuserinfo(void)
+{
+	char hostname[32];
+	struct passwd *pw;
+	pw = getpwuid(geteuid());
+	gethostname(hostname, sizeof(hostname));
+
+	strcpy(ptext, pw->pw_name);
+	strcat(ptext, "@");
+	strcat(ptext, hostname);
 }
 
 void
@@ -1951,6 +1971,7 @@ setup(void)
 	for (i = 0; i < LENGTH(colors); i++)
 		scheme[i] = drw_scm_create(drw, colors[i], alphas[i], 4);
 	/* init bars */
+	getuserinfo();
 	updatebars();
 	updatestatus();
 	/* supporting window for NetWMCheck */
