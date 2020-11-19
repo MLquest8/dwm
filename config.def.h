@@ -64,7 +64,7 @@ static const unsigned int alphas[][4]      = {
     [SchemeInfoNorm]     = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
 };
 /*  DWM tags                                                                  */
-static const char *tags[]                    = { "\uF2BD", "\uF09B", "\uF0AC",
+static const char *tags[]                    = { "\uF015", "\uF09B", "\uF0AC",
                                                  "\uF04B", "\uF03D", "\uF130",
                                                  "\uF0D0", "\uF1B6", "\uF085" };
 static const char *tagsalt[]                 = { "\uF22D", "\uF22D", "\uF22D",
@@ -110,7 +110,7 @@ static const char *dmenucmd[] = { "dmenu_run",
 
 /*====================================Keys====================================*/
 /*  DWM macros                                                                */
-#define MODKEY Mod1Mask
+#define MODKEY Mod4Mask
 #define ALT Mod1Mask
 #define WIN Mod4Mask
 #define CTRL ControlMask
@@ -137,16 +137,23 @@ static Key keys[] = {
 	/* modifier                     key        function              argument */
 	{ MODKEY,                       36,        spawn,         {.v = termcmd } },
 	{ MODKEY|ShiftMask,             36,        spawn,        {.v = dmenucmd } },
-	{ MODKEY,                       56,        togglebar,                 {0} },
+	{ MODKEY,                       24,        killclient,                {0} },
+
+	{ MODKEY,                       49,        setlayout,                 {0} },
+	{ MODKEY|ShiftMask,             49,        setlayout,  {.v = &layouts[0]} },
+	{ MODKEY|ControlMask,           49,        setlayout,  {.v = &layouts[1]} },
+	{ MODKEY|ShiftMask|ControlMask, 49,        setlayout,  {.v = &layouts[2]} },
 	{ MODKEY|ShiftMask,             57,        incnmaster,         {.i = +1 } },
 	{ MODKEY|ControlMask,           57,        incnmaster,         {.i = -1 } },
-	{ MODKEY,                       36,        zoom,                      {0} },
-	{ MODKEY|ShiftMask,             23,        view,                      {0} },
+
 	{ MODKEY,                       41,        setfullscreenfloating,     {0} },
 	{ MODKEY|ShiftMask,             41,        setfullscreennative,       {0} },
 	{ MODKEY|ControlMask,           41,        setfullscreenforced,       {0} },
-	{ MODKEY|ShiftMask|ControlMask, 41,        togglefloating,            {0} },
-	{ MODKEY,                       24,        killclient,                {0} },
+	{ MODKEY|ShiftMask|ControlMask, 41,        setfullscreenlayout,       {0} },
+	{ MODKEY,                       65,        togglefloating,            {0} },
+	{ MODKEY|ControlMask,           55,        togglehorizontalmax,       {0} },
+	{ MODKEY|ShiftMask,             55,        toggleverticalmax,         {0} },
+
 	{ MODKEY|ShiftMask,             31,        setigaps,           {.i = +2 } },
 	{ MODKEY|ControlMask,           31,        setigaps,           {.i = -2 } },
 	{ MODKEY|ShiftMask|ControlMask, 31,        setigaps,           {.i = 0  } },
@@ -154,21 +161,18 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           32,        setogaps,           {.i = -2 } },
 	{ MODKEY|ShiftMask|ControlMask, 32,        setogaps,           {.i = 0  } },
 	{ MODKEY,                       32,        togglegapsforone,          {0} },
-	{ MODKEY,                       28,        setlayout,  {.v = &layouts[0]} }, //s
-	{ MODKEY,                       99,        setlayout,  {.v = &layouts[1]} }, //s
-	{ MODKEY,                       58,        setlayout,  {.v = &layouts[2]} }, //s
-	{ MODKEY,                       65,        setlayout,                 {0} },
-	{ MODKEY|ShiftMask,             65,        togglefloating,            {0} },
+
+	{ MODKEY,                       56,        togglebar,                 {0} },
 	{ MODKEY|ShiftMask,             28,        togglealttag,              {0} },
 	{ MODKEY|ControlMask,           28,        togglehidevactags,         {0} },
-	{ MODKEY|ControlMask,           54,        togglehorizontalmax,       {0} }, //s
-	{ MODKEY|ControlMask,           55,        toggleverticalmax,         {0} }, //s
-	{ MODKEY,                       19,        view,              {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             19,        tag,               {.ui = ~0 } },
+	
 	{ MODKEY,                       59,        focusmon,           {.i = -1 } },
 	{ MODKEY,                       60,        focusmon,           {.i = +1 } },
 	{ MODKEY|ShiftMask,             59,        tagmon,             {.i = -1 } },
 	{ MODKEY|ShiftMask,             60,        tagmon,             {.i = +1 } },
+	{ MODKEY|ShiftMask,             23,        view,                      {0} },
+	{ MODKEY,                       19,        view,              {.ui = ~0 } },
+	{ MODKEY|ShiftMask,             19,        tag,               {.ui = ~0 } },
 	TAGKEYS(                        10,                                    0)
 	TAGKEYS(                        11,                                    1)
 	TAGKEYS(                        12,                                    2)
@@ -197,7 +201,7 @@ static Button buttons[] = {
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
-	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
+	{ ClkClientWin,         MODKEY,         Button2,        zoom,           {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },

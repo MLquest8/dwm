@@ -235,6 +235,7 @@ static void setfacts(const Arg *arg);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
 static void setfullscreenfloating(const Arg *arg);
+static void setfullscreenlayout(const Arg *arg);
 static void setfullscreennative(const Arg *arg);
 static void setfullscreenforced(const Arg *arg);
 static void setigaps(const Arg *arg);
@@ -1857,6 +1858,15 @@ setfullscreenforced(const Arg *arg)
 		c->isforcedfullscreen = 0;
 		arrange(c->mon);
 	}
+}
+
+void
+setfullscreenlayout(const Arg *arg)
+{
+	if(selmon->lt[selmon->sellt] != &layouts[2])
+		setlayout(&((Arg) { .v = &layouts[2] }));
+	else
+		setlayout(&((Arg) { .v = &layouts[0] }));
 }
 
 void
