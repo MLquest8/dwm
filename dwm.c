@@ -111,7 +111,7 @@ struct Client {
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh;
 	int bw, oldbw;
 	unsigned int tags;
-	int isfixed, iscentered, isfloating, isfreesize, isurgent, neverfocus, oldstate, isfullscreen, isfakefullscreen, isforcedfullscreen;
+	int ismax, wasfloating, isfixed, iscentered, isfloating, isfreesize, isurgent, neverfocus, oldstate, isfullscreen, isfakefullscreen, isforcedfullscreen;
 	Client *next;
 	Client *snext;
 	Monitor *mon;
@@ -199,7 +199,6 @@ static void focus(Client *c);
 static void focusin(XEvent *e);
 static void focusmon(const Arg *arg);
 static void focusstack(const Arg *arg);
-static void forcefullscreen(const Arg *arg);
 static Atom getatomprop(Client *c, Atom prop);
 static int getrootptr(int *x, int *y);
 static long getstate(Window w);
@@ -235,6 +234,9 @@ static void setdirs(const Arg *arg);
 static void setfacts(const Arg *arg);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
+static void setfullscreenfloating(const Arg *arg);
+static void setfullscreennative(const Arg *arg);
+static void setfullscreenforced(const Arg *arg);
 static void setigaps(const Arg *arg);
 static void setogaps(const Arg *arg);
 static void setlayout(const Arg *arg);
@@ -252,6 +254,8 @@ static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void togglegapsforone();
 static void togglehidevactags();
+static void togglehorizontalmax(const Arg *arg);
+static void toggleverticalmax(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
@@ -1012,6 +1016,9 @@ focusstack(const Arg *arg)
 	int i = stackpos(arg);
 	Client *c, *p;
 
+	if (selmon->sel->isforcedfullscreen || (selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen))
+		return;
+
 	if(i < 0)
 		return;
 
@@ -1019,37 +1026,6 @@ focusstack(const Arg *arg)
 	    i -= ISVISIBLE(c) ? 1 : 0, p = c, c = c->next);
 	focus(c ? c : p);
 	restack(selmon);
-}
-
-void
-forcefullscreen(const Arg *arg)
-{
-	Client *c = selmon->sel;
-
-	if (!ISVISIBLEONTAG(c, c->tags))
-		return;
-
-	if (!c->isforcedfullscreen && (c->isfakefullscreen || !c->isfullscreen)) {
-		c->oldstate = c->isfloating;
-		c->oldbw = c->bw;
-		c->bw = 0;
-		c->isfloating = 1;
-		resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
-		XRaiseWindow(dpy, c->win);
-		c->isforcedfullscreen = 1;
-	} else if (c->isforcedfullscreen){
-		if (c->isfullscreen && !c->isfakefullscreen)
-			setfullscreen(c, !c->isfullscreen);
-		c->isfloating = c->oldstate;
-		c->bw = c->oldbw;
-		c->x = c->oldx;
-		c->y = c->oldy;
-		c->w = c->oldw;
-		c->h = c->oldh;
-		resizeclient(c, c->x, c->y, c->w, c->h);
-		c->isforcedfullscreen = 0;
-		arrange(c->mon);
-	}
 }
 
 Atom
@@ -1261,6 +1237,8 @@ manage(Window w, XWindowAttributes *wa)
 	}
 	XSelectInput(dpy, w, EnterWindowMask|FocusChangeMask|PropertyChangeMask|StructureNotifyMask);
 	grabbuttons(c, 0);
+	c->wasfloating = 0;
+	c->ismax = 0;
 	if (!c->isfloating)
 		c->isfloating = c->oldstate = trans != None || c->isfixed;
 	if (c->isfloating)
@@ -1321,6 +1299,41 @@ maprequest(XEvent *e)
 		return;
 	if (!wintoclient(ev->window))
 		manage(ev->window, &wa);
+}
+
+void
+maximize(int x, int y, int w, int h) {
+	XEvent ev;
+
+	if(selmon->sel->isforcedfullscreen || (selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen))
+		return;
+	if(!selmon->sel || selmon->sel->isfixed)
+		return;
+	if(!selmon->sel->isfloating && selmon->sel->ismax)
+		selmon->sel->ismax = 0;
+	XRaiseWindow(dpy, selmon->sel->win);
+	if(!selmon->sel->ismax) {
+		if(!selmon->lt[selmon->sellt]->arrange || selmon->sel->isfloating)
+			selmon->sel->wasfloating = 1;
+		else {
+			togglefloating(NULL);
+			selmon->sel->wasfloating = 0;
+		}
+		selmon->sel->oldx = selmon->sel->x;
+		selmon->sel->oldy = selmon->sel->y;
+		selmon->sel->oldw = selmon->sel->w;
+		selmon->sel->oldh = selmon->sel->h;
+		resize(selmon->sel, x, y, w, h, 1);
+		selmon->sel->ismax = 1;
+	}
+	else {
+		resize(selmon->sel, selmon->sel->oldx, selmon->sel->oldy, selmon->sel->oldw, selmon->sel->oldh, 1);
+		if(!selmon->sel->wasfloating && selmon->sel->isfloating)
+			togglefloating(NULL);
+		selmon->sel->ismax = 0;
+	}
+	drawbar(selmon);
+	while(XCheckMaskEvent(dpy, EnterWindowMask, &ev));
 }
 
 void
@@ -1803,6 +1816,50 @@ setfullscreen(Client *c, int fullscreen)
 }
 
 void
+setfullscreenfloating(const Arg *arg)
+{
+	maximize(selmon->wx + selmon->ogappx, selmon->wy + selmon->ogappx, selmon->ww - 2 * borderpx - 2 * selmon->ogappx, selmon->wh - 2 * borderpx - 2 * selmon->ogappx);
+}
+
+void
+setfullscreennative(const Arg *arg)
+{
+	if(selmon->sel)
+		setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
+}
+
+void
+setfullscreenforced(const Arg *arg)
+{
+	Client *c = selmon->sel;
+
+	if (!ISVISIBLEONTAG(c, c->tags))
+		return;
+
+	if (!c->isforcedfullscreen && (c->isfakefullscreen || !c->isfullscreen)) {
+		c->oldstate = c->isfloating;
+		c->oldbw = c->bw;
+		c->bw = 0;
+		c->isfloating = 1;
+		resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
+		XRaiseWindow(dpy, c->win);
+		c->isforcedfullscreen = 1;
+	} else if (c->isforcedfullscreen){
+		if (c->isfullscreen && !c->isfakefullscreen)
+			setfullscreen(c, !c->isfullscreen);
+		c->isfloating = c->oldstate;
+		c->bw = c->oldbw;
+		c->x = c->oldx;
+		c->y = c->oldy;
+		c->w = c->oldw;
+		c->h = c->oldh;
+		resizeclient(c, c->x, c->y, c->w, c->h);
+		c->isforcedfullscreen = 0;
+		arrange(c->mon);
+	}
+}
+
+void
 setigaps(const Arg *arg)
 {
 	if ((arg->i == 0) || (selmon->igappx + arg->i < 0))
@@ -2108,6 +2165,16 @@ togglehidevactags()
 {
 	hidevactags = !hidevactags;
 	drawbar(selmon);
+}
+
+void
+togglehorizontalmax(const Arg *arg) {
+	maximize(selmon->wx + selmon->ogappx, selmon->sel->y, selmon->ww - 2 * borderpx - 2 * selmon->ogappx, selmon->sel->h);
+}
+
+void
+toggleverticalmax(const Arg *arg) {
+	maximize(selmon->sel->x, selmon->wy + selmon->ogappx, selmon->sel->w, selmon->wh - 2 * borderpx - 2 * selmon->ogappx);
 }
 
 void

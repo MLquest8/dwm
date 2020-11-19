@@ -64,7 +64,7 @@ static const unsigned int alphas[][4]      = {
     [SchemeInfoNorm]     = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
 };
 /*  DWM tags                                                                  */
-static const char *tags[]                    = { "\uF2BE", "\uF09B", "\uF0AC",
+static const char *tags[]                    = { "\uF2BD", "\uF09B", "\uF0AC",
                                                  "\uF04B", "\uF03D", "\uF130",
                                                  "\uF0D0", "\uF1B6", "\uF085" };
 static const char *tagsalt[]                 = { "\uF22D", "\uF22D", "\uF22D",
@@ -85,6 +85,8 @@ static const Layout layouts[] = {
     { "[*]",      NULL }, /* No layout function means floating behavior       */
     { "[M]",      monocle }, /* Classic monocle layout                        */
 };
+/*=====================================St=====================================*/
+static const char *termcmd[]           = { "st", NULL };     /* NULL to close */
 /*===================================Dmenu====================================*/
 /*  Dmenu appearance settings                                                 */
 static const char dmenufont[]          = "FreeMono:size=12";
@@ -101,51 +103,6 @@ static const char *dmenucmd[] = { "dmenu_run",
                                   "-sf", dmenuselfg, "-sb", dmenuselbg, /*sel */
                                   "-nf", dmenunrmfg, "-nb", dmenunrmbg, /*norm*/
                                   "-p", dmenuprompt, NULL }; /* NULL to close */
-/*=====================================St=====================================*/
-/*  St appearance settings                                                    */
-static const char stfont[]             = /* St font and its options           */
-             "FreeMono:pixelsize=14:antialias=true:autohint=true";
-static const char stalphaf[]           = "0.8"; /* St alpha on fucosed        */
-static const char stalphau[]           = "0.6"; /* St alpha on unfocused      */
-/*  St color scheme                                                           */
-static const char stcol0[]             = "#2e3436@0"; /* St color 0           */
-static const char stcol1[]             = "#cc0000@1"; /* St color 1           */
-static const char stcol2[]             = "#4e9a06@2"; /* St color 2           */
-static const char stcol3[]             = "#c4a000@3"; /* St color 3           */
-static const char stcol4[]             = "#3465a4@4"; /* St color 4           */
-static const char stcol5[]             = "#75507b@5"; /* St color 5           */
-static const char stcol6[]             = "#06989a@6"; /* St color 6           */
-static const char stcol7[]             = "#d3d7cf@7"; /* St color 7           */
-static const char stcol8[]             = "#555753@8"; /* St color 8           */
-static const char stcol9[]             = "#ef2929@9"; /* St color 9           */
-static const char stcol10[]            = "#8ae234@10"; /* St color 10         */
-static const char stcol11[]            = "#fce94f@11"; /* St color 11         */
-static const char stcol12[]            = "#729fcf@12"; /* St color 12         */
-static const char stcol13[]            = "#ad7fa8@13"; /* St color 13         */
-static const char stcol14[]            = "#34e2e2@14"; /* St color 14         */
-static const char stcol15[]            = "#eeeeec@15"; /* St color 15         */
-/* Colors after [255]                                                         */
-static const char stcoldbg[]           = "#300a24@256"; /* St color 256       */
-static const char stcoldfg[]           = "#eeeeec@257"; /* St color 257       */
-static const char stcolfbg[]           = "#300a24@258"; /* St color 258       */
-static const char stcolubg[]           = "#300a24@259"; /* St color 259       */
-static const char stcoldcs[]           = "#bbbbbb@260"; /* St color 260       */
-static const char stcolrcs[]           = "#bbbbbb@261"; /* St color 261       */
-/*  St launch options                                                         */
-static const char *termcmd[]  = { "st",
-                                  "-C", stcol0, "-C", stcol1,
-                                  "-C", stcol2, "-C", stcol3,
-                                  "-C", stcol4, "-C", stcol5,
-                                  "-C", stcol6, "-C", stcol7,
-                                  "-C", stcol8, "-C", stcol9,
-                                  "-C", stcol10, "-C", stcol11,
-                                  "-C", stcol12, "-C", stcol13,
-                                  "-C", stcol14, "-C", stcol15,
-                                  "-C", stcoldbg, "-C", stcoldfg,
-                                  "-C", stcolfbg, "-C", stcolubg,
-                                  "-C", stcoldcs, "-C", stcolrcs,
-                                  "-B", stalphaf, "-b", stalphau,
-                                  "-f", stfont, NULL };
 /*===================================Extra====================================*/
 /*  Helper for spawning shell commands in the pre dwm-5.0 fashion             */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -175,7 +132,7 @@ static const char *termcmd[]  = { "st",
 	{ MOD, 38,     ACTION##stack, {.i = 1 } }, \
 	{ MOD, 52,     ACTION##stack, {.i = 2 } }, \
 	{ MOD, 53,     ACTION##stack, {.i = -1 } },
-/*  DWM keys and definitions                                                  */
+/*  DWM keys and definitions                                                      */
 static Key keys[] = {
 	/* modifier                     key        function              argument */
 	{ MODKEY,                       36,        spawn,         {.v = termcmd } },
@@ -185,7 +142,10 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           57,        incnmaster,         {.i = -1 } },
 	{ MODKEY,                       36,        zoom,                      {0} },
 	{ MODKEY|ShiftMask,             23,        view,                      {0} },
-	{ MODKEY|ShiftMask,             41,        forcefullscreen,           {0} },
+	{ MODKEY,                       41,        setfullscreenfloating,     {0} },
+	{ MODKEY|ShiftMask,             41,        setfullscreennative,       {0} },
+	{ MODKEY|ControlMask,           41,        setfullscreenforced,       {0} },
+	{ MODKEY|ShiftMask|ControlMask, 41,        togglefloating,            {0} },
 	{ MODKEY,                       24,        killclient,                {0} },
 	{ MODKEY|ShiftMask,             31,        setigaps,           {.i = +2 } },
 	{ MODKEY|ControlMask,           31,        setigaps,           {.i = -2 } },
@@ -193,14 +153,16 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             32,        setogaps,           {.i = +2 } },
 	{ MODKEY|ControlMask,           32,        setogaps,           {.i = -2 } },
 	{ MODKEY|ShiftMask|ControlMask, 32,        setogaps,           {.i = 0  } },
-    { MODKEY,                       32,        togglegapsforone,          {0} },
-	{ MODKEY,                       28,        setlayout,  {.v = &layouts[0]} },
-	{ MODKEY,                       41,        setlayout,  {.v = &layouts[1]} },
-	{ MODKEY,                       58,        setlayout,  {.v = &layouts[2]} },
+	{ MODKEY,                       32,        togglegapsforone,          {0} },
+	{ MODKEY,                       28,        setlayout,  {.v = &layouts[0]} }, //s
+	{ MODKEY,                       99,        setlayout,  {.v = &layouts[1]} }, //s
+	{ MODKEY,                       58,        setlayout,  {.v = &layouts[2]} }, //s
 	{ MODKEY,                       65,        setlayout,                 {0} },
 	{ MODKEY|ShiftMask,             65,        togglefloating,            {0} },
 	{ MODKEY|ShiftMask,             28,        togglealttag,              {0} },
 	{ MODKEY|ControlMask,           28,        togglehidevactags,         {0} },
+	{ MODKEY|ControlMask,           54,        togglehorizontalmax,       {0} }, //s
+	{ MODKEY|ControlMask,           55,        toggleverticalmax,         {0} }, //s
 	{ MODKEY,                       19,        view,              {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             19,        tag,               {.ui = ~0 } },
 	{ MODKEY,                       59,        focusmon,           {.i = -1 } },
