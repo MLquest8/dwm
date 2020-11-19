@@ -78,7 +78,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
-enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
+enum { ClkTagBar, ClkUser, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 enum { DirHor, DirVer, DirRotHor, DirRotVer, DirLast }; /* tiling dirs */
 
@@ -584,7 +584,7 @@ buttonpress(XEvent *e)
 			arg.ui = 1 << i;
 		}
 		else if (ev->x < x + blw)
-			click = ClkLtSymbol;
+			click = ClkUser;
 		else if (ev->x > selmon->ww - TEXTW(stext))
 			click = ClkStatusText;
 		else if (ev->x > selmon->ww - TEXTW(stext) - TEXTW(m->ltsymbol))
