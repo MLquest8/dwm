@@ -23,29 +23,10 @@ static const char tlbrdrsel[]       = "#444444"; /* Tiled border selected     */
 static const char flbrdrsel[]       = "#005577"; /* Floating border selected  */
 static const char tlbrdrnrm[]       = "#444444"; /* Tiled border normal       */
 static const char flbrdrnrm[]       = "#444444"; /* Floating border normal    */
-static const char statfgsel[]       = "#bbbbbb"; /* Status bar selected fg    */
-static const char statbgsel[]       = "#005577"; /* Status bar selected bg    */
-static const char statfgnorm[]      = "#bbbbbb"; /* Status bar normal fg      */
-static const char statbgnorm[]      = "#222222"; /* Status bar normal bg      */
-static const char tagsselfg[]       = "#eeeeee"; /* Tags selected fg          */
-static const char tagsselbg[]       = "#005577"; /* Tags selected bg          */
-static const char tagsnormfg[]      = "#bbbbbb"; /* Tags normal fg            */
-static const char tagsnormbg[]      = "#222222"; /* Tags normal bg            */
-static const char infoselfg[]       = "#eeeeee"; /* Client info selected fg   */
-static const char infoselbg[]       = "#005577"; /* Client info selected bg   */
-static const char infonormfg[]      = "#bbbbbb"; /* Client info normal fg     */
-static const char infonormbg[]      = "#222222"; /* Client info normal bg     */
-static const char unusedcol[]       = "#000000"; /* Placeholder for the array */
 static const char *colors[][4]      = {
 /*  Scheme                     Foreground, Background, Tileborder, Fltborder  */
     [SchemeSel]            = { ltsymfgsel, ltsymbgsel, tlbrdrsel,  flbrdrsel  },
     [SchemeNorm]           = { ltsymfgnrm, ltsymbgnrm, tlbrdrnrm,  flbrdrnrm  },
-    [SchemeStatusSel]      = { statfgsel,  statbgsel,  unusedcol,  unusedcol  },
-    [SchemeStatusNorm]     = { statfgnorm, statbgnorm, unusedcol,  unusedcol  },
-    [SchemeTagsSel]        = { tagsselfg,  tagsselbg,  unusedcol,  unusedcol  },
-    [SchemeTagsNorm]       = { tagsnormfg, tagsnormbg, unusedcol,  unusedcol  },
-    [SchemeInfoSel]        = { infoselfg,  infoselbg,  unusedcol,  unusedcol  },
-    [SchemeInfoNorm]       = { infonormfg, infonormbg, unusedcol,  unusedcol  },
 };
 /*  DWM Alpha scheme                                                          */
 static const unsigned int barfgalpha       = 0xffU; /* Opaque foreground      */
@@ -56,12 +37,6 @@ static const unsigned int alphas[][4]      = {
 /*  Scheme                   Foreground, Background, Tiledborder, Floatborder */
     [SchemeSel]          = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
     [SchemeNorm]         = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
-    [SchemeStatusSel]    = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha  },
-    [SchemeStatusNorm]   = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha  },
-    [SchemeTagsSel]      = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
-    [SchemeTagsNorm]     = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
-    [SchemeInfoSel]      = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
-    [SchemeInfoNorm]     = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
 };
 /*  DWM tags                                                                  */
 static const char *tags[]                    = { "\uF015", "\uF09B", "\uF0AC",
