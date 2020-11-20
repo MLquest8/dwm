@@ -103,9 +103,9 @@ static const char *dmenucmd[] = { "dmenu_run",
 	{ MOD, 43, setfacts, {.v = (float[]){ INC(G * -0.1), INC(M * -0.1), INC(S * -0.1) } } }, \
 	{ MOD, 46, setfacts, {.v = (float[]){ INC(G * +0.1), INC(M * +0.1), INC(S * +0.1) } } },
 #define STACKKEYS(MOD,ACTION) \
-	{ MOD, 44,     ACTION##stack, {.i = INC(+1) } }, \
-	{ MOD, 45,     ACTION##stack, {.i = INC(-1) } }, \
-	{ MOD, 51,     ACTION##stack, {.i = PREVSEL } }, \
+	{ MOD, 45,     ACTION##stack, {.i = INC(+1) } }, \
+	{ MOD, 44,     ACTION##stack, {.i = INC(-1) } }, \
+	{ MOD, 24,     ACTION##stack, {.i = PREVSEL } }, \
 	{ MOD, 25,     ACTION##stack, {.i = 0 } }, \
 	{ MOD, 38,     ACTION##stack, {.i = 1 } }, \
 	{ MOD, 52,     ACTION##stack, {.i = 2 } }, \
@@ -115,8 +115,6 @@ static Key keys[] = {
 	/* modifier                     key        function              argument */
 	{ MODKEY,                       36,        spawn,         {.v = termcmd } },
 	{ MODKEY,                       22,        spawn,        {.v = dmenucmd } },
-	{ MODKEY,                       24,        killclient,                {0} },
-	{ MODKEY,                       24,        killunsel,                 {0} },
 
 	{ MODKEY,                       49,        setlayout,                 {0} },
 	{ MODKEY|ShiftMask,             49,        setlayout,  {.v = &layouts[0]} },
@@ -170,13 +168,13 @@ static Key keys[] = {
 	TILEKEYS(MODKEY|ShiftMask,                                       0, 1, 0)
 	TILEKEYS(MODKEY|ControlMask,                                     0, 0, 1)
 	TILEKEYS(MODKEY|ShiftMask|ControlMask,                           1, 1, 1)
-	{ MODKEY|ControlMask,           9,         quit,                      {0} },
 	{ MODKEY|ControlMask,           127,       togglekeys,                {0} },
+	{ MODKEY,                       9,         killclient,                {0} },
+	{ MODKEY|ShiftMask,             9,         killunsel,                 {0} },
+	{ MODKEY|ShiftMask|ControlMask, 9,         quit,                      {0} },
 };
 static Key altkeys[] = {
 	/* modifier                     key        function              argument */
-	{ MODKEY|ShiftMask|ControlMask, 9,         quit,                      {0} },
-	{ MODKEY|ShiftMask|ControlMask, 24,        killclient,                {0} },
 	{ MODKEY|ControlMask,           127,       togglekeys,                {0} },
 };
 
@@ -207,7 +205,8 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     iscentered   isfloating   isfreesize   isfakefullscreen   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            0,           1,           1,           0,                 -1      },
+	{ "gimp",     NULL,       NULL,       0,            0,           1,           1,           0,                 -1      },
+	{ "steam",    NULL,       NULL,       0,            0,           1,           1,           0,                 -1      },
 	{ "firefox",  NULL,       NULL,       0,            0,           0,           0,           1,                 -1      },
 	{ "st",       NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },
 	{ "mpv",      NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },

@@ -877,6 +877,7 @@ drawbar(Monitor *m)
 	int boxs = drw->fonts->h / 9;
 	int boxw = drw->fonts->h / 6 + 2;
 	unsigned int i, occ = 0, urg = 0;
+	unsigned int a = 0, s = 0;
 	Client *c;
 
 	/* draw status first so it can be overdrawn by tags later */
@@ -886,6 +887,14 @@ drawbar(Monitor *m)
 		drw_text(drw, m->ww - tw, 0, tw, bh, lrpad / 2, stext, 0);
 	}
 
+	if(m->lt[m->sellt]->arrange == monocle){
+		for(c = nexttiled(m->clients), a = 0, s = 0; c; c = nexttiled(c->next), a++)
+			if(c == m->stack)
+				s = a;
+		if(!s && a)
+			s = a;
+		snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d/%d]", s, a);
+	}
 	w = TEXTW(m->ltsymbol);
 	sbar = m->ww - tw - w;
 	drw_setscheme(drw, scheme[m->sel ? SchemeSel : SchemeNorm]);
@@ -1029,6 +1038,9 @@ focusstack(const Arg *arg)
 {
 	int i = stackpos(arg);
 	Client *c, *p;
+
+	if (selmon->sel->ismax)
+		return;
 
 	if (selmon->sel->isforcedfullscreen || (selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen))
 		return;
@@ -1368,12 +1380,12 @@ void
 maximize(int x, int y, int w, int h) {
 	XEvent ev;
 
-	if(selmon->sel->isforcedfullscreen || (selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen))
-		return;
 	if(!selmon->sel || selmon->sel->isfixed)
 		return;
 	if(!selmon->sel->isfloating && selmon->sel->ismax)
 		selmon->sel->ismax = 0;
+	if(selmon->sel->isforcedfullscreen || (selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen))
+		return;
 	XRaiseWindow(dpy, selmon->sel->win);
 	if(!selmon->sel->ismax) {
 		if(!selmon->lt[selmon->sellt]->arrange || selmon->sel->isfloating)
@@ -1408,8 +1420,6 @@ monocle(Monitor *m)
 	for (c = m->clients; c; c = c->next)
 		if (ISVISIBLE(c))
 			n++;
-	if (n > 0) /* override layout symbol */
-		snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n);
 	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
 		resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, 0);
 }
@@ -1895,6 +1905,9 @@ void
 setfullscreenforced(const Arg *arg)
 {
 	Client *c = selmon->sel;
+
+	if (!selmon->sel)
+		return;
 
 	if (!ISVISIBLEONTAG(c, c->tags))
 		return;
