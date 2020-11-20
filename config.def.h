@@ -138,6 +138,9 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           32,        setogaps,           {.i = -2 } },
 	{ MODKEY|ShiftMask|ControlMask, 32,        setogaps,           {.i = 0  } },
 	{ MODKEY,                       32,        togglegapsforone,          {0} },
+	{ MODKEY|ShiftMask,             56,        setborderpx,        {.i = +1 } },
+	{ MODKEY|ControlMask,           56,        setborderpx,        {.i = -1 } },
+	{ MODKEY|ShiftMask|ControlMask, 56,        setborderpx,         {.i = 0 } },
 
 	{ MODKEY,                       56,        togglebar,                 {0} },
 	{ MODKEY|ShiftMask,             28,        togglealttag,              {0} },
