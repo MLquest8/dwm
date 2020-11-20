@@ -15,28 +15,31 @@ static const char *fonts[]          = { "FreeMono:size=12", /* Primary        */
                                         "FreeSerif:size=12", /* Secondary     */
                                         "FontAwesome:size=10" }; /* Iconic    */
 /*  DWM color scheme                                                          */
-static const char ltsymfgsel[]      = "#eeeeee"; /* Layout symbol selected fg */
-static const char ltsymbgsel[]      = "#005577"; /* Layout symbol selected bg */
-static const char ltsymfgnrm[]      = "#bbbbbb"; /* Layout symbol normal fg   */
-static const char ltsymbgnrm[]      = "#222222"; /* Layout symbol normal bg   */
-static const char tlbrdrsel[]       = "#444444"; /* Tiled border selected     */
-static const char flbrdrsel[]       = "#005577"; /* Floating border selected  */
-static const char tlbrdrnrm[]       = "#444444"; /* Tiled border normal       */
-static const char flbrdrnrm[]       = "#444444"; /* Floating border normal    */
-static const char *colors[][4]      = {
-/*  Scheme                     Foreground, Background, Tileborder, Fltborder  */
-    [SchemeSel]            = { ltsymfgsel, ltsymbgsel, tlbrdrsel,  flbrdrsel  },
-    [SchemeNorm]           = { ltsymfgnrm, ltsymbgnrm, tlbrdrnrm,  flbrdrnrm  },
+static const char barselfg[]        = "#eeeeee"; /* Bar foreground selected   */
+static const char barselbg[]        = "#005577"; /* Bar background selected   */
+static const char tlbrdsel[]        = "#005577"; /* Tiled border selected     */
+static const char flbrdsel[]        = "#005577"; /* Floating border selected  */
+static const char urbrdsel[]        = "#ff0202"; /* Urgent border selected    */
+static const char barnrmfg[]        = "#bbbbbb"; /* Bar foreground normal     */
+static const char barnrmbg[]        = "#222222"; /* Bar background normal     */
+static const char tlbrdnrm[]        = "#444444"; /* Tiled border normal       */
+static const char flbrdnrm[]        = "#444444"; /* Floating border normal    */
+static const char urbrdnrm[]        = "#ff0202"; /* Urgent border normal      */
+static const char *colors[][5]      = {
+/*  Scheme           Foreground, Background, TileBorder, FltBorder, UrgBorder */
+    [SchemeSel]  = { barselfg,   barselbg,   tlbrdsel,   flbrdsel,  urbrdsel  },
+    [SchemeNorm] = { barnrmfg,   barnrmbg,   tlbrdnrm,   flbrdnrm,  urbrdnrm  },
 };
 /*  DWM Alpha scheme                                                          */
-static const unsigned int barfgalpha       = 0xffU; /* Opaque foreground      */
-static const unsigned int barbgalpha       = 0xd0;  /* Transparent background */
-static const unsigned int tlbrdralpha      = 0xffU; /* Opaque tiled border    */
-static const unsigned int flbrdralpha      = 0xffU; /* Opaque floating border */
-static const unsigned int alphas[][4]      = {
-/*  Scheme                   Foreground, Background, Tiledborder, Floatborder */
-    [SchemeSel]          = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
-    [SchemeNorm]         = { barfgalpha, barbgalpha, tlbrdralpha, flbrdralpha },
+static const unsigned int barfgA           = 0xffU; /* Opaque foreground      */
+static const unsigned int barbgA           = 0xd0;  /* Transparent background */
+static const unsigned int tlbrdA           = 0xffU; /* Opaque tiled border    */
+static const unsigned int flbrdA           = 0xffU; /* Opaque floating border */
+static const unsigned int urbrdA           = 0xffU; /* Opaque urgent border   */
+static const unsigned int alphas[][5]      = {
+/*  Scheme           Foreground, Background, TileBorder, FltBorder, UrgBorder */
+    [SchemeSel]  = { barfgA,     barbgA,     tlbrdA,     flbrdA,    urbrdA    },
+    [SchemeNorm] = { barfgA,     barbgA,     tlbrdA,     flbrdA,    urbrdA    },
 };
 /*  DWM tags                                                                  */
 static const char *tags[]                    = { "\uF015", "\uF09B", "\uF0AC",

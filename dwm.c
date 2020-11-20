@@ -982,10 +982,12 @@ focus(Client *c)
 		detachstack(c);
 		attachstack(c);
 		grabbuttons(c, 1);
-		if(c->isfloating)
+		if (c->isfloating)
 			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColFloat].pixel);
 		else
 			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
+		if (c->isurgent)
+			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColUrgent].pixel);
 		setfocus(c);
 	} else {
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
@@ -1243,10 +1245,12 @@ manage(Window w, XWindowAttributes *wa)
 
 	wc.border_width = c->bw;
 	XConfigureWindow(dpy, w, CWBorderWidth, &wc);
-	if(c->isfloating)
+	if (c->isfloating)
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloat].pixel);
 	else
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColBorder].pixel);
+	if (c->isurgent)
+		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColUrgent].pixel);
 	configure(c); /* propagates border_width, if size doesn't change */
 	updatewindowtype(c);
 	updatesizehints(c);
@@ -1265,8 +1269,10 @@ manage(Window w, XWindowAttributes *wa)
 		c->isfloating = c->oldstate = trans != None || c->isfixed;
 	if (c->isfloating)
 		XRaiseWindow(dpy, c->win);
-	if(c->isfloating)
+	if (c->isfloating)
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloat].pixel);
+	if (c->isurgent)
+		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColUrgent].pixel);
 	switch(attachdirection){
 		case 1:
 			attachabove(c);
@@ -1969,7 +1975,7 @@ setup(void)
 	/* init appearance */
 	scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
 	for (i = 0; i < LENGTH(colors); i++)
-		scheme[i] = drw_scm_create(drw, colors[i], alphas[i], 4);
+		scheme[i] = drw_scm_create(drw, colors[i], alphas[i], 5);
 	/* init bars */
 	getuserinfo();
 	updatebars();
@@ -2194,6 +2200,8 @@ togglefloating(const Arg *arg)
 		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColFloat].pixel);
 	else
 		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColBorder].pixel);
+	if (selmon->sel->isurgent)
+		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColUrgent].pixel);
 	if(selmon->sel->isfloating)
 		resize(selmon->sel, selmon->sel->x, selmon->sel->y,
 			selmon->sel->w, selmon->sel->h, 0);
