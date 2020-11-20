@@ -116,6 +116,7 @@ static Key keys[] = {
 	{ MODKEY,                       36,        spawn,         {.v = termcmd } },
 	{ MODKEY,                       22,        spawn,        {.v = dmenucmd } },
 	{ MODKEY,                       24,        killclient,                {0} },
+	{ MODKEY,                       24,        killunsel,                 {0} },
 
 	{ MODKEY,                       49,        setlayout,                 {0} },
 	{ MODKEY|ShiftMask,             49,        setlayout,  {.v = &layouts[0]} },
@@ -174,6 +175,8 @@ static Key keys[] = {
 };
 static Key altkeys[] = {
 	/* modifier                     key        function              argument */
+	{ MODKEY|ShiftMask|ControlMask, 9,         quit,                      {0} },
+	{ MODKEY|ShiftMask|ControlMask, 24,        killclient,                {0} },
 	{ MODKEY|ControlMask,           127,       togglekeys,                {0} },
 };
 
