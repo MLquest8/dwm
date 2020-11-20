@@ -114,7 +114,7 @@ static const char *dmenucmd[] = { "dmenu_run",
 static Key keys[] = {
 	/* modifier                     key        function              argument */
 	{ MODKEY,                       36,        spawn,         {.v = termcmd } },
-	{ MODKEY|ShiftMask,             36,        spawn,        {.v = dmenucmd } },
+	{ MODKEY,                       22,        spawn,        {.v = dmenucmd } },
 	{ MODKEY,                       24,        killclient,                {0} },
 
 	{ MODKEY,                       49,        setlayout,                 {0} },
@@ -144,8 +144,6 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             28,        togglealttag,              {0} },
 	{ MODKEY|ControlMask,           28,        togglehidevactags,         {0} },
 
-	{ MODKEY|ShiftMask|ControlMask, 22,        togglekeys,                {0} },
-	
 	{ MODKEY,                       59,        focusmon,           {.i = -1 } },
 	{ MODKEY,                       60,        focusmon,           {.i = +1 } },
 	{ MODKEY|ShiftMask,             59,        tagmon,             {.i = -1 } },
@@ -172,10 +170,11 @@ static Key keys[] = {
 	TILEKEYS(MODKEY|ControlMask,                                     0, 0, 1)
 	TILEKEYS(MODKEY|ShiftMask|ControlMask,                           1, 1, 1)
 	{ MODKEY|ControlMask,           9,         quit,                      {0} },
+	{ MODKEY|ControlMask,           127,       togglekeys,                {0} },
 };
 static Key altkeys[] = {
 	/* modifier                     key        function              argument */
-	{ MODKEY|ShiftMask|ControlMask, 22,        togglekeys,                {0} },
+	{ MODKEY|ControlMask,           127,       togglekeys,                {0} },
 };
 
 /*===================================Buttons==================================*/
