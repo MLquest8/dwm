@@ -254,6 +254,7 @@ static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *);
 static void togglealttag();
+static void togglekeys();
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void togglegapsforone();
@@ -295,6 +296,7 @@ static int bh, blw = 0;      /* bar geometry */
 static int lrpad;            /* sum of left and right padding for text */
 static int (*xerrorxlib)(Display *, XErrorEvent *);
 static unsigned int numlockmask = 0;
+static unsigned int keyslocked = 0;
 static void (*handler[LASTEvent]) (XEvent *) = {
 	[ButtonPress] = buttonpress,
 	[ClientMessage] = clientmessage,
@@ -1137,12 +1139,21 @@ grabkeys(void)
 		unsigned int i, j;
 		unsigned int modifiers[] = { 0, LockMask, numlockmask, numlockmask|LockMask };
 
-		XUngrabKey(dpy, AnyKey, AnyModifier, root);
-		for (i = 0; i < LENGTH(keys); i++)
-			for (j = 0; j < LENGTH(modifiers); ++j)
-				XGrabKey(dpy, keys[i].keycode,
-				         keys[i].mod | modifiers[j], root, True,
-				         GrabModeAsync, GrabModeAsync);
+		if (keyslocked){
+			XUngrabKey(dpy, AnyKey, AnyModifier, root);
+			for (i = 0; i < LENGTH(altkeys); i++)
+				for (j = 0; j < LENGTH(modifiers); ++j)
+					XGrabKey(dpy, altkeys[i].keycode,
+					         altkeys[i].mod | modifiers[j], root, True,
+					         GrabModeAsync, GrabModeAsync);
+		} else {
+			XUngrabKey(dpy, AnyKey, AnyModifier, root);
+			for (i = 0; i < LENGTH(keys); i++)
+				for (j = 0; j < LENGTH(modifiers); ++j)
+					XGrabKey(dpy, keys[i].keycode,
+					         keys[i].mod | modifiers[j], root, True,
+					         GrabModeAsync, GrabModeAsync);
+		}
 	}
 }
 
@@ -2230,6 +2241,13 @@ togglehorizontalmax(const Arg *arg) {
 void
 toggleverticalmax(const Arg *arg) {
 	maximize(selmon->sel->x, selmon->wy + selmon->ogappx, selmon->sel->w, selmon->wh - 2 * borderpx - 2 * selmon->ogappx);
+}
+
+void
+togglekeys()
+{
+	keyslocked = !keyslocked;
+	grabkeys();
 }
 
 void
