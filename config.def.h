@@ -7,6 +7,7 @@ static const int showbar            = 1; /* 0 means no bar                    */
 static const int topbar             = 1; /* 0 means bottom bar                */
 static const int barheight          = 26;/* Specific bar height (0 for def)   */
 static const int startontag         = 1; /* 0 means no tag is active on start */
+static const int swallowfloating    = 0; /* 1 swallow all floating windows    */
 static const unsigned int igappx    = 5; /* Size of inner gaps                */
 static const unsigned int ogappx    = 5; /* Size of outer gaps                */
 static const unsigned int snap      = 32;/* Snap pixel                        */
@@ -42,12 +43,12 @@ static const unsigned int alphas[][5]      = {
     [SchemeNorm] = { barfgA,     barbgA,     tlbrdA,     flbrdA,    urbrdA    },
 };
 /*  DWM tags                                                                  */
-static const char *tags[]                    = { "\uF015", "\uF09B", "\uF0AC",
+static const char *tags[]                    = { "\uF406", "\uF269", "\uF09B",
                                                  "\uF04B", "\uF03D", "\uF130",
                                                  "\uF0D0", "\uF1B6", "\uF085" };
-static const char *tagsalt[]                 = { "\uF22D", "\uF22D", "\uF22D",
-                                                 "\uF22D", "\uF22D", "\uF22D",
-                                                 "\uF22D", "\uF22D", "\uF22D" };
+static const char *tagsalt[]                 = { "\uF192", "\uF192", "\uF192",
+                                                 "\uF192", "\uF192", "\uF192",
+                                                 "\uF192", "\uF192", "\uF192" };
 /*  DWM layout settings                                                       */
 static const int dirs[3]         = { DirHor, DirVer, DirVer }; /* Tiling dirs */
 static const float facts[3]      = { 1.1,    1.1,    1.1 }; /* Tiling facts   */
@@ -69,17 +70,12 @@ static const char *termcmd[]           = { "st", NULL };     /* NULL to close */
 /*  Dmenu appearance settings                                                 */
 static const char dmenufont[]          = "FreeMono:size=12";
 static const char dmenuprompt[]        = "Launch";
-/*  Dmenu color scheme                                                        */
-static const char dmenuselfg[]         = "#eeeeee"; /* Dmenu selected fg      */
-static const char dmenuselbg[]         = "#005577"; /* Dmenu selected bg      */
-static const char dmenunrmfg[]         = "#bbbbbb"; /* Dmenu normal fg        */
-static const char dmenunrmbg[]         = "#222222"; /* Dmenu normal bg        */
 /*  Dmenu launch options                                                      */
 static char dmenumon[2] = "0"; /* Component of dmenucmd, manipulated in spawn */
 static const char *dmenucmd[] = { "dmenu_run",
                                   "-m", dmenumon, "-fn", dmenufont, /* font   */
-                                  "-sf", dmenuselfg, "-sb", dmenuselbg, /*sel */
-                                  "-nf", dmenunrmfg, "-nb", dmenunrmbg, /*norm*/
+                                  "-sf", barselfg, "-sb", barselbg, /* select */
+                                  "-nf", barnrmfg, "-nb", barnrmbg, /* normal */
                                   "-p", dmenuprompt, NULL }; /* NULL to close */
 /*===================================Extra====================================*/
 /*  Helper for spawning shell commands in the pre dwm-5.0 fashion             */
@@ -207,10 +203,12 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     iscentered   isfloating   isfreesize   isfakefullscreen   monitor */
-	{ "gimp",     NULL,       NULL,       0,            0,           1,           1,           0,                 -1      },
-	{ "steam",    NULL,       NULL,       0,            0,           1,           1,           0,                 -1      },
-	{ "firefox",  NULL,       NULL,       0,            0,           0,           0,           1,                 -1      },
-	{ "st",       NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },
-	{ "mpv",      NULL,       NULL,       0,            0,           0,           0,           0,                 -1      },
+	/* class           instance    title       tags mask     iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   monitor */
+	{ "firefox",       NULL,       NULL,       1 << 1,       0,           0,           0,           1,                 0,           -1,         -1      },
+	{ "code",          NULL,       NULL,       1 << 2,       0,           0,           0,           0,                 0,           0,          -1      },
+	{ "Steam",         NULL,       NULL,       1 << 7,       0,           1,           1,           0,                 0,           0,          -1      },
+	{ "Gimp",          NULL,       NULL,       1 << 6,       0,           1,           1,           0,                 0,           0,          -1      },
+	{ "st",            NULL,       NULL,       0,            0,           0,           0,           0,                 1,           0,          -1      },
+	{ "pavucontrol",   NULL,       NULL,       0,            1,           1,           1,           0,                 0,           -1,         -1      },
+	{ "mpv",           NULL,       NULL,       0,            0,           0,           0,           0,                 0,           0,          -1      },
 };
