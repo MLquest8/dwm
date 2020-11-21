@@ -279,6 +279,8 @@ static void togglehorizontalmax(const Arg *arg);
 static void toggleverticalmax(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
+static void toggleviewontag();
+static void togglewarp();
 static void unfocus(Client *c, int setfocus);
 static void unmanage(Client *c, int destroyed);
 static void unmapnotify(XEvent *e);
@@ -294,6 +296,7 @@ static void updatetitle(Client *c);
 static void updatewindowtype(Client *c);
 static void updatewmhints(Client *c);
 static void view(const Arg *arg);
+static void warp(const Client *c);
 static Client *wintoclient(Window w);
 static Monitor *wintomon(Window w);
 static int xerror(Display *dpy, XErrorEvent *ee);
@@ -1111,6 +1114,8 @@ focusmon(const Arg *arg)
 	unfocus(selmon->sel, 0);
 	selmon = m;
 	focus(NULL);
+	if (warponfocus)
+		warp(selmon->sel);
 }
 
 void
@@ -1799,6 +1804,10 @@ restack(Monitor *m)
 	}
 	XSync(dpy, False);
 	while (XCheckMaskEvent(dpy, EnterWindowMask, &ev));
+	if (m == selmon && (m->tagset[m->seltags] & m->sel->tags) && selmon->lt[selmon->sellt] != &layouts[2]) {
+		if (warponfocus)
+			warp(m->sel);
+	}
 }
 
 void
@@ -2475,6 +2484,18 @@ toggleview(const Arg *arg)
 }
 
 void
+toggleviewontag()
+{
+	viewontag = !viewontag;
+}
+
+void
+togglewarp()
+{
+	warponfocus = !warponfocus;
+}
+
+void
 unfocus(Client *c, int setfocus)
 {
 	if (!c)
@@ -2879,6 +2900,28 @@ view(const Arg *arg)
 
 	focus(NULL);
 	arrange(selmon);
+}
+
+void
+warp(const Client *c)
+{
+	int x, y;
+
+	if (!c) {
+		XWarpPointer(dpy, None, root, 0, 0, 0, 0, selmon->wx + selmon->ww/2, selmon->wy + selmon->wh/2);
+		return;
+	}
+
+	if (!getrootptr(&x, &y) ||
+	    (x > c->x - c->bw &&
+	     y > c->y - c->bw &&
+	     x < c->x + c->w + c->bw*2 &&
+	     y < c->y + c->h + c->bw*2) ||
+	    (y > c->mon->by && y < c->mon->by + bh) ||
+	    (c->mon->topbar && !y))
+		return;
+
+	XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w / 2, c->h / 2);
 }
 
 Client *

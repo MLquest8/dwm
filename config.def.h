@@ -3,11 +3,12 @@
 /*  DWM appearance settings                                                   */
 static int gapsforone               = 0; /* Gaps for only one window open     */
 static int hidevactags              = 0; /* Hide vacant tags                  */
+static int viewontag                = 1; /* 1 Switch view on tag switch       */
+static int warponfocus              = 1; /* 1 Warp pointer to focused client  */
 static const int showbar            = 1; /* 0 means no bar                    */
 static const int topbar             = 1; /* 0 means bottom bar                */
 static const int barheight          = 26;/* Specific bar height (0 for def)   */
 static const int startontag         = 1; /* 0 means no tag is active on start */
-static const int viewontag          = 1; /* 1 Switch view on tag switch       */
 static const int swallowfloating    = 0; /* 1 swallow all floating windows    */
 static const unsigned int igappx    = 5; /* Size of inner gaps                */
 static const unsigned int ogappx    = 5; /* Size of outer gaps                */
@@ -143,6 +144,9 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             28,        togglealttag,              {0} },
 	{ MODKEY|ControlMask,           28,        togglehidevactags,         {0} },
 
+	{ MODKEY,                       118,       toggleviewontag,           {0} },
+	{ MODKEY,                       119,       togglewarp,                {0} },
+
 	{ MODKEY,                       59,        focusmon,           {.i = -1 } },
 	{ MODKEY,                       60,        focusmon,           {.i = +1 } },
 	{ MODKEY|ShiftMask,             59,        tagmon,             {.i = -1 } },
@@ -204,12 +208,13 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class           instance    title       tags mask     switchtotag   iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   monitor */
-	{ "firefox",       NULL,       NULL,       1 << 1,       1,            0,           0,           0,           1,                 0,           -1,         -1      },
-	{ "code-oss",      NULL,       NULL,       1 << 2,       1,            0,           0,           0,           0,                 0,           0,          -1      },
-	{ "Steam",         NULL,       NULL,       1 << 7,       1,            0,           1,           1,           0,                 0,           0,          -1      },
-	{ "Gimp",          NULL,       NULL,       1 << 6,       1,            0,           1,           1,           0,                 0,           0,          -1      },
-	{ "st",            NULL,       NULL,       0,            0,            0,           0,           0,           0,                 1,           0,          -1      },
-	{ "pavucontrol",   NULL,       NULL,       1 << 8,       1,            0,           1,           1,           0,                 0,           -1,         -1      },
-	{ "mpv",           NULL,       NULL,       0,            0,            0,           0,           0,           0,                 0,           0,          -1      },
+	/* class           instance    title              tags mask     switchtotag   iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   monitor */
+	{ NULL,            NULL,       "Event Tester",    0,            0,            0,           1,           1,           0,                 0,           1,          -1      },
+	{ "firefox",       NULL,       NULL,              1 << 1,       1,            0,           0,           0,           1,                 0,           -1,         -1      },
+	{ "code-oss",      NULL,       NULL,              1 << 2,       1,            0,           0,           0,           0,                 0,           0,          -1      },
+	{ "Steam",         NULL,       NULL,              1 << 7,       1,            0,           1,           1,           0,                 0,           0,          -1      },
+	{ "Gimp",          NULL,       NULL,              1 << 6,       1,            0,           1,           1,           0,                 0,           0,          -1      },
+	{ "st",            NULL,       NULL,              0,            0,            0,           0,           0,           0,                 1,           0,          -1      },
+	{ "Pavucontrol",   NULL,       NULL,              1 << 8,       1,            0,           1,           1,           0,                 0,           1,          -1      },
+	{ "mpv",           NULL,       NULL,              0,            0,            0,           0,           0,           0,                 0,           0,          -1      },
 };
