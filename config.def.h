@@ -203,12 +203,12 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class           instance    title       tags mask     iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   monitor */
-	{ "firefox",       NULL,       NULL,       1 << 1,       0,           0,           0,           1,                 0,           -1,         -1      },
-	{ "code",          NULL,       NULL,       1 << 2,       0,           0,           0,           0,                 0,           0,          -1      },
-	{ "Steam",         NULL,       NULL,       1 << 7,       0,           1,           1,           0,                 0,           0,          -1      },
-	{ "Gimp",          NULL,       NULL,       1 << 6,       0,           1,           1,           0,                 0,           0,          -1      },
-	{ "st",            NULL,       NULL,       0,            0,           0,           0,           0,                 1,           0,          -1      },
-	{ "pavucontrol",   NULL,       NULL,       0,            1,           1,           1,           0,                 0,           -1,         -1      },
-	{ "mpv",           NULL,       NULL,       0,            0,           0,           0,           0,                 0,           0,          -1      },
+	/* class           instance    title       tags mask     switchtotag   iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   monitor */
+	{ "firefox",       NULL,       NULL,       1 << 1,       1,            0,           0,           0,           1,                 0,           -1,         -1      },
+	{ "code",          NULL,       NULL,       1 << 2,       1,            0,           0,           0,           0,                 0,           0,          -1      },
+	{ "Steam",         NULL,       NULL,       1 << 7,       1,            0,           1,           1,           0,                 0,           0,          -1      },
+	{ "Gimp",          NULL,       NULL,       1 << 6,       1,            0,           1,           1,           0,                 0,           0,          -1      },
+	{ "st",            NULL,       NULL,       0,            0,            0,           0,           0,           0,                 1,           0,          -1      },
+	{ "pavucontrol",   NULL,       NULL,       0,            0,            1,           1,           1,           0,                 0,           -1,         -1      },
+	{ "mpv",           NULL,       NULL,       0,            0,            0,           0,           0,           0,                 0,           0,          -1      },
 };
