@@ -19,9 +19,9 @@ static const char *fonts[]          = { "FreeMono:size=12", /* Primary        */
                                         "FontAwesome:size=10" }; /* Iconic    */
 /*  DWM color scheme                                                          */
 static const char barselfg[]        = "#eeeeee"; /* Bar foreground selected   */
-static const char barselbg[]        = "#005577"; /* Bar background selected   */
-static const char tlbrdsel[]        = "#005577"; /* Tiled border selected     */
-static const char flbrdsel[]        = "#005577"; /* Floating border selected  */
+static const char barselbg[]        = "#fc6e02"; /* Bar background selected   */
+static const char tlbrdsel[]        = "#fc6e02"; /* Tiled border selected     */
+static const char flbrdsel[]        = "#fc6e02"; /* Floating border selected  */
 static const char urbrdsel[]        = "#ff0202"; /* Urgent border selected    */
 static const char barnrmfg[]        = "#bbbbbb"; /* Bar foreground normal     */
 static const char barnrmbg[]        = "#222222"; /* Bar background normal     */
@@ -215,6 +215,5 @@ static const Rule rules[] = {
 	{ "Steam",         NULL,       NULL,              1 << 7,       1,            0,           1,           1,           0,                 0,           0,          -1      },
 	{ "Gimp",          NULL,       NULL,              1 << 6,       1,            0,           1,           1,           0,                 0,           0,          -1      },
 	{ "st",            NULL,       NULL,              0,            0,            0,           0,           0,           0,                 1,           0,          -1      },
-	{ "Pavucontrol",   NULL,       NULL,              1 << 8,       1,            0,           1,           1,           0,                 0,           1,          -1      },
 	{ "mpv",           NULL,       NULL,              0,            0,            0,           0,           0,           0,                 0,           0,          -1      },
 };
