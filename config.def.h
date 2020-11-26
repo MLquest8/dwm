@@ -67,6 +67,7 @@ static const Layout layouts[] = {
     { "[+]",      tile }, /* Tiling layout with xtile behaviors patched in    */
     { "[*]",      NULL }, /* No layout function means floating behavior       */
     { "[M]",      monocle }, /* Classic monocle layout                        */
+    { NULL,       NULL },
 };
 /*=====================================St=====================================*/
 static const char *termcmd[]           = { "st", NULL };     /* NULL to close */
@@ -117,9 +118,8 @@ static Key keys[] = {
 	{ MODKEY,                       22,        spawn,        {.v = dmenucmd } },
 
 	{ MODKEY,                       49,        setlayout,                 {0} },
-	{ MODKEY|ShiftMask,             49,        setlayout,  {.v = &layouts[0]} },
-	{ MODKEY|ControlMask,           49,        setlayout,  {.v = &layouts[2]} },
-	{ MODKEY|ShiftMask|ControlMask, 49,        setlayout,  {.v = &layouts[1]} },
+	{ MODKEY|ShiftMask,             49,        cyclelayout,        {.i = +1 } },
+	{ MODKEY|ControlMask,           49,        cyclelayout,        {.i = -1 } },
 	{ MODKEY|ShiftMask,             57,        incnmaster,         {.i = +1 } },
 	{ MODKEY|ControlMask,           57,        incnmaster,         {.i = -1 } },
 
@@ -192,8 +192,9 @@ static Key altkeys[] = {
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static Button buttons[] = {
 	/* click                event mask      button          function        argument */
-	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
-	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
+	{ ClkLtSymbol,          0,              Button2,        setlayout,      {0} },
+	{ ClkLtSymbol,          0,              Button1,        cyclelayout,    {.i = +1 } },
+	{ ClkLtSymbol,          0,              Button3,        cyclelayout,    {.i = -1 } },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkUser,              0,              Button1,        spawn,          {.v = termcmd } },
