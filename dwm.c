@@ -149,6 +149,7 @@ struct Monitor {
 	int nmaster;
 	int num;
 	int by;               /* bar geometry */
+	int eby;	      /* extra bar geometry */
 	int mx, my, mw, mh;   /* screen size */
 	int wx, wy, ww, wh;   /* window area  */
 	int igappx, ogappx;   /* inner and outer gaps */
@@ -157,12 +158,14 @@ struct Monitor {
 	unsigned int sellt;
 	unsigned int tagset[2];
 	int showbar;
+	int showextrabar;
 	int topbar;
 	Client *clients;
 	Client *sel;
 	Client *stack;
 	Monitor *next;
 	Window barwin;
+	Window extrabarwin;
 	const Layout *lt[2];
 	unsigned int alttag;
 	Pertag *pertag;
@@ -319,7 +322,7 @@ static char stext[256];
 static char ptext[64];
 static int screen;
 static int sw, sh;           /* X display screen geometry width, height */
-static int bh, blw = 0;      /* bar geometry */
+static int bh, ebh, blw = 0;      /* bar geometry */
 static int lrpad;            /* sum of left and right padding for text */
 static int (*xerrorxlib)(Display *, XErrorEvent *);
 static unsigned int numlockmask = 0;
@@ -737,7 +740,9 @@ cleanupmon(Monitor *mon)
 		m->next = mon->next;
 	}
 	XUnmapWindow(dpy, mon->barwin);
+	XUnmapWindow(dpy, mon->extrabarwin);
 	XDestroyWindow(dpy, mon->barwin);
+	XDestroyWindow(dpy, mon->extrabarwin);
 	free(mon);
 }
 
@@ -806,6 +811,7 @@ configurenotify(XEvent *e)
 					if ((c->isfullscreen && !c->isfakefullscreen) || c->isforcedfullscreen)
 						resizeclient(c, m->mx, m->my, m->mw, m->mh);
 				XMoveResizeWindow(dpy, m->barwin, m->wx, m->by, m->ww, bh);
+				XMoveResizeWindow(dpy, m->extrabarwin, m->wx, m->eby, m->ww, ebh);
 			}
 			focus(NULL);
 			arrange(NULL);
@@ -875,6 +881,7 @@ createmon(void)
 	m->tagset[0] = m->tagset[1] = startontag ? 1 : 0;
 	m->nmaster = nmaster;
 	m->showbar = showbar;
+	m->showextrabar = showextrabar;
 	m->topbar = topbar;
 	m->borderpx = borderpx;
 	m->igappx = igappx;
@@ -899,6 +906,7 @@ createmon(void)
 		m->pertag->sellts[i] = m->sellt;
 
 		m->pertag->showbars[i] = m->showbar;
+		m->pertag->showbars[i] = m->showextrabar;
 	}
 
 	return m;
@@ -1024,6 +1032,12 @@ drawbar(Monitor *m)
 		}
 	}
 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
+
+	if (m == selmon) { /* extra status is only drawn on selected monitor */
+		drw_setscheme(drw, scheme[SchemeNorm]);
+		drw_text(drw, 0, 0, mons->ww, ebh, 0, stext, 0);
+		drw_map(drw, m->extrabarwin, 0, 0, m->ww, ebh);
+	}
 }
 
 void
@@ -2140,6 +2154,7 @@ setup(void)
 		die("no fonts could be loaded.");
 	lrpad = drw->fonts->h;
 	bh = barheight ? barheight : drw->fonts->h + 2;
+	ebh = extrabarheight ? extrabarheight : drw->fonts->h + 2;
 	updategeom();
 	/* init atoms */
 	utf8string = XInternAtom(dpy, "UTF8_STRING", False);
@@ -2373,10 +2388,48 @@ togglealttag()
 void
 togglebar(const Arg *arg)
 {
-	selmon->showbar = selmon->pertag->showbars[selmon->pertag->curtag] = !selmon->showbar;
-	updatebarpos(selmon);
-	XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, bh);
-	arrange(selmon);
+	Monitor *m;
+	m = selmon;
+
+	if (arg->i == 1) {
+		selmon->showbar = selmon->pertag->showbars[selmon->pertag->curtag] = !selmon->showbar;
+		updatebarpos(selmon);
+		XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, bh);
+		arrange(selmon);
+	} else if (arg->i == 2) {
+		selmon->showextrabar = selmon->pertag->showbars[selmon->pertag->curtag] = !selmon->showextrabar;
+		updatebarpos(selmon);
+		XMoveResizeWindow(dpy, selmon->extrabarwin, selmon->wx, selmon->eby, selmon->ww, ebh);
+		arrange(selmon);
+	} else if (arg->i == 0) {
+		if ((selmon->showbar && selmon->showextrabar) || (!selmon->showbar && !selmon->showextrabar)) {
+			selmon->showbar = selmon->pertag->showbars[selmon->pertag->curtag] = !selmon->showbar;
+			updatebarpos(selmon);
+			XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, bh);
+			selmon->showextrabar = selmon->pertag->showbars[selmon->pertag->curtag] = !selmon->showextrabar;
+			updatebarpos(selmon);
+			XMoveResizeWindow(dpy, selmon->extrabarwin, selmon->wx, selmon->eby, selmon->ww, ebh);
+			arrange(selmon);
+		} else {
+			if (!selmon->showbar) {
+				selmon->showbar = selmon->pertag->showbars[selmon->pertag->curtag] = !selmon->showbar;
+				updatebarpos(selmon);
+				XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, bh);
+				arrange(selmon);
+			} else {
+				selmon->showextrabar = selmon->pertag->showbars[selmon->pertag->curtag] = !selmon->showextrabar;
+				updatebarpos(selmon);
+				XMoveResizeWindow(dpy, selmon->extrabarwin, selmon->wx, selmon->eby, selmon->ww, ebh);
+				arrange(selmon);
+			}
+		}
+	} else {
+		m->topbar = !m->topbar;
+		updatebarpos(selmon);
+		XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, bh);
+		XMoveResizeWindow(dpy, selmon->extrabarwin, selmon->wx, selmon->eby, selmon->ww, ebh);
+		arrange(selmon);
+	}
 }
 
 void
@@ -2481,7 +2534,9 @@ toggleview(const Arg *arg)
 		selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1];
 
 		if (selmon->showbar != selmon->pertag->showbars[selmon->pertag->curtag])
-			togglebar(NULL);
+			togglebar(&(Arg) { .i = 1});
+		if (selmon->showextrabar != selmon->pertag->showbars[selmon->pertag->curtag])
+			togglebar(&(Arg) { .i = 2});
 
 		focus(NULL);
 		arrange(selmon);
@@ -2589,14 +2644,22 @@ updatebars(void)
 	};
 	XClassHint ch = {"dwm", "dwm"};
 	for (m = mons; m; m = m->next) {
-		if (m->barwin)
-			continue;
-		m->barwin = XCreateWindow(dpy, root, m->wx, m->by, m->ww, bh, 0, depth,
-		                          InputOutput, visual,
-		                          CWOverrideRedirect|CWBackPixel|CWBorderPixel|CWColormap|CWEventMask, &wa);
-		XDefineCursor(dpy, m->barwin, cursor[CurNormal]->cursor);
-		XMapRaised(dpy, m->barwin);
-		XSetClassHint(dpy, m->barwin, &ch);
+		if (!m->barwin) {
+			m->barwin = XCreateWindow(dpy, root, m->wx, m->by, m->ww, bh, 0, depth,
+		                                  InputOutput, visual,
+		                                  CWOverrideRedirect|CWBackPixel|CWBorderPixel|CWColormap|CWEventMask, &wa);
+			XDefineCursor(dpy, m->barwin, cursor[CurNormal]->cursor);
+			XMapRaised(dpy, m->barwin);
+			XSetClassHint(dpy, m->barwin, &ch);
+		}
+		if (!m->extrabarwin) {
+			m->extrabarwin = XCreateWindow(dpy, root, m->wx, m->eby, m->ww, ebh, 0, depth,
+		                                  InputOutput, visual,
+		                                  CWOverrideRedirect|CWBackPixel|CWBorderPixel|CWColormap|CWEventMask, &wa);
+			XDefineCursor(dpy, m->extrabarwin, cursor[CurNormal]->cursor);
+			XMapRaised(dpy, m->extrabarwin);
+			XSetClassHint(dpy, m->extrabarwin, &ch);
+		}
 	}
 }
 
@@ -2605,12 +2668,26 @@ updatebarpos(Monitor *m)
 {
 	m->wy = m->my;
 	m->wh = m->mh;
-	if (m->showbar) {
-		m->wh -= bh;
+	if (m->showbar && m->showextrabar) {
+		m->wh = m->wh - (bh + ebh);
+		m->wy = m->topbar ? m->wy : m->wy + ebh;
+		m->eby = m->topbar ? m->wy + m->wh + bh : m->wy - ebh;
+		m->wy = m->topbar ? m->wy + bh : m->wy;
+		m->by = m->topbar ? m->wy - bh : m->wy + m->wh;
+	} else if (m->showbar) {
+		m->wh = m->wh - bh;
 		m->by = m->topbar ? m->wy : m->wy + m->wh;
 		m->wy = m->topbar ? m->wy + bh : m->wy;
-	} else
+		m->eby = -ebh;
+	} else if (m->showextrabar) {
+		m->wh = m->wh - ebh;
+		m->eby = m->topbar ? m->wy + m->wh : m->wy;
+		m->wy = m->topbar ? m->wy : m->wy + ebh;
 		m->by = -bh;
+	} else {
+		m->by = -bh;
+		m->eby = -ebh;
+	}
 }
 
 void
@@ -2904,8 +2981,10 @@ view(const Arg *arg)
 	selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];
 	selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1];
 
-	if (selmon->showbar != selmon->pertag->showbars[selmon->pertag->curtag])
-		togglebar(NULL);
+	if (selmon->showextrabar != selmon->pertag->showbars[selmon->pertag->curtag])
+		togglebar(&(Arg) { .i = 1});
+	if (selmon->showextrabar != selmon->pertag->showbars[selmon->pertag->curtag])
+		togglebar(&(Arg) { .i = 2});
 
 	focus(NULL);
 	arrange(selmon);
@@ -3087,7 +3166,7 @@ wintomon(Window w)
 	if (w == root && getrootptr(&x, &y))
 		return recttomon(x, y, 1, 1);
 	for (m = mons; m; m = m->next)
-		if (w == m->barwin)
+		if (w == m->barwin || w == m->extrabarwin)
 			return m;
 	if ((c = wintoclient(w)))
 		return c->mon;

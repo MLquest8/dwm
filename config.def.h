@@ -5,9 +5,11 @@ static int gapsforone               = 0; /* Gaps for only one window open     */
 static int hidevactags              = 0; /* Hide vacant tags                  */
 static int viewontag                = 1; /* 1 Switch view on tag switch       */
 static int warponfocus              = 1; /* 1 Warp pointer to focused client  */
-static const int showbar            = 1; /* 0 means no bar                    */
 static const int topbar             = 1; /* 0 means bottom bar                */
+static const int showbar            = 1; /* 0 means no bar                    */
+static const int showextrabar       = 1; /* 0 means no extra bar              */
 static const int barheight          = 26;/* Specific bar height (0 for def)   */
+static const int extrabarheight     = 16;/* Specific bar height (0 for def)   */
 static const int startontag         = 1; /* 0 means no tag is active on start */
 static const int swallowfloating    = 0; /* 1 swallow all floating windows    */
 static const unsigned int igappx    = 5; /* Size of inner gaps                */
@@ -116,8 +118,8 @@ static Key keys[] = {
 
 	{ MODKEY,                       49,        setlayout,                 {0} },
 	{ MODKEY|ShiftMask,             49,        setlayout,  {.v = &layouts[0]} },
-	{ MODKEY|ControlMask,           49,        setlayout,  {.v = &layouts[1]} },
-	{ MODKEY|ShiftMask|ControlMask, 49,        setlayout,  {.v = &layouts[2]} },
+	{ MODKEY|ControlMask,           49,        setlayout,  {.v = &layouts[2]} },
+	{ MODKEY|ShiftMask|ControlMask, 49,        setlayout,  {.v = &layouts[1]} },
 	{ MODKEY|ShiftMask,             57,        incnmaster,         {.i = +1 } },
 	{ MODKEY|ControlMask,           57,        incnmaster,         {.i = -1 } },
 
@@ -136,11 +138,14 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           32,        setogaps,           {.i = -2 } },
 	{ MODKEY|ShiftMask|ControlMask, 32,        setogaps,           {.i = 0  } },
 	{ MODKEY,                       32,        togglegapsforone,          {0} },
-	{ MODKEY|ShiftMask,             56,        setborderpx,        {.i = +1 } },
-	{ MODKEY|ControlMask,           56,        setborderpx,        {.i = -1 } },
-	{ MODKEY|ShiftMask|ControlMask, 56,        setborderpx,         {.i = 0 } },
+	{ MODKEY|ShiftMask,             33,        setborderpx,        {.i = +1 } },
+	{ MODKEY|ControlMask,           33,        setborderpx,        {.i = -1 } },
+	{ MODKEY|ShiftMask|ControlMask, 33,        setborderpx,         {.i = 0 } },
 
-	{ MODKEY,                       56,        togglebar,                 {0} },
+	{ MODKEY,                       56,        togglebar,           {.i = 0 } },
+	{ MODKEY|ShiftMask,             56,        togglebar,           {.i = 1 } },
+	{ MODKEY|ControlMask,           56,        togglebar,           {.i = 2 } },
+	{ MODKEY|ShiftMask|ControlMask, 56,        togglebar,          {.i = -1 } },
 	{ MODKEY|ShiftMask,             28,        togglealttag,              {0} },
 	{ MODKEY|ControlMask,           28,        togglehidevactags,         {0} },
 
