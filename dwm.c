@@ -104,6 +104,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
 enum { Manager, Xembed, XembedInfo, XLast }; /* Xembed atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkUser, ClkLtSymbol, ClkStatusText, ClkWinTitle,
+       ClkPower, ClkLock, ClkKeyboard, ClkLanguage,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 enum { DirHor, DirVer, DirRotHor, DirRotVer, DirLast }; /* tiling dirs */
 
@@ -700,16 +701,23 @@ buttonpress(XEvent *e)
 		if (hidevactags && !(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
 			continue;
 		x += TEXTW(tags[i]);
-        } while (ev->x >= x && ++i < LENGTH(tags));
+		}
+		while (ev->x >= x && ++i < LENGTH(tags));
 		if (i < LENGTH(tags)) {
 			click = ClkTagBar;
 			arg.ui = 1 << i;
 		}
 		else if (ev->x < x + blw)
 			click = ClkUser;
-		else if (ev->x > selmon->ww - (int)TEXTW(stext))
-			click = ClkStatusText;
-		else if (ev->x > selmon->ww - (int)TEXTW(stext) - (int)TEXTW(m->ltsymbol))
+		else if (ev->x > selmon->ww - (int)TEXTW("\uF011"))
+			click = ClkPower;
+		else if (ev->x > selmon->ww - (int)TEXTW("\uF011") - (int)TEXTW("\uF13E"))
+			click = ClkLock;
+		else if (ev->x > selmon->ww - (int)TEXTW("\uF011") - (int)TEXTW("\uF13E") - (int)TEXTW("\uF11C"))
+			click = ClkKeyboard;
+		else if (ev->x > selmon->ww - (int)TEXTW("\uF011") - (int)TEXTW("\uF13E") - (int)TEXTW("\uF11C") - (int)TEXTW("EN"))
+			click = ClkLanguage;
+		else if (ev->x > selmon->ww - (int)TEXTW("\uF011") - (int)TEXTW("\uF13E") - (int)TEXTW("\uF11C") - (int)TEXTW("EN") - (int)TEXTW(m->ltsymbol))
 			click = ClkLtSymbol;
 		else
 			click = ClkWinTitle;
@@ -718,7 +726,8 @@ buttonpress(XEvent *e)
 		restack(selmon);
 		XAllowEvents(dpy, ReplayPointer, CurrentTime);
 		click = ClkClientWin;
-	}
+	} else if (ev->window == selmon->extrabarwin)
+		click = ClkStatusText;
 	for (i = 0; i < LENGTH(buttons); i++)
 		if (click == buttons[i].click && buttons[i].func && buttons[i].button == ev->button
 		&& CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
@@ -1077,18 +1086,29 @@ dirtomon(int dir)
 void
 drawbar(Monitor *m)
 {
-	int sbar, x, w, wdelta, tw = 0, stw = 0;
+	int tray, x, w, wdelta, tw = 0, stw = 0;
 	int boxs = drw->fonts->h / 9;
 	int boxw = drw->fonts->h / 6 + 2;
 	unsigned int i, occ = 0, urg = 0;
 	unsigned int a = 0, s = 0;
 	Client *c;
-
+	tray = m->ww;
+	
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
-		drw_setscheme(drw, scheme[!selmon->pertag->curtag && m->sel ? SchemeSel : SchemeNorm]);
-		tw = TEXTW(stext);
-		drw_text(drw, m->ww - tw, 0, tw, bh, lrpad / 2, stext, 0);
+		drw_setscheme(drw, scheme[SchemeNorm]);
+		tw = TEXTW("\uF011");
+		tray -= tw;
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, "\uF011", 0);
+		tw = TEXTW("\uF13E");
+		tray -= tw;
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, "\uF13E", 0);
+		tw = TEXTW("\uF11C");
+		tray -= tw;
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, "\uF11C", 0);
+		tw = TEXTW("EN");
+		tray -= tw;
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, "EN", 0);
 	}
 
 	if(m->lt[m->sellt]->arrange == monocle){
@@ -1100,9 +1120,9 @@ drawbar(Monitor *m)
 		snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d/%d]", s, a);
 	}
 	w = TEXTW(m->ltsymbol);
-	sbar = m->ww - tw - w;
+	tray -= w;
 	drw_setscheme(drw, scheme[m->sel ? SchemeSel : SchemeNorm]);
-	drw_text(drw, sbar, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
+	drw_text(drw, tray, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
 	for (c = m->clients; c; c = c->next) {
 		occ |= c->tags == 255 ? 0 : c->tags;
@@ -1131,7 +1151,7 @@ drawbar(Monitor *m)
 	drw_setscheme(drw, scheme[!selmon->pertag->curtag ? SchemeSel : SchemeNorm]);
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, ptext, 0);
 
-	if ((w = sbar - x) > bh) {
+	if ((w = tray - x) > bh) {
 		if (m->sel) {
 			drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
 			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
@@ -1151,7 +1171,7 @@ drawbar(Monitor *m)
 
 	if (m == selmon) { /* extra status is only drawn on selected monitor */
 		drw_setscheme(drw, scheme[SchemeNorm]);
-		drw_text(drw, 0, 0, mons->ww, ebh, 0, stext, 0);
+		drw_text(drw, 0, 0, mons->ww, ebh, lrpad / 2, stext, 0);
 		drw_map(drw, m->extrabarwin, 0, 0, m->ww - stw, ebh);
 	}
 }

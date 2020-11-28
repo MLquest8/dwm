@@ -74,7 +74,8 @@ static const Layout layouts[] = {
     { NULL,       NULL },
 };
 /*=====================================St=====================================*/
-static const char *termcmd[]           = { "st", NULL };     /* NULL to close */
+static const char *termcmd[]           = { "st", NULL };          /* Terminal */
+static const char *dwmman[]            = { "st", "man", "dwm", NULL }; /* MAN */
 /*===================================Dmenu====================================*/
 /*  Dmenu appearance settings                                                 */
 static const char dmenufont[]          = "FreeMono:size=12";
@@ -193,20 +194,26 @@ static Key altkeys[] = {
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static Button buttons[] = {
 	/* click                event mask      button          function        argument */
-	{ ClkLtSymbol,          0,              Button2,        setlayout,      {0} },
-	{ ClkLtSymbol,          0,              Button1,        cyclelayout,    {.i = +1 } },
-	{ ClkLtSymbol,          0,              Button3,        cyclelayout,    {.i = -1 } },
-	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
-	{ ClkUser,              0,              Button1,        spawn,          {.v = termcmd } },
-	{ ClkUser,              0,              Button3,        spawn,          {.v = dmenucmd } },
-	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
-	{ ClkClientWin,         MODKEY,         Button2,        zoom,           {0} },
-	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+	{ ClkUser,              0,              Button1,        spawn,          {.v = termcmd } },
+	{ ClkUser,              0,              Button3,        spawn,          {.v = dmenucmd } },
+	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
+	{ ClkLtSymbol,          0,              Button2,        setlayout,      {0} },
+	{ ClkLtSymbol,          0,              Button1,        cyclelayout,    {.i = +1 } },
+	{ ClkLtSymbol,          0,              Button3,        cyclelayout,    {.i = -1 } },
+	{ ClkPower,             0,              Button1,        setlayout,      {0} },
+	{ ClkLock,              0,              Button1,        setogaps,       {.i = -2 } },
+	{ ClkKeyboard,          0,              Button1,        spawn,          {.v = dwmman } },
+	{ ClkLanguage,          0,              Button1,        setogaps,       {.i = +2 } },
+
+	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
+	{ ClkClientWin,         MODKEY,         Button2,        zoom,           {0} },
+	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
+
+	{ ClkStatusText,        0,              Button1,        spawn,          {.v = termcmd } },
 };
 
 /*===================================Rules====================================*/
