@@ -54,9 +54,9 @@ static const unsigned int alphas[][5]      = {
 static const char *tags[]                    = { "\uF406", "\uF269", "\uF09B",
                                                  "\uF04B", "\uF03D", "\uF130",
                                                  "\uF0D0", "\uF1B6", "\uF085" };
-static const char *tagsalt[]                 = { "\u278A", "\u278B", "\u278C",
-                                                 "\u278D", "\u278E", "\u278F",
-                                                 "\u2790", "\u2791", "\u2792" };
+static const char *tagsalt[]                 = { "\uF4FC", "\uF4FF", "\uF501",
+                                                 "\uF505", "\uF508", "\uF507",
+                                                 "\uF4FB", "\uF4FD", "\uF4FE" };
 /*  DWM layout settings                                                       */
 static const int dirs[3]         = { DirHor, DirVer, DirVer }; /* Tiling dirs */
 static const float facts[3]      = { 1.1,    1.1,    1.1 }; /* Tiling facts   */
