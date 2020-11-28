@@ -139,7 +139,7 @@ struct Client {
 	int bw, oldbw;
 	unsigned int tags;
 	unsigned int switchtotag;
-	int ismax, ismaxfull, wasfloating, isfixed, iscentered, isfloating, isfreesize, isurgent, neverfocus, oldstate, isfullscreen, isfakefullscreen, isforcedfullscreen, isterminal, noswallow;
+	int ismax, ismaxfull, wasfloating, isfixed, iscentered, isfloating, isfreesize, isurgent, neverfocus, oldstate, isfullscreen, isfakefullscreen, isforcedfullscreen, isterminal, noswallow, ispermanent;
 	pid_t pid;
 	Client *next;
 	Client *snext;
@@ -201,6 +201,7 @@ typedef struct {
 	int isfakefullscreen;
 	int isterminal;
 	int noswallow;
+	int ispermanent;
 	int monitor;
 } Rule;
 
@@ -422,8 +423,6 @@ applyrules(Client *c)
 	XClassHint ch = { NULL, NULL };
 
 	/* rule matching */
-	c->iscentered = 0;
-	c->isfloating = 0;
 	c->isfreesize = 1;
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
@@ -442,6 +441,7 @@ applyrules(Client *c)
 			c->isfakefullscreen = r->isfakefullscreen;
 			c->isterminal = r->isterminal;
 			c->noswallow  = r->noswallow;
+			c->ispermanent = r->ispermanent;
 			c->tags |= r->tags;
 			for (m = mons; m && m->num != r->monitor; m = m->next);
 			if (m)
@@ -1460,7 +1460,7 @@ keypress(XEvent *e)
 void
 killclient(const Arg *arg)
 {
-	if (!selmon->sel)
+	if (!selmon->sel || selmon->sel->ispermanent)
 		return;
 	if (!sendevent(selmon->sel->win, wmatom[WMDelete], NoEventMask, wmatom[WMDelete], CurrentTime, 0 , 0, 0)) {
 		XGrabServer(dpy);
@@ -1482,7 +1482,7 @@ killunsel(const Arg *arg)
 		return;
 
 	for (i = selmon->clients; i; i = i->next) {
-		if (ISVISIBLE(i) && i != selmon->sel) {
+		if (ISVISIBLE(i) && i != selmon->sel && !i->ispermanent) {
 			if (!sendevent(i->win, wmatom[WMDelete], NoEventMask, wmatom[WMDelete], CurrentTime, 0 , 0, 0)) {
 				XGrabServer(dpy);
 				XSetErrorHandler(xerrordummy);
