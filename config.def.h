@@ -127,13 +127,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             57,        incnmaster,         {.i = +1 } },
 	{ MODKEY|ControlMask,           57,        incnmaster,         {.i = -1 } },
 
-	{ MODKEY,                       41,        setfullscreenfloating,     {0} },
+	{ MODKEY,                       41,        setfullscreenlayout,       {0} },
 	{ MODKEY|ShiftMask,             41,        setfullscreennative,       {0} },
 	{ MODKEY|ControlMask,           41,        setfullscreenforced,       {0} },
-	{ MODKEY|ShiftMask|ControlMask, 41,        setfullscreenlayout,       {0} },
 	{ MODKEY,                       65,        togglefloating,            {0} },
-	{ MODKEY|ControlMask,           55,        togglehorizontalmax,       {0} },
-	{ MODKEY|ShiftMask,             55,        toggleverticalmax,         {0} },
 
 	{ MODKEY|ShiftMask,             31,        setigaps,           {.i = +2 } },
 	{ MODKEY|ControlMask,           31,        setigaps,           {.i = -2 } },
