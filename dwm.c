@@ -158,6 +158,12 @@ typedef struct {
 } Key;
 
 typedef struct {
+	unsigned int signum;
+	void (*func)(const Arg *);
+	const Arg arg;
+} Signal;
+
+typedef struct {
 	const char *symbol;
 	void (*arrange)(Monitor *);
 } Layout;
@@ -256,6 +262,7 @@ static void focus(Client *c);
 static void focusin(XEvent *e);
 static void focusmon(const Arg *arg);
 static void focusstack(const Arg *arg);
+static int fsignal(void);
 static Atom getatomprop(Client *c, Atom prop);
 static int getrootptr(int *x, int *y);
 static long getstate(Window w);
@@ -1192,7 +1199,7 @@ drawbar(Monitor *m)
 
 	if (m == selmon) { /* extra status is only drawn on selected monitor */
 		drw_setscheme(drw, scheme[SchemeNorm]);
-		drw_text(drw, 0, 0, mons->ww, ebh, lrpad / 2, stext, 0);
+		drw_text(drw, 0, 0, mons->ww, ebh, lrpad / 4, stext, 0);
 		drw_map(drw, m->extrabarwin, 0, 0, m->ww - stw, ebh);
 	}
 }
@@ -1311,6 +1318,47 @@ focusstack(const Arg *arg)
 	    i -= ISVISIBLE(c) ? 1 : 0, p = c, c = c->next);
 	focus(c ? c : p);
 	restack(selmon);
+}
+
+int
+fsignal(void)
+{
+	char fsignal[256];
+	char indicator[9] = "fsignal:";
+	char str_signum[16];
+	int i, v, signum;
+	size_t len_fsignal, len_indicator = strlen(indicator);
+
+	// Get root name property
+	if (gettextprop(root, XA_WM_NAME, fsignal, sizeof(fsignal))) {
+		len_fsignal = strlen(fsignal);
+
+		// Check if this is indeed a fake signal
+		if (len_indicator > len_fsignal ? 0 : strncmp(indicator, fsignal, len_indicator) == 0) {
+			memcpy(str_signum, &fsignal[len_indicator], len_fsignal - len_indicator);
+			str_signum[len_fsignal - len_indicator] = '\0';
+
+			// Convert string value into managable integer
+			for (i = signum = 0; i < strlen(str_signum); i++) {
+				v = str_signum[i] - '0';
+				if (v >= 0 && v <= 9) {
+					signum = signum * 10 + v;
+				}
+			}
+
+			// Check if a signal was found, and if so handle it
+			if (signum)
+				for (i = 0; i < LENGTH(signals); i++)
+					if (signum == signals[i].signum && signals[i].func)
+						signals[i].func(&(signals[i].arg));
+
+			// A fake signal was sent
+			return 1;
+		}
+	}
+
+	// No fake signal was sent, so proceed with update
+	return 0;
 }
 
 Atom
@@ -1805,8 +1853,10 @@ propertynotify(XEvent *e)
 		updatesystray();
 	}
 
-	if ((ev->window == root) && (ev->atom == XA_WM_NAME))
-		updatestatus();
+	if ((ev->window == root) && (ev->atom == XA_WM_NAME)) {
+		if (!fsignal())
+			updatestatus();
+	}
 	else if (ev->state == PropertyDelete)
 		return; /* ignore */
 	else if ((c = wintoclient(ev->window))) {
@@ -3139,7 +3189,7 @@ void
 updatestatus(void)
 {
 	if (!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
-		strcpy(stext, "dwm-"VERSION);
+		strcpy(stext, "DWM-Orange Ver."VERSION);
 	drawbar(selmon);
 	updatesystray();
 }

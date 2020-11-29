@@ -223,6 +223,14 @@ static Button buttons[] = {
 	{ ClkStatusText,        0,              Button1,        spawn,          {.v = termcmd } },
 };
 
+/*===================================Signals==================================*/
+/* signum must be greater than 0 */
+/* trigger signals using `xsetroot -name "fsignal:<signum>"` */
+static Signal signals[] = {
+	/* signum       function        argument  */
+	{ 99,           quit,           {0}       },
+};
+
 /*===================================Rules====================================*/
 static const Rule rules[] = {
 	/* xprop(1):
@@ -232,7 +240,6 @@ static const Rule rules[] = {
 	/* class           instance    title                tags mask     switchtotag   iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   ispermanent   monitor */
 	{ NULL,            NULL,       "Event Tester",      0,            0,            0,           1,           1,           0,                 0,           1,          0,            -1      },
 	{ "firefox",       NULL,       NULL,                1 << 1,       1,            0,           0,           0,           1,                 0,           -1,         0,            -1      },
-	{ NULL,            NULL,       "Private Browsing",  1 << 8,       1,            0,           0,           0,           0,                 0,           -1,         0,            -1      },
 	{ "code-oss",      NULL,       NULL,                1 << 2,       1,            0,           0,           0,           0,                 0,           0,          0,            -1      },
 	{ "Steam",         NULL,       NULL,                1 << 7,       1,            0,           1,           1,           0,                 0,           0,          0,            -1      },
 	{ NULL,            NULL,       "Steam",             1 << 7,       1,            0,           0,           0,           0,                 0,           0,          1,            -1      },
