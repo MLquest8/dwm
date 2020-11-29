@@ -360,6 +360,7 @@ static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void xinitvisual();
+static void xkbeventnotify(XEvent *e);
 static void zoom(const Arg *arg);
 
 static pid_t getparentprocess(pid_t p);
@@ -406,6 +407,7 @@ static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
 static xcb_connection_t *xcon;
+static int xkbEventType;
 
 static int useargb = 0;
 static Visual *visual;
@@ -733,9 +735,9 @@ buttonpress(XEvent *e)
 			click = ClkLock;
 		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym) - (int)TEXTW(m->lcksym) - (int)TEXTW(m->kbdsym))
 			click = ClkKeyboard;
-		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym) - (int)TEXTW(m->lcksym) - (int)TEXTW(m->kbdsym) - (int)TEXTW(m->lngsym))
+		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym) - (int)TEXTW(m->lcksym) - (int)TEXTW(m->kbdsym) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym))
 			click = ClkLanguage;
-		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym) - (int)TEXTW(m->lcksym) - (int)TEXTW(m->kbdsym) - (int)TEXTW(m->lngsym) - (int)TEXTW(m->ltsymbol))
+		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym) - (int)TEXTW(m->lcksym) - (int)TEXTW(m->kbdsym) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym) - (int)TEXTW(m->ltsymbol))
 			click = ClkLtSymbol;
 		else
 			click = ClkWinTitle;
@@ -1134,9 +1136,9 @@ drawbar(Monitor *m)
 		tw = TEXTW(m->kbdsym);
 		tray -= tw;
 		drw_text(drw, tray, 0, tw, bh, lrpad / 2, m->kbdsym, 0);
-		tw = TEXTW(m->lngsym);
+		tw = TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym);
 		tray -= tw;
-		drw_text(drw, tray, 0, tw, bh, lrpad / 2, m->lngsym, 0);
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym, 0);
 	}
 
 	if(m->lt[m->sellt]->arrange == monocle){
@@ -2123,9 +2125,14 @@ run(void)
 	XEvent ev;
 	/* main event loop */
 	XSync(dpy, False);
-	while (running && !XNextEvent(dpy, &ev))
+	while (running && !XNextEvent(dpy, &ev)) {
+		if(ev.type == xkbEventType) {
+			xkbeventnotify(&ev);
+			continue;
+		}
 		if (handler[ev.type])
 			handler[ev.type](&ev); /* call handler */
+	}
 }
 
 void
@@ -2499,6 +2506,8 @@ setup(void)
 		|LeaveWindowMask|StructureNotifyMask|PropertyChangeMask;
 	XChangeWindowAttributes(dpy, root, CWEventMask|CWCursor, &wa);
 	XSelectInput(dpy, root, wa.event_mask);
+	XkbQueryExtension(dpy, 0, &xkbEventType, 0, 0, 0);
+	XkbSelectEventDetails(dpy, XkbUseCoreKbd, XkbStateNotify, XkbAllStateComponentsMask, XkbGroupStateMask);
 	grabkeys();
 	focus(NULL);
 }
@@ -3698,6 +3707,20 @@ systraytomon(Monitor *m) {
 	if(stfallbackmon && n < stmonitor)
 		return mons;
 	return t;
+}
+
+void
+xkbeventnotify(XEvent *e)
+{
+	XkbStateRec kbd_state;
+	
+	XkbEvent* xkbEvent = (XkbEvent*) e;
+	if (xkbEvent->any.xkb_type == XkbStateNotify) {
+		XkbGetState(dpy, XkbUseCoreKbd, &kbd_state);
+		if (selmon->sel)
+			selmon->sel->kbdgrp = kbd_state.group;
+		drawbar(selmon);
+	}
 }
 
 void

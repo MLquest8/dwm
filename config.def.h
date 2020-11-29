@@ -55,7 +55,7 @@ static const unsigned int alphas[][5]      = {
 static const char *pwrsym[]                  = { "\uF011", "\uF110", "\uF110" };
 static const char *lcksym[]                  = { "\uF13E", "\uF023", "\uF3C1" };
 static const char *kbdsym[]                  = { "\uF11C", "\uF110", "\uF110" };
-static const char *lngsym[]                  = { "EN",     "\uF023", "\uF110" };
+static const char *lngsym[]                  = { "EN", "KA", "RU", "DE", "CH" };
 /*  DWM tags                                                                  */
 static const char *tags[]                    = { "\uF406", "\uF269", "\uF09B",
                                                  "\uF04B", "\uF03D", "\uF130",
