@@ -165,6 +165,10 @@ typedef struct {
 typedef struct Pertag Pertag;
 struct Monitor {
 	char ltsymbol[16];
+	char pwrsym[8];
+	char lcksym[8];
+	char kbdsym[8];
+	char lngsym[8];
 	int nmaster;
 	int num;
 	int by;               /* bar geometry */
@@ -176,9 +180,15 @@ struct Monitor {
 	unsigned int seltags;
 	unsigned int sellt;
 	unsigned int tagset[2];
+	int topbar;
 	int showbar;
 	int showextrabar;
-	int topbar;
+	int viewontag;
+	int keyslocked;
+	int hidevactags;
+	int warponfocus;
+	int gapsforone;
+	int gapsformonocle;
 	Client *clients;
 	Client *sel;
 	Client *stack;
@@ -311,6 +321,7 @@ static void togglekeys();
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void togglegapsforone();
+static void togglegapsformonocle();
 static void togglehidevactags();
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
@@ -353,8 +364,8 @@ static pid_t winpid(Window w);
 /* variables */
 static Systray *systray =  NULL;
 static const char broken[] = "broken";
-static char stext[256];
 static char ptext[64];
+static char stext[256];
 static int screen;
 static int sw, sh;           /* X display screen geometry width, height */
 static int bh, ebh, blw = 0;      /* bar geometry */
@@ -698,7 +709,7 @@ buttonpress(XEvent *e)
 			occ |= c->tags == 255 ? 0 : c->tags;
 		do {
 		/* do not reserve space for vacant tags */
-		if (hidevactags && !(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
+		if (m->hidevactags && !(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
 			continue;
 		x += TEXTW(tags[i]);
 		}
@@ -709,15 +720,15 @@ buttonpress(XEvent *e)
 		}
 		else if (ev->x < x + blw)
 			click = ClkUser;
-		else if (ev->x > selmon->ww - (int)TEXTW("\uF011"))
+		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym))
 			click = ClkPower;
-		else if (ev->x > selmon->ww - (int)TEXTW("\uF011") - (int)TEXTW("\uF13E"))
+		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym) - (int)TEXTW(m->lcksym))
 			click = ClkLock;
-		else if (ev->x > selmon->ww - (int)TEXTW("\uF011") - (int)TEXTW("\uF13E") - (int)TEXTW("\uF11C"))
+		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym) - (int)TEXTW(m->lcksym) - (int)TEXTW(m->kbdsym))
 			click = ClkKeyboard;
-		else if (ev->x > selmon->ww - (int)TEXTW("\uF011") - (int)TEXTW("\uF13E") - (int)TEXTW("\uF11C") - (int)TEXTW("EN"))
+		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym) - (int)TEXTW(m->lcksym) - (int)TEXTW(m->kbdsym) - (int)TEXTW(m->lngsym))
 			click = ClkLanguage;
-		else if (ev->x > selmon->ww - (int)TEXTW("\uF011") - (int)TEXTW("\uF13E") - (int)TEXTW("\uF11C") - (int)TEXTW("EN") - (int)TEXTW(m->ltsymbol))
+		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym) - (int)TEXTW(m->lcksym) - (int)TEXTW(m->kbdsym) - (int)TEXTW(m->lngsym) - (int)TEXTW(m->ltsymbol))
 			click = ClkLtSymbol;
 		else
 			click = ClkWinTitle;
@@ -977,14 +988,24 @@ createmon(void)
 	m = ecalloc(1, sizeof(Monitor));
 	m->tagset[0] = m->tagset[1] = startontag ? 1 : 0;
 	m->nmaster = nmaster;
+	m->topbar = topbar;
 	m->showbar = showbar;
 	m->showextrabar = showextrabar;
-	m->topbar = topbar;
+	m->viewontag = viewontag;
+	m->keyslocked = keyslocked;
+	m->hidevactags = hidevactags;
+	m->warponfocus = warponfocus;
+	m->gapsforone = gapsforone;
+	m->gapsformonocle = gapsformonocle;
 	m->borderpx = borderpx;
 	m->igappx = igappx;
 	m->ogappx = ogappx;
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
+	strncpy(m->pwrsym, pwrsym[0], sizeof m->pwrsym);
+	strncpy(m->lcksym, lcksym[0], sizeof m->lcksym);
+	strncpy(m->kbdsym, kbdsym[0], sizeof m->kbdsym);
+	strncpy(m->lngsym, lngsym[0], sizeof m->lngsym);
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
 	m->pertag = ecalloc(1, sizeof(Pertag));
 	m->pertag->curtag = m->pertag->prevtag = 1;
@@ -1097,18 +1118,18 @@ drawbar(Monitor *m)
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
 		drw_setscheme(drw, scheme[SchemeNorm]);
-		tw = TEXTW("\uF011");
+		tw = TEXTW(m->pwrsym);
 		tray -= tw;
-		drw_text(drw, tray, 0, tw, bh, lrpad / 2, "\uF011", 0);
-		tw = TEXTW("\uF13E");
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, m->pwrsym, 0);
+		tw = TEXTW(m->lcksym);
 		tray -= tw;
-		drw_text(drw, tray, 0, tw, bh, lrpad / 2, "\uF13E", 0);
-		tw = TEXTW("\uF11C");
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, m->lcksym, 0);
+		tw = TEXTW(m->kbdsym);
 		tray -= tw;
-		drw_text(drw, tray, 0, tw, bh, lrpad / 2, "\uF11C", 0);
-		tw = TEXTW("EN");
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, m->kbdsym, 0);
+		tw = TEXTW(m->lngsym);
 		tray -= tw;
-		drw_text(drw, tray, 0, tw, bh, lrpad / 2, "EN", 0);
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, m->lngsym, 0);
 	}
 
 	if(m->lt[m->sellt]->arrange == monocle){
@@ -1132,7 +1153,7 @@ drawbar(Monitor *m)
 	x = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
 		/* do not draw vacant tags */
-		if (hidevactags && !(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
+		if (m->hidevactags && !(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
 		continue;
 
 		w = TEXTW(tags[i]);
@@ -1270,7 +1291,7 @@ focusmon(const Arg *arg)
 	unfocus(selmon->sel, 0);
 	selmon = m;
 	focus(NULL);
-	if (warponfocus)
+	if (m->warponfocus)
 		warp(selmon->sel);
 }
 
@@ -1407,7 +1428,7 @@ grabkeys(void)
 		unsigned int i, j;
 		unsigned int modifiers[] = { 0, LockMask, numlockmask, numlockmask|LockMask };
 
-		if (keyslocked){
+		if (selmon->keyslocked){
 			XUngrabKey(dpy, AnyKey, AnyModifier, root);
 			for (i = 0; i < LENGTH(altkeys); i++)
 				for (j = 0; j < LENGTH(modifiers); ++j)
@@ -1657,7 +1678,10 @@ monocle(Monitor *m)
 		if (ISVISIBLE(c))
 			n++;
 	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
-		resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, 0);
+		if (m->gapsformonocle)
+			resize(c, m->wx + m->ogappx, m->wy + m->ogappx, m->ww - 2 * c->bw - 2 * m->ogappx, m->wh - 2 * c->bw - 2 * m->ogappx, 0);
+		else
+			resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, 0);
 }
 
 void
@@ -2002,7 +2026,7 @@ restack(Monitor *m)
 	XSync(dpy, False);
 	while (XCheckMaskEvent(dpy, EnterWindowMask, &ev));
 	if (m == selmon && (m->tagset[m->seltags] & m->sel->tags) && selmon->lt[selmon->sellt] != &layouts[2]) {
-		if (warponfocus)
+		if (m->warponfocus)
 			warp(m->sel);
 	}
 }
@@ -2518,7 +2542,7 @@ tag(const Arg *arg)
 		selmon->sel->tags = arg->ui & TAGMASK;
 		focus(NULL);
 		arrange(selmon);
-		if(viewontag)
+		if(selmon->viewontag)
 			view(arg);
 	}
 }
@@ -2550,7 +2574,7 @@ tile(Monitor *m)
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
 	if (n == 0)
 		return;
-	if(n == 1 && gapsforone == 0){
+	if(n == 1 && m->gapsforone == 0){
 		c = nexttiled(m->clients);
 		resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, 0);
 		return;
@@ -2661,22 +2685,34 @@ togglefloating(const Arg *arg)
 void
 togglegapsforone()
 {
-	gapsforone = !gapsforone;
+	selmon->gapsforone = !selmon->gapsforone;
+	arrange(selmon);
+}
+
+void
+togglegapsformonocle()
+{
+	selmon->gapsformonocle = !selmon->gapsformonocle;
 	arrange(selmon);
 }
 
 void
 togglehidevactags()
 {
-	hidevactags = !hidevactags;
+	selmon->hidevactags = !selmon->hidevactags;
 	drawbar(selmon);
 }
 
 void
 togglekeys()
 {
-	keyslocked = !keyslocked;
+	selmon->keyslocked = !selmon->keyslocked;
+	if (selmon->keyslocked)
+		strcpy(selmon->lcksym, lcksym[1]);
+	else
+		strcpy(selmon->lcksym, lcksym[0]);
 	grabkeys();
+	drawbar(selmon);
 }
 
 void
@@ -2739,13 +2775,15 @@ toggleview(const Arg *arg)
 void
 toggleviewontag()
 {
-	viewontag = !viewontag;
+	selmon->viewontag = !selmon->viewontag;
+	drawbar(selmon);
 }
 
 void
 togglewarp()
 {
-	warponfocus = !warponfocus;
+	selmon->warponfocus = !selmon->warponfocus;
+	drawbar(selmon);
 }
 
 void
@@ -3176,7 +3214,7 @@ updatesystray(void)
 		systray->win = XCreateSimpleWindow(dpy, root, x, m->eby, w, ebh, 0, 0, scheme[SchemeSel][ColBg].pixel);
 		wa.event_mask        = ButtonPressMask | ExposureMask;
 		wa.override_redirect = True;
-		wa.background_pixel  = scheme[SchemeSel][ColBg].pixel;
+		wa.background_pixel  = scheme[SchemeNorm][ColBg].pixel;
 		XSelectInput(dpy, systray->win, SubstructureNotifyMask);
 		XChangeProperty(dpy, systray->win, netatom[NetSystemTrayOrientation], XA_CARDINAL, 32,
 				PropModeReplace, (unsigned char *)&netatom[NetSystemTrayOrientationHorz], 1);
@@ -3206,6 +3244,11 @@ updatesystray(void)
 		if (i->mon != m)
 			i->mon = m;
 	}
+	if (!systray->icons)
+		wa.background_pixel  = scheme[SchemeNorm][ColBg].pixel;
+	else
+		wa.background_pixel  = scheme[SchemeSel][ColBg].pixel;
+	XChangeWindowAttributes(dpy, systray->win, CWBackPixel, &wa);
 	w = w ? w + stspacing : 1;
 	x -= w;
 	XMoveResizeWindow(dpy, systray->win, x, m->eby, w, ebh);

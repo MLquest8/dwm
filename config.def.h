@@ -1,19 +1,20 @@
 /*             See LICENSE file for copyright and license details.            */
 /*====================================DWM=====================================*/
 /*  DWM appearance settings                                                   */
-static int gapsforone               = 0; /* Gaps for only one window open     */
-static int hidevactags              = 0; /* Hide vacant tags                  */
-static int viewontag                = 1; /* 1 Switch view on tag switch       */
-static int warponfocus              = 1; /* 1 Warp pointer to focused client  */
 static const int topbar             = 1; /* 0 means bottom bar                */
 static const int showbar            = 1; /* 0 means no bar                    */
-static const int showextrabar       = 1; /* 0 means no extra bar              */
 static const int barheight          = 26;/* Specific bar height (0 for def)   */
+static const int showextrabar       = 1; /* 0 means no extra bar              */
 static const int extrabarheight     = 16;/* Specific bar height (0 for def)   */
+static const int viewontag          = 1; /* 1 Switch view on tag switch       */
 static const int startontag         = 1; /* 0 means no tag is active on start */
+static const int hidevactags        = 0; /* 1 means hide vacant tags          */
+static const int warponfocus        = 1; /* 1 Warp pointer to focused client  */
 static const int swallowfloating    = 0; /* 1 swallow all floating windows    */
 static const int showsystray        = 1; /* 0 means no systray                */
 static const int stfallbackmon      = 1; /* 1 means first monitor, 0 last     */
+static const int gapsforone         = 0; /* Gaps for only one window open     */
+static const int gapsformonocle     = 0; /* Gaps for only one window open     */
 static const unsigned int stmonitor = 0; /* 0 means selected monitor          */
 static const unsigned int stspacing = 2; /* systray spacing                   */
 static const unsigned int igappx    = 5; /* Size of inner gaps                */
@@ -50,13 +51,18 @@ static const unsigned int alphas[][5]      = {
     [SchemeSel]  = { barfgA,     barbgA,     tlbrdA,     flbrdA,    urbrdA    },
     [SchemeNorm] = { barfgA,     barbgA,     tlbrdA,     flbrdA,    urbrdA    },
 };
+/*  DWM icons                                                                 */
+static const char *pwrsym[]                  = { "\uF011", "\uF110", "\uF110" };
+static const char *lcksym[]                  = { "\uF13E", "\uF023", "\uF3C1" };
+static const char *kbdsym[]                  = { "\uF11C", "\uF110", "\uF110" };
+static const char *lngsym[]                  = { "EN",     "\uF023", "\uF110" };
 /*  DWM tags                                                                  */
 static const char *tags[]                    = { "\uF406", "\uF269", "\uF09B",
                                                  "\uF04B", "\uF03D", "\uF130",
                                                  "\uF0D0", "\uF1B6", "\uF085" };
-static const char *tagsalt[]                 = { "\uF4FC", "\uF4FF", "\uF501",
-                                                 "\uF505", "\uF508", "\uF507",
-                                                 "\uF4FB", "\uF4FD", "\uF4FE" };
+static const char *tagsalt[]                 = { "\uF3AA", "\uF3AA", "\uF3AA",
+                                                 "\uF3AA", "\uF3AA", "\uF3AA",
+                                                 "\uF3AA", "\uF3AA", "\uF3AA" };
 /*  DWM layout settings                                                       */
 static const int dirs[3]         = { DirHor, DirVer, DirVer }; /* Tiling dirs */
 static const float facts[3]      = { 1.1,    1.1,    1.1 }; /* Tiling facts   */
@@ -140,6 +146,7 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           32,        setogaps,           {.i = -2 } },
 	{ MODKEY|ShiftMask|ControlMask, 32,        setogaps,           {.i = 0  } },
 	{ MODKEY,                       32,        togglegapsforone,          {0} },
+	{ MODKEY,                       31,        togglegapsformonocle,      {0} },
 	{ MODKEY|ShiftMask,             33,        setborderpx,        {.i = +1 } },
 	{ MODKEY|ControlMask,           33,        setborderpx,        {.i = -1 } },
 	{ MODKEY|ShiftMask|ControlMask, 33,        setborderpx,         {.i = 0 } },
@@ -204,8 +211,8 @@ static Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button2,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button1,        cyclelayout,    {.i = +1 } },
 	{ ClkLtSymbol,          0,              Button3,        cyclelayout,    {.i = -1 } },
-	{ ClkPower,             0,              Button1,        setlayout,      {0} },
-	{ ClkLock,              0,              Button1,        setogaps,       {.i = -2 } },
+	{ ClkPower,             0,              Button1,        spawn,          {.v = dmenucmd } },
+	{ ClkLock,              0,              Button1,        togglekeys,     {0} },
 	{ ClkKeyboard,          0,              Button1,        spawn,          {.v = dwmman } },
 	{ ClkLanguage,          0,              Button1,        setogaps,       {.i = +2 } },
 
@@ -222,12 +229,14 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class           instance    title              tags mask     switchtotag   iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   ispermanent   monitor */
-	{ NULL,            NULL,       "Event Tester",    0,            0,            0,           1,           1,           0,                 0,           1,          0,            -1      },
-	{ "firefox",       NULL,       NULL,              1 << 1,       1,            0,           0,           0,           1,                 0,           -1,         0,            -1      },
-	{ "code-oss",      NULL,       NULL,              1 << 2,       1,            0,           0,           0,           0,                 0,           0,          0,            -1      },
-	{ "Steam",         NULL,       NULL,              1 << 7,       1,            0,           1,           1,           0,                 0,           0,          1,            -1      },
-	{ "Gimp",          NULL,       NULL,              1 << 6,       1,            0,           1,           1,           0,                 0,           0,          0,            -1      },
-	{ "st",            NULL,       NULL,              0,            0,            0,           0,           0,           0,                 1,           0,          0,            -1      },
-	{ "mpv",           NULL,       NULL,              0,            0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
+	/* class           instance    title                tags mask     switchtotag   iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   ispermanent   monitor */
+	{ NULL,            NULL,       "Event Tester",      0,            0,            0,           1,           1,           0,                 0,           1,          0,            -1      },
+	{ "firefox",       NULL,       NULL,                1 << 1,       1,            0,           0,           0,           1,                 0,           -1,         0,            -1      },
+	{ NULL,            NULL,       "Private Browsing",  1 << 8,       1,            0,           0,           0,           0,                 0,           -1,         0,            -1      },
+	{ "code-oss",      NULL,       NULL,                1 << 2,       1,            0,           0,           0,           0,                 0,           0,          0,            -1      },
+	{ "Steam",         NULL,       NULL,                1 << 7,       1,            0,           1,           1,           0,                 0,           0,          0,            -1      },
+	{ NULL,            NULL,       "Steam",             1 << 7,       1,            0,           0,           0,           0,                 0,           0,          1,            -1      },
+	{ "Gimp",          NULL,       NULL,                1 << 6,       1,            0,           1,           1,           0,                 0,           0,          0,            -1      },
+	{ "st",            NULL,       NULL,                0,            0,            0,           0,           0,           0,                 1,           0,          0,            -1      },
+	{ "mpv",           NULL,       NULL,                0,            0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
 };
