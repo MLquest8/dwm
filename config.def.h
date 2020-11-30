@@ -184,6 +184,7 @@ static Key keys[] = {
 	{ MODKEY,                       110,       togglekeys,                {0} },
 	{ MODKEY,                       9,         killclient,                {0} },
 	{ MODKEY|ShiftMask,             9,         killunsel,                 {0} },
+	{ MODKEY|ControlMask,           9,         spawn,          {.v = dwmpwr } },
 	{ MODKEY|ShiftMask|ControlMask, 9,         quit,                      {0} },
 };
 static Key altkeys[] = {
