@@ -80,8 +80,9 @@ static const Layout layouts[] = {
     { NULL,       NULL },
 };
 /*=====================================St=====================================*/
-static const char *termcmd[]           = { "st", NULL };          /* Terminal */
-static const char *dwmman[]            = { "st", "man", "dwm", NULL }; /* MAN */
+static const char *termcmd[]           = { "st", NULL };
+static const char *dwmman[]            = { "st", "man", "dwm", NULL };
+static const char *xkbman[]            = { "st", "man", "setxkbmap", NULL };
 /*===================================Dmenu====================================*/
 /*  Dmenu appearance settings                                                 */
 static const char dmenufont[]          = "FreeMono:size=12";
@@ -133,12 +134,10 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           49,        cyclelayout,        {.i = -1 } },
 	{ MODKEY|ShiftMask,             57,        incnmaster,         {.i = +1 } },
 	{ MODKEY|ControlMask,           57,        incnmaster,         {.i = -1 } },
-
 	{ MODKEY,                       41,        setfullscreenlayout,       {0} },
 	{ MODKEY|ShiftMask,             41,        setfullscreennative,       {0} },
 	{ MODKEY|ControlMask,           41,        setfullscreenforced,       {0} },
 	{ MODKEY,                       65,        togglefloating,            {0} },
-
 	{ MODKEY|ShiftMask,             31,        setigaps,           {.i = +2 } },
 	{ MODKEY|ControlMask,           31,        setigaps,           {.i = -2 } },
 	{ MODKEY|ShiftMask|ControlMask, 31,        setigaps,           {.i = 0  } },
@@ -150,22 +149,18 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             33,        setborderpx,        {.i = +1 } },
 	{ MODKEY|ControlMask,           33,        setborderpx,        {.i = -1 } },
 	{ MODKEY|ShiftMask|ControlMask, 33,        setborderpx,         {.i = 0 } },
-
 	{ MODKEY,                       56,        togglebar,           {.i = 0 } },
 	{ MODKEY|ShiftMask,             56,        togglebar,           {.i = 1 } },
 	{ MODKEY|ControlMask,           56,        togglebar,           {.i = 2 } },
 	{ MODKEY|ShiftMask|ControlMask, 56,        togglebar,          {.i = -1 } },
-	{ MODKEY|ShiftMask,             28,        togglealttag,              {0} },
-	{ MODKEY|ControlMask,           28,        togglehidevactags,         {0} },
-
-	{ MODKEY,                       118,       toggleviewontag,           {0} },
-	{ MODKEY,                       119,       togglewarp,                {0} },
-
+	{ MODKEY,                       28,        togglealttag,              {0} },
+	{ MODKEY|ShiftMask,             28,        togglehidevactags,         {0} },
+	{ MODKEY,                       54,        togglewarp,                {0} },
+	{ MODKEY,                       55,        toggleviewontag,           {0} },
 	{ MODKEY,                       59,        focusmon,           {.i = -1 } },
 	{ MODKEY,                       60,        focusmon,           {.i = +1 } },
 	{ MODKEY|ShiftMask,             59,        tagmon,             {.i = -1 } },
 	{ MODKEY|ShiftMask,             60,        tagmon,             {.i = +1 } },
-
 	{ MODKEY,                       23,        view,                      {0} },
 	{ MODKEY|ShiftMask,             23,        shiftview,          {.i = +1 } },	
 	{ MODKEY|ControlMask,           23,        shiftview,          {.i = -1 } },
@@ -186,14 +181,15 @@ static Key keys[] = {
 	TILEKEYS(MODKEY|ShiftMask,                                       0, 1, 0)
 	TILEKEYS(MODKEY|ControlMask,                                     0, 0, 1)
 	TILEKEYS(MODKEY|ShiftMask|ControlMask,                           1, 1, 1)
-	{ MODKEY|ControlMask,           127,       togglekeys,                {0} },
+	{ MODKEY,                       110,       togglekeys,                {0} },
 	{ MODKEY,                       9,         killclient,                {0} },
 	{ MODKEY|ShiftMask,             9,         killunsel,                 {0} },
 	{ MODKEY|ShiftMask|ControlMask, 9,         quit,                      {0} },
 };
 static Key altkeys[] = {
 	/* modifier                     key        function              argument */
-	{ MODKEY|ControlMask,           127,       togglekeys,                {0} },
+	{ MODKEY,                       110,       togglekeys,                {0} },
+	{ MODKEY|ShiftMask|ControlMask, 9,         quit,                      {0} },
 };
 
 /*===================================Buttons==================================*/
@@ -207,7 +203,8 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 	{ ClkUser,              0,              Button1,        spawn,          {.v = termcmd } },
 	{ ClkUser,              0,              Button3,        spawn,          {.v = dmenucmd } },
-	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
+	{ ClkWinTitle,          0,              Button1,        spawn,          {.v = termcmd } },
+	{ ClkWinTitle,          0,              Button3,        spawn,          {.v = dmenucmd } },
 	{ ClkLtSymbol,          0,              Button2,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button1,        cyclelayout,    {.i = +1 } },
 	{ ClkLtSymbol,          0,              Button3,        cyclelayout,    {.i = -1 } },
@@ -216,13 +213,11 @@ static Button buttons[] = {
 	{ ClkViewT,             0,              Button1,        toggleviewontag,{0} },
 	{ ClkWarpP,             0,              Button1,        togglewarp,     {0} },
 	{ ClkKeyboard,          0,              Button1,        spawn,          {.v = dwmman } },
-	{ ClkLanguage,          0,              Button1,        setogaps,       {.i = +2 } },
-
+	{ ClkLanguage,          0,              Button1,        spawn,          {.v = xkbman } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        zoom,           {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
-
-	{ ClkStatusText,        0,              Button1,        spawn,          {.v = termcmd } },
+	{ ClkStatusText,        MODKEY,         Button1,        spawn,          {.v = termcmd } },
 };
 
 /*===================================Signals==================================*/
