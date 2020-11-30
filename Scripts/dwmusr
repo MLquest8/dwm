@@ -1,0 +1,4 @@
+#!/bin/sh
+
+neofetch
+read -p " Press any key to continue..." -s -n 1 choices<&1

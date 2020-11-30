@@ -81,6 +81,8 @@ static const Layout layouts[] = {
 };
 /*=====================================St=====================================*/
 static const char *termcmd[]           = { "st", NULL };
+static const char *dwmpwr[]            = { "st", "dwmpwr", NULL };
+static const char *dwmusr[]            = { "st", "dwmusr", NULL };
 static const char *dwmman[]            = { "st", "man", "dwm", NULL };
 static const char *xkbman[]            = { "st", "man", "setxkbmap", NULL };
 /*===================================Dmenu====================================*/
@@ -201,14 +203,14 @@ static Button buttons[] = {
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
-	{ ClkUser,              0,              Button1,        spawn,          {.v = termcmd } },
-	{ ClkUser,              0,              Button3,        spawn,          {.v = dmenucmd } },
+	{ ClkUser,              0,              Button1,        spawn,          {.v = dwmusr } },
+	{ ClkUser,              0,              Button3,        spawn,          {.v = dwmusr } },
 	{ ClkWinTitle,          0,              Button1,        spawn,          {.v = termcmd } },
 	{ ClkWinTitle,          0,              Button3,        spawn,          {.v = dmenucmd } },
 	{ ClkLtSymbol,          0,              Button2,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button1,        cyclelayout,    {.i = +1 } },
 	{ ClkLtSymbol,          0,              Button3,        cyclelayout,    {.i = -1 } },
-	{ ClkPower,             0,              Button1,        spawn,          {.v = dmenucmd } },
+	{ ClkPower,             0,              Button1,        spawn,          {.v = dwmpwr } },
 	{ ClkLock,              0,              Button1,        togglekeys,     {0} },
 	{ ClkViewT,             0,              Button1,        toggleviewontag,{0} },
 	{ ClkWarpP,             0,              Button1,        togglewarp,     {0} },

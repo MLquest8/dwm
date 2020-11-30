@@ -1,0 +1,12 @@
+#!/bin/sh
+
+options="Exit\nHalt\nReboot\nShutdown\nCancel"
+chosen=$(echo -e "$options" | dmenu -i -p "System")
+
+case "$chosen" in
+	Exit) xsetroot -name "fsignal:99" ;;
+	Halt) shutdown -H now ;;
+	Reboot) shutdown -r now ;;
+	Shutdown) shutdown -P now ;;
+	Cancel) shutdown -c ;;
+esac
