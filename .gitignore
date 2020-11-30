@@ -7,6 +7,10 @@
 *.obj
 *.elf
 
+# DWM
+config.h
+dwm
+
 # Linker output
 *.ilk
 *.map
