@@ -22,6 +22,7 @@ ${OBJ}: config.h config.mk
 
 config.h:
 	cp config.def.h $@
+	chmod 666 $@
 
 dwm: ${OBJ}
 	${CC} -o $@ ${OBJ} ${LDFLAGS}
