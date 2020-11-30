@@ -81,7 +81,7 @@ static const Layout layouts[] = {
 };
 /*=====================================St=====================================*/
 static const char *termcmd[]           = { "st", NULL };
-static const char *dwmpwr[]            = { "st", "dwmpwr", NULL };
+static const char *dwmpwr[]            = { "dwmpwr", NULL };
 static const char *dwmusr[]            = { "st", "dwmusr", NULL };
 static const char *dwmman[]            = { "st", "man", "dwm", NULL };
 static const char *xkbman[]            = { "st", "man", "setxkbmap", NULL };
@@ -104,8 +104,6 @@ static const char *dmenucmd[] = { "dmenu_run",
 /*====================================Keys====================================*/
 /*  DWM macros                                                                */
 #define MODKEY Mod4Mask
-#define ALT Mod1Mask
-#define WIN Mod4Mask
 #define CTRL ControlMask
 #define SHIFT ShiftMask
 #define TAGKEYS(KEY,TAG) \
