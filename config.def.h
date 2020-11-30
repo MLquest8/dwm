@@ -52,17 +52,17 @@ static const unsigned int alphas[][5]      = {
     [SchemeNorm] = { barfgA,     barbgA,     tlbrdA,     flbrdA,    urbrdA    },
 };
 /*  DWM icons                                                                 */
-static const char *pwrsym[]                  = { "\uF011", "\uF110", "\uF110" };
-static const char *lcksym[]                  = { "\uF13E", "\uF023", "\uF3C1" };
-static const char *kbdsym[]                  = { "\uF11C", "\uF110", "\uF110" };
+static const char *mscsym[]                  = { "\uF011", "\uF11C", "\uF110" };
+static const char *lcksym[]                  = { "\uF13E", "\uF023", "\uF23E" };
+static const char *vntsym[]                  = { "\uF2D0", "\uF2D2", "\uF3C1" };  
+static const char *wnfsym[]                  = { "\uF245", "\uF0E7", "\uF3C1" };
 static const char *lngsym[]                  = { "EN", "KA", "RU", "DE", "CH" };
 /*  DWM tags                                                                  */
 static const char *tags[]                    = { "\uF406", "\uF269", "\uF09B",
                                                  "\uF04B", "\uF03D", "\uF130",
                                                  "\uF0D0", "\uF1B6", "\uF085" };
-static const char *tagsalt[]                 = { "\uF3AA", "\uF3AA", "\uF3AA",
-                                                 "\uF3AA", "\uF3AA", "\uF3AA",
-                                                 "\uF3AA", "\uF3AA", "\uF3AA" };
+static const char *tagsalt[]                 = { "1", "2", "3", "4", "5", "6",
+                                                                "7", "8", "9" };
 /*  DWM layout settings                                                       */
 static const int dirs[3]         = { DirHor, DirVer, DirVer }; /* Tiling dirs */
 static const float facts[3]      = { 1.1,    1.1,    1.1 }; /* Tiling facts   */
@@ -213,6 +213,8 @@ static Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button3,        cyclelayout,    {.i = -1 } },
 	{ ClkPower,             0,              Button1,        spawn,          {.v = dmenucmd } },
 	{ ClkLock,              0,              Button1,        togglekeys,     {0} },
+	{ ClkViewT,             0,              Button1,        toggleviewontag,{0} },
+	{ ClkWarpP,             0,              Button1,        togglewarp,     {0} },
 	{ ClkKeyboard,          0,              Button1,        spawn,          {.v = dwmman } },
 	{ ClkLanguage,          0,              Button1,        setogaps,       {.i = +2 } },
 
@@ -239,7 +241,7 @@ static const Rule rules[] = {
 	 */
 	/* class           instance    title                tags mask     switchtotag   iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   ispermanent   monitor */
 	{ NULL,            NULL,       "Event Tester",      0,            0,            0,           1,           1,           0,                 0,           1,          0,            -1      },
-	{ "firefox",       NULL,       NULL,                1 << 1,       1,            0,           0,           0,           1,                 0,           -1,         0,            -1      },
+	{ "firefox",       NULL,       NULL,                1 << 1,       1,            0,           0,           0,           0,                 0,           -1,         0,            -1      },
 	{ "code-oss",      NULL,       NULL,                1 << 2,       1,            0,           0,           0,           0,                 0,           0,          0,            -1      },
 	{ "Steam",         NULL,       NULL,                1 << 7,       1,            0,           1,           1,           0,                 0,           0,          0,            -1      },
 	{ NULL,            NULL,       "Steam",             1 << 7,       1,            0,           0,           0,           0,                 0,           0,          1,            -1      },

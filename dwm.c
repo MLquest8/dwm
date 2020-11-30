@@ -104,7 +104,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
 enum { Manager, Xembed, XembedInfo, XLast }; /* Xembed atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkUser, ClkLtSymbol, ClkStatusText, ClkWinTitle,
-       ClkPower, ClkLock, ClkKeyboard, ClkLanguage,
+       ClkPower, ClkLock, ClkViewT, ClkWarpP, ClkKeyboard, ClkLanguage,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 enum { DirHor, DirVer, DirRotHor, DirRotVer, DirLast }; /* tiling dirs */
 
@@ -170,11 +170,8 @@ typedef struct {
 
 typedef struct Pertag Pertag;
 struct Monitor {
+	char lngsym[16];
 	char ltsymbol[16];
-	char pwrsym[8];
-	char lcksym[8];
-	char kbdsym[8];
-	char lngsym[8];
 	int nmaster;
 	int num;
 	int by;               /* bar geometry */
@@ -729,15 +726,19 @@ buttonpress(XEvent *e)
 		}
 		else if (ev->x < x + blw)
 			click = ClkUser;
-		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym))
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]))
 			click = ClkPower;
-		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym) - (int)TEXTW(m->lcksym))
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]))
 			click = ClkLock;
-		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym) - (int)TEXTW(m->lcksym) - (int)TEXTW(m->kbdsym))
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]))
+			click = ClkViewT;
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]))
+			click = ClkWarpP;
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]))
 			click = ClkKeyboard;
-		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym) - (int)TEXTW(m->lcksym) - (int)TEXTW(m->kbdsym) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym))
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym))
 			click = ClkLanguage;
-		else if (ev->x > selmon->ww - (int)TEXTW(m->pwrsym) - (int)TEXTW(m->lcksym) - (int)TEXTW(m->kbdsym) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym) - (int)TEXTW(m->ltsymbol))
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym) - (int)TEXTW(m->ltsymbol))
 			click = ClkLtSymbol;
 		else
 			click = ClkWinTitle;
@@ -993,6 +994,8 @@ createmon(void)
 {
 	Monitor *m;
 	unsigned int i, j;
+	XkbStateRec kbd_state;
+	XkbGetState(dpy, XkbUseCoreKbd, &kbd_state);
 
 	m = ecalloc(1, sizeof(Monitor));
 	m->tagset[0] = m->tagset[1] = startontag ? 1 : 0;
@@ -1011,10 +1014,7 @@ createmon(void)
 	m->ogappx = ogappx;
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
-	strncpy(m->pwrsym, pwrsym[0], sizeof m->pwrsym);
-	strncpy(m->lcksym, lcksym[0], sizeof m->lcksym);
-	strncpy(m->kbdsym, kbdsym[0], sizeof m->kbdsym);
-	strncpy(m->lngsym, lngsym[0], sizeof m->lngsym);
+	strncpy(m->lngsym, lngsym[kbd_state.group], sizeof m->lngsym);
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
 	m->pertag = ecalloc(1, sizeof(Pertag));
 	m->pertag->curtag = m->pertag->prevtag = 1;
@@ -1127,15 +1127,21 @@ drawbar(Monitor *m)
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
 		drw_setscheme(drw, scheme[SchemeNorm]);
-		tw = TEXTW(m->pwrsym);
+		tw = TEXTW(mscsym[0]);
 		tray -= tw;
-		drw_text(drw, tray, 0, tw, bh, lrpad / 2, m->pwrsym, 0);
-		tw = TEXTW(m->lcksym);
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, mscsym[0], 0);
+		tw = TEXTW(lcksym[m->keyslocked]);
 		tray -= tw;
-		drw_text(drw, tray, 0, tw, bh, lrpad / 2, m->lcksym, 0);
-		tw = TEXTW(m->kbdsym);
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, lcksym[m->keyslocked], 0);
+		tw = TEXTW(vntsym[m->viewontag]);
 		tray -= tw;
-		drw_text(drw, tray, 0, tw, bh, lrpad / 2, m->kbdsym, 0);
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, vntsym[m->viewontag], 0);
+		tw = TEXTW(wnfsym[m->warponfocus]);
+		tray -= tw;
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, wnfsym[m->warponfocus], 0);
+		tw = TEXTW(mscsym[1]);
+		tray -= tw;
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, mscsym[1], 0);
 		tw = TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym);
 		tray -= tw;
 		drw_text(drw, tray, 0, tw, bh, lrpad / 2, selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym, 0);
@@ -1504,9 +1510,9 @@ getuserinfo(void)
 	pw = getpwuid(geteuid());
 	gethostname(hostname, sizeof(hostname));
 
-	strcpy(ptext, pw->pw_name);
+	strncpy(ptext, pw->pw_name, sizeof(ptext) / 2 - 1);
 	strcat(ptext, "@");
-	strcat(ptext, hostname);
+	strncat(ptext, hostname, sizeof(ptext) / 2 - 1);
 }
 
 void
@@ -2786,10 +2792,6 @@ void
 togglekeys()
 {
 	selmon->keyslocked = !selmon->keyslocked;
-	if (selmon->keyslocked)
-		strcpy(selmon->lcksym, lcksym[1]);
-	else
-		strcpy(selmon->lcksym, lcksym[0]);
 	grabkeys();
 	drawbar(selmon);
 }
@@ -3719,6 +3721,8 @@ xkbeventnotify(XEvent *e)
 		XkbGetState(dpy, XkbUseCoreKbd, &kbd_state);
 		if (selmon->sel)
 			selmon->sel->kbdgrp = kbd_state.group;
+		else
+			strncpy(selmon->lngsym, lngsym[kbd_state.group], sizeof selmon->lngsym);
 		drawbar(selmon);
 	}
 }
