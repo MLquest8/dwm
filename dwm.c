@@ -104,7 +104,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
 enum { Manager, Xembed, XembedInfo, XLast }; /* Xembed atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkUser, ClkLtSymbol, ClkStatusText, ClkWinTitle,
-       ClkPower, ClkLock, ClkViewT, ClkWarpP, ClkKeyboard, ClkLanguage,
+       ClkPower, ClkLock, ClkViewT, ClkWarpP, ClkKeyboard, ClkLanguage, ClkAttachDir,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 enum { DirHor, DirVer, DirRotHor, DirRotVer, DirLast }; /* tiling dirs */
 
@@ -186,6 +186,7 @@ struct Monitor {
 	int topbar;
 	int showbar;
 	int showextrabar;
+	int attachdir;
 	int viewontag;
 	int keyslocked;
 	int hidevactags;
@@ -321,6 +322,7 @@ static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *);
 static void togglealttag();
+static void toggleattachdir(const Arg *arg);
 static void togglekeys();
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
@@ -738,7 +740,9 @@ buttonpress(XEvent *e)
 			click = ClkKeyboard;
 		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym))
 			click = ClkLanguage;
-		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym) - (int)TEXTW(m->ltsymbol))
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym) - (int)TEXTW(atdsym[m->attachdir]))
+			click = ClkAttachDir;
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym) - (int)TEXTW(atdsym[m->attachdir]) - (int)TEXTW(m->ltsymbol))
 			click = ClkLtSymbol;
 		else
 			click = ClkWinTitle;
@@ -1003,6 +1007,7 @@ createmon(void)
 	m->topbar = topbar;
 	m->showbar = showbar;
 	m->showextrabar = showextrabar;
+	m->attachdir = attachdirection;
 	m->viewontag = viewontag;
 	m->keyslocked = keyslocked;
 	m->hidevactags = hidevactags;
@@ -1145,6 +1150,9 @@ drawbar(Monitor *m)
 		tw = TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym);
 		tray -= tw;
 		drw_text(drw, tray, 0, tw, bh, lrpad / 2, selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym, 0);
+		tw = TEXTW(atdsym[m->attachdir]);
+		tray -= tw;
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, atdsym[m->attachdir], 0);	
 	}
 
 	if(m->lt[m->sellt]->arrange == monocle){
@@ -1657,12 +1665,12 @@ manage(Window w, XWindowAttributes *wa)
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloat].pixel);
 	if (c->isurgent)
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColUrgent].pixel);
-	switch(attachdirection){
+	switch(selmon->attachdir){
 		case 1:
 			attachabove(c);
 			break;
 		case 2:
-			attachaside(c);
+			attachtop(c);
 			break;
 		case 3:
 			attachbelow(c);
@@ -1671,7 +1679,7 @@ manage(Window w, XWindowAttributes *wa)
 			attachbottom(c);
 			break;
 		case 5:
-			attachtop(c);
+			attachaside(c);
 			break;
 		default:
 			attach(c);
@@ -2178,12 +2186,12 @@ sendmon(Client *c, Monitor *m)
 	detachstack(c);
 	c->mon = m;
 	c->tags = (m->tagset[m->seltags] ? m->tagset[m->seltags] : 1);
-	switch(attachdirection){
+	switch(m->attachdir){
 		case 1:
 			attachabove(c);
 			break;
 		case 2:
-			attachaside(c);
+			attachtop(c);
 			break;
 		case 3:
 			attachbelow(c);
@@ -2192,7 +2200,7 @@ sendmon(Client *c, Monitor *m)
 			attachbottom(c);
 			break;
 		case 5:
-			attachtop(c);
+			attachaside(c);
 			break;
 		default:
 			attach(c);
@@ -2697,6 +2705,18 @@ togglealttag()
 }
 
 void
+toggleattachdir(const Arg *arg)
+{
+	if (selmon->attachdir + arg->i < 0)
+		selmon->attachdir = 5;
+	else if (selmon->attachdir + arg->i > 5)
+		selmon->attachdir = 0;
+	else
+		selmon->attachdir += arg->i;
+	drawbar(selmon);
+}
+
+void
 togglebar(const Arg *arg)
 {
 	Monitor *m;
@@ -3073,12 +3093,12 @@ updategeom(void)
 					m->clients = c->next;
 					detachstack(c);
 					c->mon = mons;
-					switch(attachdirection){
+					switch(m->attachdir){
 					case 1:
 						attachabove(c);
 						break;
 					case 2:
-						attachaside(c);
+						attachtop(c);
 						break;
 					case 3:
 						attachbelow(c);
@@ -3087,7 +3107,7 @@ updategeom(void)
 						attachbottom(c);
 						break;
 					case 5:
-						attachtop(c);
+						attachaside(c);
 						break;
 					default:
 						attach(c);
@@ -3220,7 +3240,7 @@ void
 updatestatus(void)
 {
 	if (!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
-		strcpy(stext, "DWM-Orange Ver."VERSION);
+		strcpy(stext, "DWM Version "VERSION);
 	drawbar(selmon);
 	updatesystray();
 }

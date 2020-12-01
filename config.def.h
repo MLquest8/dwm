@@ -57,6 +57,8 @@ static const char *lcksym[]                  = { "\uF13E", "\uF023", "\uF23E" };
 static const char *vntsym[]                  = { "\uF2D0", "\uF2D2", "\uF3C1" };  
 static const char *wnfsym[]                  = { "\uF245", "\uF0E7", "\uF3C1" };
 static const char *lngsym[]                  = { "EN", "KA", "RU", "DE", "CH" };
+static const char *atdsym[]                  = { "\uF102", "\uF106", "\uF0D8",
+                                                 "\uF107", "\uF103", "\uF0D7" };
 /*  DWM tags                                                                  */
 static const char *tags[]                    = { "\uF406", "\uF269", "\uF09B",
                                                  "\uF04B", "\uF03D", "\uF130",
@@ -69,13 +71,13 @@ static const float facts[3]      = { 1.1,    1.1,    1.1 }; /* Tiling facts   */
 static const int nmaster         = 1; /* Number of clients in master area     */
 static const int resizehints     = 0; /* 1 means size hints in tiled resizals */
 static const int decorhints      = 1; /* 1 means respect decoration hints     */
-static const int attachdirection = 5; /* 0 default, 1 above, 2 aside, 3 below,
-                                                             4 bottom, 5 top  */
+static const int attachdirection = 4; /* 0 top, 1 above, 2 on top of stack,
+                                         3 below, 4 bottom, 5 below I master  */
 /*  DWM layout symbols                                                        */
 static const Layout layouts[] = {
 /*  Symbol        Layout                                                      */
-    { "[+]",      tile }, /* Tiling layout with xtile behaviors patched in    */
-    { "[*]",      NULL }, /* No layout function means floating behavior       */
+    { "[+]",      tile },    /* Tiling layout with xtile behaviors patched in */
+    { "[*]",      NULL },    /* No layout function means floating behavior    */
     { "[M]",      monocle }, /* Classic monocle layout                        */
     { NULL,       NULL },
 };
@@ -100,7 +102,13 @@ static const char *dmenucmd[] = { "dmenu_run",
 /*  Helper for spawning shell commands in the pre dwm-5.0 fashion             */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
-
+/*===================================Signals==================================*/
+/* signum must be greater than 0 */
+/* trigger signals using `xsetroot -name "fsignal:<signum>"` */
+static Signal signals[] = {
+	/* signum       function        argument  */
+	{ 99,           quit,           {0}       },
+};
 /*====================================Keys====================================*/
 /*  DWM macros                                                                */
 #define MODKEY Mod4Mask
@@ -134,6 +142,10 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           49,        cyclelayout,        {.i = -1 } },
 	{ MODKEY|ShiftMask,             57,        incnmaster,         {.i = +1 } },
 	{ MODKEY|ControlMask,           57,        incnmaster,         {.i = -1 } },
+	{ MODKEY|ShiftMask,             40,        toggleattachdir,    {.i = +1 } },
+	{ MODKEY|ControlMask,           40,        toggleattachdir,    {.i = -1 } },
+	{ MODKEY,                       54,        togglewarp,                {0} },
+	{ MODKEY,                       55,        toggleviewontag,           {0} },
 	{ MODKEY,                       41,        setfullscreenlayout,       {0} },
 	{ MODKEY|ShiftMask,             41,        setfullscreennative,       {0} },
 	{ MODKEY|ControlMask,           41,        setfullscreenforced,       {0} },
@@ -154,9 +166,7 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           56,        togglebar,           {.i = 2 } },
 	{ MODKEY|ShiftMask|ControlMask, 56,        togglebar,          {.i = -1 } },
 	{ MODKEY,                       28,        togglealttag,              {0} },
-	{ MODKEY|ShiftMask,             28,        togglehidevactags,         {0} },
-	{ MODKEY,                       54,        togglewarp,                {0} },
-	{ MODKEY,                       55,        toggleviewontag,           {0} },
+	{ MODKEY|ShiftMask,             28,        togglehidevactags,         {0} },	
 	{ MODKEY,                       59,        focusmon,           {.i = -1 } },
 	{ MODKEY,                       60,        focusmon,           {.i = +1 } },
 	{ MODKEY|ShiftMask,             59,        tagmon,             {.i = -1 } },
@@ -192,7 +202,6 @@ static Key altkeys[] = {
 	{ MODKEY,                       110,       togglekeys,                {0} },
 	{ MODKEY|ShiftMask|ControlMask, 9,         quit,                      {0} },
 };
-
 /*===================================Buttons==================================*/
 /*  DWM button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
@@ -215,20 +224,13 @@ static Button buttons[] = {
 	{ ClkWarpP,             0,              Button1,        togglewarp,     {0} },
 	{ ClkKeyboard,          0,              Button1,        spawn,          {.v = dwmman } },
 	{ ClkLanguage,          0,              Button1,        spawn,          {.v = xkbman } },
+	{ ClkAttachDir,         0,              Button1,        toggleattachdir,{.i = +1 } },
+	{ ClkAttachDir,         0,              Button3,        toggleattachdir,{.i = -1 } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        zoom,           {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 	{ ClkStatusText,        MODKEY,         Button1,        spawn,          {.v = termcmd } },
 };
-
-/*===================================Signals==================================*/
-/* signum must be greater than 0 */
-/* trigger signals using `xsetroot -name "fsignal:<signum>"` */
-static Signal signals[] = {
-	/* signum       function        argument  */
-	{ 99,           quit,           {0}       },
-};
-
 /*===================================Rules====================================*/
 static const Rule rules[] = {
 	/* xprop(1):
