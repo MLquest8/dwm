@@ -103,11 +103,11 @@ static const char *dmenucmd[] = { "dmenu_run",
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /*===================================Signals==================================*/
-/* signum must be greater than 0 */
-/* trigger signals using `xsetroot -name "fsignal:<signum>"` */
+/*  Signum must be greater than 0                                             */
+/*  Trigger signals using `xsetroot -name "fsignal:<signum>"                  */
 static Signal signals[] = {
-	/* signum       function        argument  */
-	{ 99,           quit,           {0}       },
+	/* signum                      function                      argument */
+	{ 99,                          quit,                              {0} },
 };
 /*====================================Keys====================================*/
 /*  DWM macros                                                                */
