@@ -5,9 +5,11 @@ DWM \- Dynamic Window Manager
 .B dwm
 .RB [ \-v ]
 .SH DESCRIPTION
-DWM is a dynamic window manager for X. It manages windows in tiled, monocle
-and floating layouts. Either layout can be applied dynamically, optimising the
-environment for the application in use and the task performed.
+DWM is a dynamic window manager for X. The 'Orange' version diviation is a
+heavily modified fork that has taken on a life of its own while staying true to
+the spirit of the original - simple, fast, secure. It manages windows in tiled,
+monocle and floating layouts. Either layout can be applied dynamically,
+optimising the environment for the application in use and the task performed.
 .P
 In tiled layouts windows are managed in a master and stacking area. The master
 area contains one window by default, and the stacking area contains all other
@@ -22,10 +24,10 @@ Windows are grouped by tags. Each window can be tagged with one or multiple
 tags. Selecting certain tags displays all windows with these tags.
 .P
 Each screen contains a small status bar which displays all available tags,
-user@hostname, the title of the focused window, the layout, the keyboard layout,
-easy access button to this manual, "pointer warp on focused" function
-status/toggle button, "view on tag" function status/toggle button, "keyboard
-lock" status/toggle button and the "power" button. A floating window is indicated
+user@hostname, the title of the focused window, the layout, attach direction
+indicator, the keyboard layout, easy access button to this manual, 'warp on
+focus' status/toggle button, 'view on tag' function status/toggle button, 'keyboard
+lock' status/toggle button and the 'power' button. A floating window is indicated
 with an empty square and a maximised floating window is indicated with a filled
 square before the windows title.  The selected tags are indicated with a
 different color. The tags of the focused window are indicated with a filled square
@@ -33,7 +35,7 @@ in the top left corner.  The tags which are applied to one or more windows are
 indicated with an empty square in the top left corner.
 .P
 Each screen contains a small (extra) status bar which displays text read from the
-root window name property (xsetroot -name "text") and a built-in "system tray."
+root window name property (xsetroot -name 'text') and a built-in 'system tray.'
 .P
 DWM draws a small border around windows to indicate the focus/urgency state.
 .SH OPTIONS
@@ -296,13 +298,11 @@ Throw the focused window to the tag.
 .TP
 .B WinKey\-Button3
 Share the focused window with the tag.
-
 .SS User@Hostname
 .TP
 .B Button1
 Spawn
 .BR neofetch(1).
-
 .SS Window title
 .TP
 .B Button1
@@ -313,7 +313,6 @@ Start
 Spawn
 .BR dmenu(1)
 for launching other programs.
-
 .SS Layout symbol
 .TP
 .B Button1
@@ -324,7 +323,6 @@ Toggle floating layout.
 .TP
 .B Button3
 Toggle previous layout.
-
 .SS Attach direction
 .TP
 .B Button1
@@ -335,39 +333,32 @@ Set 'attach direction' to default.
 .TP
 .B Button3
 Toggle previous 'attach direction.'
-
 .SS Keyboard layout
 .TP
 .B Button1
 Open manual page for
 .BR setxkbmap(1).
-
 .SS Keyboard shortcuts
 .TP
 .B Button1
 Open manual page for
 .BR dwm(1).
-
 .SS Warp pointer
 .TP
 .B Button1
 Toggle 'warp on focus.'
-
 .SS View on tag
 .TP
 .B Button1
 Toggle 'view on tag.'
-
 .SS Keyboard lock
 .TP
 .B Button1
 Toggle 'Keyboard lock.'
-
 .SS Power
 .TP
 .B Button1
 Open 'shutdown' menu.
-
 .SS Window
 .TP
 .B WinKey\-Button1
@@ -378,13 +369,11 @@ Toggles focused window between floating and tiled state.
 .TP
 .B WinKey\-Button3
 Resize focused window while dragging. Tiled windows will be toggled to the floating state.
-
 .SS Extra bar
 .TP
 .B WinKey\-Button1
 Start
 .BR st(1)
-
 .SH CUSTOMIZATION
 DWM is customized by creating a custom config.h and (re)compiling the source
 code. This keeps it fast, secure and simple.
