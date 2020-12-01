@@ -1,11 +1,11 @@
-.TH DWM 1 dwm\-VERSION
+.TH DWM 1 DWM\-VERSION
 .SH NAME
-dwm \- dynamic window manager
+DWM \- Dynamic Window Manager
 .SH SYNOPSIS
 .B dwm
 .RB [ \-v ]
 .SH DESCRIPTION
-dwm is a dynamic window manager for X. It manages windows in tiled, monocle
+DWM is a dynamic window manager for X. It manages windows in tiled, monocle
 and floating layouts. Either layout can be applied dynamically, optimising the
 environment for the application in use and the task performed.
 .P
@@ -35,12 +35,12 @@ indicated with an empty square in the top left corner.
 Each screen contains a small (extra) status bar which displays text read from the
 root window name property (xsetroot -name "text") and a built-in "system tray."
 .P
-dwm draws a small border around windows to indicate the focus/urgency state.
+DWM draws a small border around windows to indicate the focus/urgency state.
 .SH OPTIONS
 .TP
 .B \-v
 prints version information to standard output, then exits.
-.SH USAGE (Keyboard)
+.SH USAGE(Keyboard)
 .SS Main commands
 .TP
 .B WinKey\-Return
@@ -53,441 +53,322 @@ Spawn
 for launching other programs.
 .TP
 .B WinKey\-ESC
-Kill the currently
-.BR focused
-window
+Kill the currently focused window.
 .TP
 .B WinKey\-Shift\-ESC
-Kill all
-.BR unfocused
-windows on the focused screen
+Kill all unfocused windows on the focused screen.
 .TP
 .B WinKey\-Control\-ESC
-Open
-.BR 'shutdown'
-menu
+Open 'shutdown' menu.
 .TP
 .B WinKey\-Control\-Shift\-ESC
 Kill
-.BR dwm
+.BR dwm(1).
 .TP
 .B WinKey\-Home
-Toggle
-.BR dwm
-.BR keyboard
-.BR lock
-(disable all shortcuts except 'quit dwm' and 'toggle keyboard lock')
+Toggle keyboard lock (disable all shortcuts except 'quit' and 'toggle keyboard lock.')
 .SS Window functions
 .TP
 .B WinKey\-Space
-Toggle focused window between
-.BR tiled
-and
-.BR floating
-state.
+Toggle focused window between tiled and floating state.
 .TP
 .B WinKey\-Shift\-f
-Toggle focused window
-.BR native
-.BR fullscreen
-mode if available
+Toggle focused window native fullscreen mode if available.
 .TP
 .B WinKey\-Control\-f
-Force focused window into
-.BR pseudo
-.BR fullscreen
-mode
+Force focused window into pseudo fullscreen mode.
 .TP
 .B WinKey\-j
-Focus the 
-.BR previous
-window on the focused screen
+Focus previous window on the focused screen.
 .TP
 .B WinKey\-Shift\-j
-Push the focused window into the
-.BR previous
-spot on the focused screen
+Push the focused window into the previous spot on the focused screen.
 .TP
 .B WinKey\-k
-Focus the 
-.BR next
-window on the focused screen
+Focus next window on the focused screen.
 .TP
 .B WinKey\-Shift\-j
-Push the focused window into the
-.BR next
-spot on the focused screen
+Push the focused window into the next spot on the focused screen.
 .TP
 .B WinKey\-q
-Focus the
-.BR last
-.BR focused
-.BR window
-on the focused screen
+Focus the last focused window on the focused screen.
 .TP
 .B WinKey\-Shift\-q
-Push the focused window into the spot of the
-.BR last
-.BR focused
-.BR window
-on the focused screen
+Push the focused window into the spot of the last focused window on the focused screen.
 .TP
 .B WinKey\-w
-Focus the window in the
-.BR first
-spot
+Focus the window in the first spot.
 .TP
 .B WinKey\-Shift\-w
-Push the focused window into the 
-.BR first
-spot
+Push the focused window into the first spot.
 .TP
 .B WinKey\-a
-Focus the window in the
-.BR second
-spot
+Focus the window in the second spot.
 .TP
 .B WinKey\-Shift\-a
-Push the focused window into the 
-.BR second
-spot
+Push the focused window into the second spot.
 .TP
 .B WinKey\-z
-Focus the window in the
-.BR third
-spot
+Focus the window in the third spot.
 .TP
 .B WinKey\-Shift\-z
-Push the focused window into the 
-.BR third
-spot
+Push the focused window into the third spot.
 .TP
 .B WinKey\-x
-Focus the window in the
-.BR last
-spot
+Focus the window in the last spot.
 .TP
 .B WinKey\-Shift\-x
-Push the focused window into the 
-.BR last
-spot
+Push the focused window into the last spot.
 .TP
 .B WinKey\-Shift\-d
-Toggle next
-.BR 'attachdirection'
-for the selected screen
+Toggle next 'attach direction' for the selected screen.
 .TP
 .B WinKey\-Control\-d
-Toggle previous
-.BR 'attachdirection'
-for the selected screen
+Toggle previous 'attach direction' for the selected screen.
+.B WinKey\-Control\-Shift\-d
+Set 'attach direction' to default for the selected screen.
 .TP
 .B WinKey\-c
-Toggle
-.BR 'warp
-.BR on
-.BR focus' 
-function (warps pointer to the center of the focused window when on)
+Toggle 'warp on focus' function (warps pointer to the center of the focused window when on.)
 .SS Layout functions
 .TP
 .B WinKey\-`
-Switch to the
-.BR last
-used layout.
+Switch to the last used layout.
 .TP
 .B WinKey\-Shift\-`
-Switch to
-.BR next
-layout
+Switch to next layout.
 .TP
 .B WinKey\-Control\-`
-Switch to
-.BR previous
-layout
+Switch to previous layout.
 .TP
 .B WinKey\-Shift\-Control\-f
-Toggle
-.BR monocle
-layout
-.SS Tiled layout manipulation functions
+Toggle monocle layout.
+.SS Tiled layout manipulation functions.
 .TP
 .B WinKey\-Shift\-n
-Increase
-.BR nmaster
-by 1 in tiled layout
+Increase 'nmaster' by 1 in 'tiled' layout.
 .TP
 .B WinKey\-Control\-n
-Decrease
-.BR nmaster
-by 1 in tiled layout
+Decrease 'nmaster' by 1 in 'tiled' layout.
 .TP
 .B WinKey\-r
-Move
-.BR master
-.BR area
-around the screen in clockwise direction
+Move master area around the screen in clockwise direction.
 .TP
 .B WinKey\-Shift\-r
-Toggle the alignment of windows in
-.BR master
-.BR area
-between vertical and horizontal
+Toggle the alignment of windows in master area between vertical and horizontal.
 .TP
 .B WinKey\-Control\-r
-Toggle the alignment of windows in
-.BR stack
-.BR area
-between vertical and horizontal
+Toggle the alignment of windows in stack area between vertical and horizontal.
 .TP
 .B WinKey\-Control\-Shift\-r
-Execute all 3
-.BR tiled
-.BR layout
-(listed above) manipulation functions at once
+Execute all 3 'tiled' layout (listed above) manipulation functions at once.
 .TP
 .B WinKey\-h
-Decrease the size of the
-.BR master
-.BR area.
+Decrease size of the master area.
 .TP
 .B WinKey\-Shift\-h
-Decrease the size of the windows in the
-.BR master
-.BR area.
+Decrease size of windowd in the master area.
 .TP
 .B WinKey\-Control\-h
-Decrease the size of the windows in the
-.BR stack
-.BR area.
+Decrease size of windowd in the stack area.
 .TP
 .B WinKey\-Control\-Shift\-h
-Execute all 3 size
-.BR decreasing
-functions (listed above)
+Execute all 3 size decreasing functions (listed above.)
 .TP
 .B WinKey\-l
-Increase the size of the
-.BR master
-.BR area.
+Increase size of the master area.
 .TP
 .B WinKey\-Shift\-l
-Increase the size of the windows in the
-.BR master
-.BR area.
+Increase size of windowd in the master area.
 .TP
 .B WinKey\-Control\-l
-Increase the size of the windows in the
-.BR stack
-.BR area.
+Increase size of windows in the stack area.
 .TP
 .B WinKey\-Control\-Shift\-l
-Execute all 3 size
-.BR increasing
-functions (listed above)
+Execute all 3 size increasing functions (listed above.)
 .SS Tag functions
 .TP
 .B WinKey\-[1..9]
-Go to the 
-.BR nth
-tag
+Go to nth tag
 .TP
 .B WinKey\-Shift\-[1..9]
-Throw the focused window to 
-.BR nth
-tag
+Throw the focused window to nth tag.
 .TP
 .B WinKey\-Control\-[1..9]
-View/remove all windows from
-.BR nth
-tag
+View/remove all windows from nth tag.
 .TP
 .B WinKey\-Control\-Shift\-[1..9]
-Share all windows on current tag with
-.BR nth
-tag
+Share the focused window with the nth tag.
 .TP
 .B WinKey\-0
-View
-.BR all
-windows with
-.BR all
-tag.
+View all windows on all tags.
 .TP
 .B WinKey\-Shift\-0
-View the focused window on
-.BR all
-tags
+View the focused window on all tags.
 .TP
 .B WinKey\-Tab
-Toggle to the
-.BR last
-selected tags
+Toggle to last selected tags.
 .TP
 .B WinKey\-Shift\-Tab
-Go to the tag on the
-.BR left
-of the currently selected
+Go to tag on the left of the currently selected.
 .TP
 .B WinKey\-Control\-Tab
-Go to the tag on the
-.BR right
-of the currently selected
+Go to tag on the right of the currently selected.
 .TP
 .B WinKey\-v
-Toggle
-.BR 'view
-.BR on
-.BR tag' 
-function (follow the window to the tag it was thrown to)
+Toggle 'view on tag' function (follow the window to the tag it was thrown to.)
 .SS Monitor functions
 .TP
 .B WinKey\-,
-Focus
-.BR previous
-monitor
+Focus previous monitor.
 .TP
 .B WinKey\-Shift\-,
-Tag
-.BR previous
-monitor
+Tag previous monitor.
 .TP
 .B WinKey\-.
-Focus
-.BR next
-monitor
+Focus next monitor.
 .TP
 .B WinKey\-Shift\-.
-Tag
-.BR next
-monitor
+Tag next monitor
 .SS Cosmetic functions
 .TP
 .B WinKey\-b
-Toggle
-.BR bars
-on the selected screen
+Toggle bars on the selected screen.
 .TP
 .B WinKey\-Shift\-b
-Toggle
-.BR main
-.BR bar
-on the selected screen
+Toggle main bar on the selected screen.
 .TP
 .B WinKey\-Control\-b
-Toggle
-.BR extra
-.BR bar
-on the selected screen
+Toggle extra bar on the selected screen.
 .TP
 .B WinKey\-Control\-Shift\-b
-Swap
-.BR bar
-positions
+Swap bar positions.
 .TP
 .B WinKey\-t
-Toggle between
-.BR tags
-.BR appearances
-on the selected screen
+Toggle between tags appearances on the selected screen.
 .TP
 .B WinKey\-Shift\-t
-Hide
-.BR vacant
-.BR tags
-on the selected screen
+Hide vacant tags on the selected screen.
 .TP
 .B WinKey\-Shift\-p
-.BR Increase
-window
-.BR border
-size on the selected screen
+Increase window border size on the selected screen.
 .TP
 .B WinKey\-Control\-p
-.BR Decrease
-window
-.BR border
-size on the selected screen
+Decrease window border size on the selected screen.
 .TP
 .B WinKey\-Control\-Shift\-p
-set window
-.BR border
-size to
-.BR default
-on the selected screen
+Set window border size to default on the selected screen.
 .TP
 .B WinKey\-i
-Toggle
-.BR gaps
-in
-.BR monocle
-layout on the selected screen
+Toggle gaps in 'monocle' layout on the selected screen.
 .TP
 .B WinKey\-Shift\-i
-Increase size of the
-.BR inner
-.BR gaps
-on the selected screen
+Increase size of inner gaps on the selected screen.
 .TP
 .B WinKey\-Control\-i
-Decrease size of the
-.BR inner
-.BR gaps
-on the selected screen
+Decrease size of inner gaps on the selected screen.
 .TP
 .B WinKey\-Control\-Shift\-i
-Set size of
-.BR inner
-.BR gaps
-to 
-.BR 0
-on the selected screen
+Set size of inner gaps to default on the selected screen.
 .TP
 .B WinKey\-i
-Toggle
-.BR gaps
-in
-.BR tiled
-layout when only 1 window is visible on the selected screen
+Toggle gaps in 'tiled' layout when only 1 window is visible on the selected screen.
 .TP
 .B WinKey\-Shift\-i
-Increase size of the
-.BR outer
-.BR gaps
-on the selected screen
+Increase size of outer gaps on the selected screen.
 .TP
 .B WinKey\-Control\-i
-Decrease size of the
-.BR outer
-.BR gaps
-on the selected screen
+Decrease size of outer gaps on the selected screen.
 .TP
 .B WinKey\-Control\-Shift\-i
-Set size of
-.BR outer
-.BR gaps
-to 
-.BR 0
-on the selected screen
-
-
-
-.SH USAGE (Mouse)
-
-.SS Status bar
+Set size of outer gaps to default on the selected screen.
+.SH USAGE(Mouse)
+.SS Tags
 .TP
 .B Button1
-click on a tag label to display all windows with that tag, click on the layout
-label toggles between tiled and floating layout.
+Switch to the selected tag.
 .TP
 .B Button3
-click on a tag label adds/removes all windows with that tag to/from the view.
+Add/remove all windows from the tag to the currently selected tags.
 .TP
 .B WinKey\-Button1
-click on a tag label applies that tag to the focused window.
+Throw the focused window to the tag.
 .TP
 .B WinKey\-Button3
-click on a tag label adds/removes that tag to/from the focused window.
-.SS Mouse commands
+Share the focused window with the tag.
+
+.SS User@Hostname
+.TP
+.B Button1
+Spawn
+.BR neofetch(1).
+
+.SS Window title
+.TP
+.B Button1
+Start
+.BR st(1).
+.TP
+.B Button3
+Spawn
+.BR dmenu(1)
+for launching other programs.
+
+.SS Layout symbol
+.TP
+.B Button1
+Toggle next layout.
+.TP
+.B Button2
+Toggle floating layout.
+.TP
+.B Button3
+Toggle previous layout.
+
+.SS Attach direction
+.TP
+.B Button1
+Toggle next 'attach direction.'
+.TP
+.B Button2
+Set 'attach direction' to default.
+.TP
+.B Button3
+Toggle previous 'attach direction.'
+
+.SS Keyboard layout
+.TP
+.B Button1
+Open manual page for
+.BR setxkbmap(1).
+
+.SS Keyboard shortcuts
+.TP
+.B Button1
+Open manual page for
+.BR dwm(1).
+
+.SS Warp pointer
+.TP
+.B Button1
+Toggle 'warp on focus.'
+
+.SS View on tag
+.TP
+.B Button1
+Toggle 'view on tag.'
+
+.SS Keyboard lock
+.TP
+.B Button1
+Toggle 'Keyboard lock.'
+
+.SS Power
+.TP
+.B Button1
+Open 'shutdown' menu.
+
+.SS Window
 .TP
 .B WinKey\-Button1
 Move focused window while dragging. Tiled windows will be toggled to the floating state.
@@ -497,13 +378,21 @@ Toggles focused window between floating and tiled state.
 .TP
 .B WinKey\-Button3
 Resize focused window while dragging. Tiled windows will be toggled to the floating state.
+
+.SS Extra bar
+.TP
+.B WinKey\-Button1
+Start
+.BR st(1)
+
 .SH CUSTOMIZATION
-dwm is customized by creating a custom config.h and (re)compiling the source
+DWM is customized by creating a custom config.h and (re)compiling the source
 code. This keeps it fast, secure and simple.
 .SH SEE ALSO
 .BR dmenu (1),
 .BR st (1)
 .SH ISSUES
+.SS Java
 Java applications which use the XToolkit/XAWT backend may draw grey windows
 only. The XToolkit/XAWT backend breaks ICCCM-compliance in recent JDK 1.5 and early
 JDK 1.6 versions, because it assumes a reparenting window manager. Possible workarounds
@@ -517,5 +406,10 @@ or
 (to pretend that a non-reparenting window manager is running that the
 XToolkit/XAWT backend can recognize) or when using OpenJDK setting the environment variable
 .BR _JAVA_AWT_WM_NONREPARENTING=1 .
+.SS Possible multi-monitor issues
+Although all DWM functions support multi-monitor setups, due to lack of testing there might
+be some (easily fixable) unexpected behaviour issues with multi-monitor setups.
 .SH BUGS
-Send all bug reports with a patch to hackers@suckless.org.
+Open issue on Github page with a detailed description and how to repplicate the bug.
+.TP
+Send all bug reports with a patch to miskuzius at gmail dot com.

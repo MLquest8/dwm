@@ -2410,7 +2410,9 @@ setfullscreenlayout(const Arg *arg)
 void
 setigaps(const Arg *arg)
 {
-	if ((arg->i == 0) || (selmon->igappx + arg->i < 0))
+	if (arg->i == 0)
+		selmon->igappx = igappx;
+	else if (selmon->igappx + arg->i < 0)
 		selmon->igappx = 0;
 	else
 		selmon->igappx += arg->i;
@@ -2420,7 +2422,9 @@ setigaps(const Arg *arg)
 void
 setogaps(const Arg *arg)
 {
-	if ((arg->i == 0) || (selmon->ogappx + arg->i < 0))
+	if (arg->i == 0)
+		selmon->ogappx = ogappx;
+	else if (selmon->ogappx + arg->i < 0)
 		selmon->ogappx = 0;
 	else
 		selmon->ogappx += arg->i;
@@ -2707,7 +2711,9 @@ togglealttag()
 void
 toggleattachdir(const Arg *arg)
 {
-	if (selmon->attachdir + arg->i < 0)
+	if (arg->i == 0)
+		selmon->attachdir = attachdirection;
+	else if (selmon->attachdir + arg->i < 0)
 		selmon->attachdir = 5;
 	else if (selmon->attachdir + arg->i > 5)
 		selmon->attachdir = 0;
