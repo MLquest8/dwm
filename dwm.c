@@ -329,6 +329,8 @@ static void togglefloating(const Arg *arg);
 static void togglegapsforone();
 static void togglegapsformonocle();
 static void togglehidevactags();
+static void toggleisfakefs();
+static void toggleispermanent();
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
 static void toggleviewontag();
@@ -852,7 +854,7 @@ clientmessage(XEvent *e)
 			c->h = c->oldh = wa.height;
 			c->oldbw = wa.border_width;
 			c->bw = 0;
-			c->isfloating = True;
+			c->isfloating = 1;
 			/* reuse tags field as mapped status */
 			c->tags = 1;
 			updatesizehints(c);
@@ -1201,6 +1203,10 @@ drawbar(Monitor *m)
 			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
 			if (m->sel->isfloating)
 				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
+			if (m->sel->isfakefullscreen)
+				drw_rect(drw, x + boxs, boxs + 5, boxw, boxw, m->sel->isfullscreen, 0);
+			if (m->sel->ispermanent)
+				drw_rect(drw, x + boxs, boxs + 10, boxw, boxw, m->sel->ispermanent, 0);
 		} else {
 			drw_setscheme(drw, scheme[SchemeNorm]);
 			drw_rect(drw, x, 0, w, bh, 1, 1);
@@ -2811,6 +2817,22 @@ void
 togglehidevactags()
 {
 	selmon->hidevactags = !selmon->hidevactags;
+	drawbar(selmon);
+}
+
+void
+toggleisfakefs()
+{
+	if (selmon->sel->isfullscreen)
+		return;
+	selmon->sel->isfakefullscreen = !selmon->sel->isfakefullscreen;
+	drawbar(selmon);
+}
+
+void
+toggleispermanent()
+{
+	selmon->sel->ispermanent = !selmon->sel->ispermanent;
 	drawbar(selmon);
 }
 

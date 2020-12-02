@@ -24,15 +24,19 @@ Windows are grouped by tags. Each window can be tagged with one or multiple
 tags. Selecting certain tags displays all windows with these tags.
 .P
 Each screen contains a small status bar which displays all available tags,
-user@hostname, the title of the focused window, the layout, attach direction
-indicator, the keyboard layout, easy access button to this manual, 'warp on
+user@hostname, the title of the focused window, attach direction indicator,
+the layout,  the keyboard layout, easy access button to this manual, 'warp on
 focus' status/toggle button, 'view on tag' function status/toggle button, 'keyboard
 lock' status/toggle button and the 'power' button. A floating window is indicated
-with an empty square and a maximised floating window is indicated with a filled
-square before the windows title.  The selected tags are indicated with a
-different color. The tags of the focused window are indicated with a filled square
-in the top left corner.  The tags which are applied to one or more windows are
-indicated with an empty square in the top left corner.
+with an empty square and a fixed floating window is indicated with a filled
+square before the windows title. Another empty square below the first one indicates
+that the window has 'isfakefullscreen' rule set (only allows the window to
+fullscreen into space currently given to it;) the square is filled if the fullscreen
+window is currently fullscreen. The third square indicates that the window has
+'ispermanent' rule set (disallows closing of the window by DWM.) The selected tags
+are indicated with a different color. The tags of the focused window are indicated
+with a filled square in the top left corner.  The tags which are applied to one or
+more windows are indicated with an empty square in the top left corner.
 .P
 Additionally a screen may contain a small (extra) status bar if it is enabled (default),
 and the screen is currently focused or has the 'system tray' pinned to it. This bar displays 
@@ -81,6 +85,12 @@ Toggle focused window native fullscreen mode if available.
 .TP
 .B WinKey\-Control\-f
 Force focused window into pseudo fullscreen mode.
+.TP
+.B WinKey\-Control\-Shift\-f
+Toggle 'isfakefullscreen' rule for the focused window.
+.TP
+.B WinKey\-Control\-Shift\-Space
+Toggle 'ispermanent' rule for the focused window.
 .TP
 .B WinKey\-j
 Focus previous window on the focused screen.
@@ -316,16 +326,6 @@ Start
 Spawn
 .BR dmenu(1)
 for launching other programs.
-.SS Layout symbol
-.TP
-.B Button1
-Toggle next layout.
-.TP
-.B Button2
-Toggle floating layout.
-.TP
-.B Button3
-Toggle previous layout.
 .SS Attach direction
 .TP
 .B Button1
@@ -336,6 +336,16 @@ Set 'attach direction' to default.
 .TP
 .B Button3
 Toggle previous 'attach direction.'
+.SS Layout symbol
+.TP
+.B Button1
+Toggle next layout.
+.TP
+.B Button2
+Toggle floating layout.
+.TP
+.B Button3
+Toggle previous layout.
 .SS Keyboard layout
 .TP
 .B Button1
@@ -376,7 +386,7 @@ Resize focused window while dragging. Tiled windows will be toggled to the float
 .TP
 .B WinKey\-Button1
 Open manual page for
-.BR xsetroot(1)
+.BR xsetroot(1).
 .SH CUSTOMIZATION
 DWM is customized by creating a custom config.h and (re)compiling the source
 code. This keeps it fast, secure and simple.
@@ -402,6 +412,5 @@ XToolkit/XAWT backend can recognize) or when using OpenJDK setting the environme
 Although all DWM functions support multi-monitor setups, due to lack of testing there might
 be some (easily fixable) unexpected behaviour issues with multi-monitor setups.
 .SH BUGS
-Open issue on Github page with a detailed description and how to repplicate the bug.
-.TP
-Send all bug reports with a patch to miskuzius at gmail dot com.
+Open issue on Github page with a detailed description and how to repplicate the bug or
+send the bug report with a patch to miskuzius at gmail dot com.
