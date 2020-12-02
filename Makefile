@@ -38,6 +38,13 @@ dist: clean
 	gzip dwm-${VERSION}.tar
 	rm -rf dwm-${VERSION}
 
+scripts:
+	for script in ${SCR} ; do \
+		cp -f Scripts/$$script ${DESTDIR}${PREFIX}/bin ; \
+		chmod 755 ${DESTDIR}${PREFIX}/bin/$$script ; \
+		chmod +x ${DESTDIR}${PREFIX}/bin/$$script ; \
+	done
+
 install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
 	cp -f dwm ${DESTDIR}${PREFIX}/bin
