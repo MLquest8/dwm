@@ -86,6 +86,7 @@ static const char *termcmd[]           = { "st", NULL };
 static const char *dwmpwr[]            = { "dwmpwr", NULL };
 static const char *dwmusr[]            = { "st", "dwmusr", NULL };
 static const char *dwmman[]            = { "st", "man", "dwm", NULL };
+static const char *xsrman[]            = { "st", "man", "xsetroot", NULL };
 static const char *xkbman[]            = { "st", "man", "setxkbmap", NULL };
 /*===================================Dmenu====================================*/
 /*  Dmenu appearance settings                                                 */
@@ -231,7 +232,7 @@ static Button buttons[] = {
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        zoom,           {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
-	{ ClkStatusText,        MODKEY,         Button1,        spawn,          {.v = termcmd } },
+	{ ClkStatusText,        MODKEY,         Button1,        spawn,          {.v = xsrman } },
 };
 /*===================================Rules====================================*/
 static const Rule rules[] = {

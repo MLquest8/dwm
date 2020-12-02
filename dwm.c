@@ -740,10 +740,10 @@ buttonpress(XEvent *e)
 			click = ClkKeyboard;
 		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym))
 			click = ClkLanguage;
-		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym) - (int)TEXTW(atdsym[m->attachdir]))
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym) - (int)TEXTW(m->ltsymbol))
+			click = ClkLtSymbol;	
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym) - (int)TEXTW(m->ltsymbol) - (int)TEXTW(atdsym[m->attachdir]))
 			click = ClkAttachDir;
-		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym) - (int)TEXTW(atdsym[m->attachdir]) - (int)TEXTW(m->ltsymbol))
-			click = ClkLtSymbol;
 		else
 			click = ClkWinTitle;
 	} else if ((c = wintoclient(ev->window))) {
@@ -1150,9 +1150,6 @@ drawbar(Monitor *m)
 		tw = TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym);
 		tray -= tw;
 		drw_text(drw, tray, 0, tw, bh, lrpad / 2, selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym, 0);
-		tw = TEXTW(atdsym[m->attachdir]);
-		tray -= tw;
-		drw_text(drw, tray, 0, tw, bh, lrpad / 2, atdsym[m->attachdir], 0);	
 	}
 
 	if(m->lt[m->sellt]->arrange == monocle){
@@ -1167,6 +1164,9 @@ drawbar(Monitor *m)
 	tray -= w;
 	drw_setscheme(drw, scheme[m->sel ? SchemeSel : SchemeNorm]);
 	drw_text(drw, tray, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
+	tw = TEXTW(atdsym[m->attachdir]);
+	tray -= tw;
+	drw_text(drw, tray, 0, tw, bh, lrpad / 2, atdsym[m->attachdir], 0);
 
 	for (c = m->clients; c; c = c->next) {
 		occ |= c->tags == 255 ? 0 : c->tags;
@@ -1213,7 +1213,7 @@ drawbar(Monitor *m)
 
 	resizebarwin(m, 2);
 
-	if (m == selmon) { /* extra status is only drawn on selected monitor */
+	if ((showsystray && m == systraytomon(m)) || (!showsystray && m == selmon)) { /* extra status is only drawn on selected monitor or the monitor systray is pinned to */
 		drw_setscheme(drw, scheme[SchemeNorm]);
 		drw_text(drw, 0, 0, mons->ww, ebh, lrpad / 4, stext, 0);
 		drw_map(drw, m->extrabarwin, 0, 0, m->ww - stw, ebh);
