@@ -71,7 +71,6 @@ static const int dirs[3]         = { DirHor, DirVer, DirVer }; /* Tiling dirs */
 static const float facts[3]      = { 1.1,    1.1,    1.1 }; /* Tiling facts   */
 static const int nmaster         = 1; /* Number of clients in master area     */
 static const int resizehints     = 0; /* 1 means size hints in tiled resizals */
-static const int decorhints      = 1; /* 1 means respect decoration hints     */
 static const int attachdirection = 4; /* 0 top, 1 above, 2 on top of stack,
                                          3 below, 4 bottom, 5 below I master  */
 /*  DWM layout symbols                                                        */
@@ -242,13 +241,13 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class           instance    title                tags mask     switchtotag   iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   ispermanent   monitor */
-	{ NULL,            NULL,       "Event Tester",      0,            0,            0,           1,           1,           0,                 0,           1,          0,            -1      },
-	{ "firefox",       NULL,       NULL,                1 << 1,       0,            0,           0,           0,           0,                 0,           -1,         0,            -1      },
-	{ "code-oss",      NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
-	{ "Steam",         NULL,       NULL,                0,            0,            0,           1,           1,           0,                 0,           0,          0,            -1      },
-	{ NULL,            NULL,       "Steam",             1 << 7,       1,            0,           0,           0,           0,                 0,           0,          1,            -1      },
-	{ "Gimp",          NULL,       NULL,                1 << 6,       0,            0,           1,           1,           0,                 0,           0,          0,            -1      },
-	{ "st",            NULL,       NULL,                0,            0,            0,           0,           0,           0,                 1,           0,          0,            -1      },
-	{ "mpv",           NULL,       NULL,                0,            0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
+	/* class           instance    title                tags mask     switchtotag   iscentered   isfloating   isfreesize   decorhints   isfakefullscreen   isterminal   noswallow   ispermanent   monitor */
+	{ NULL,            NULL,       "Event Tester",      0,            0,            0,           1,           1,           0,           0,                 0,           1,          0,            -1      },
+	{ "firefox",       NULL,       NULL,                1 << 1,       0,            0,           0,           0,           0,           0,                 0,           -1,         0,            -1      },
+	{ "code-oss",      NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,           0,                 0,           0,          0,            -1      },
+	{ "Steam",         NULL,       NULL,                0,            0,            0,           1,           1,           0,           0,                 0,           0,          0,            -1      },
+	{ NULL,            NULL,       "Steam",             1 << 7,       1,            0,           0,           0,           0,           0,                 0,           0,          1,            -1      },
+	{ "Gimp",          NULL,       NULL,                1 << 6,       0,            0,           1,           1,           0,           0,                 0,           0,          0,            -1      },
+	{ "st",            NULL,       NULL,                0,            0,            0,           0,           0,           0,           0,                 1,           0,          0,            -1      },
+	{ "mpv",           NULL,       NULL,                0,            0,            0,           0,           0,           0,           0,                 0,           0,          0,            -1      },
 };
