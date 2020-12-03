@@ -140,7 +140,7 @@ struct Client {
 	int bw, oldbw;
 	unsigned int tags;
 	unsigned int switchtotag;
-	int isfixed, iscentered, isfloating, isfreesize, decorhints, isurgent, neverfocus, oldstate, isfullscreen, isfakefullscreen, isforcedfullscreen, isterminal, noswallow, ispermanent;
+	int isfixed, iscentered, isfloating, isfreesize, isurgent, neverfocus, oldstate, isfullscreen, isfakefullscreen, isforcedfullscreen, isterminal, noswallow, ispermanent;
 	pid_t pid;
 	Client *next;
 	Client *snext;
@@ -213,7 +213,6 @@ typedef struct {
 	int iscentered;
 	int isfloating;
 	int isfreesize;
-	int decorhints;
 	int isfakefullscreen;
 	int isterminal;
 	int noswallow;
@@ -454,7 +453,6 @@ applyrules(Client *c)
 			c->iscentered = r->iscentered;
 			c->isfloating = r->isfloating;
 			c->isfreesize = r->isfreesize;
-			c->decorhints = r->decorhints;
 			c->isfakefullscreen = r->isfakefullscreen;
 			c->isterminal = r->isterminal;
 			c->noswallow  = r->noswallow;
@@ -3141,7 +3139,7 @@ updatemotifhints(Client *c)
 	unsigned long *motif;
 	int width, height;
 
-	if (!c->decorhints)
+	if (!decorhints)
 		return;
 
 	if (XGetWindowProperty(dpy, c->win, motifatom, 0L, 5L, False, motifatom,
