@@ -9,7 +9,6 @@ static const int extrabarheight     = 16;/* Specific bar height (0 for def)   */
 static const int viewontag          = 1; /* 1 Switch view on tag switch       */
 static const int startontag         = 1; /* 0 means no tag is active on start */
 static const int hidevactags        = 0; /* 1 means hide vacant tags          */
-static const int focusonwheel       = 0; /* 1 means wheelclick can focus      */
 static const int warponfocus        = 1; /* 1 Warp pointer to focused client  */
 static const int swallowfloating    = 0; /* 1 swallow all floating windows    */
 static const int showsystray        = 1; /* 0 means no systray                */
@@ -53,8 +52,8 @@ static const unsigned int alphas[][5]      = {
     [SchemeNorm] = { barfgA,     barbgA,     tlbrdA,     flbrdA,    urbrdA    },
 };
 /*  DWM icons                                                                 */
-static const char *mscsym[]                  = { "\uF011", "\uF11C", "\uF3C1" };
-static const char *lcksym[]                  = { "\uF13E", "\uF023", "\uF3C1" };
+static const char *mscsym[]                  = { "\uF011", "\uF11C", "\uF110" };
+static const char *lcksym[]                  = { "\uF13E", "\uF023", "\uF23E" };
 static const char *vntsym[]                  = { "\uF2D0", "\uF2D2", "\uF3C1" };  
 static const char *wnfsym[]                  = { "\uF245", "\uF0E7", "\uF3C1" };
 static const char *lngsym[]                  = { "EN", "KA", "RU", "DE", "CH" };
@@ -244,11 +243,11 @@ static const Rule rules[] = {
 	 */
 	/* class           instance    title                tags mask     switchtotag   iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   ispermanent   monitor */
 	{ NULL,            NULL,       "Event Tester",      0,            0,            0,           1,           1,           0,                 0,           1,          0,            -1      },
-	{ "firefox",       NULL,       NULL,                1 << 1,       0,            0,           0,           0,           0,                 0,           -1,         0,            -1      },
-	{ "code-oss",      NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
-	{ "Steam",         NULL,       NULL,                0,            0,            0,           1,           1,           0,                 0,           0,          0,            -1      },
+	{ "firefox",       NULL,       NULL,                1 << 1,       1,            0,           0,           0,           0,                 0,           -1,         0,            -1      },
+	{ "code-oss",      NULL,       NULL,                1 << 2,       1,            0,           0,           0,           0,                 0,           0,          0,            -1      },
+	{ "Steam",         NULL,       NULL,                1 << 7,       1,            0,           1,           1,           0,                 0,           0,          0,            -1      },
 	{ NULL,            NULL,       "Steam",             1 << 7,       1,            0,           0,           0,           0,                 0,           0,          1,            -1      },
-	{ "Gimp",          NULL,       NULL,                1 << 6,       0,            0,           1,           1,           0,                 0,           0,          0,            -1      },
+	{ "Gimp",          NULL,       NULL,                1 << 6,       1,            0,           1,           1,           0,                 0,           0,          0,            -1      },
 	{ "st",            NULL,       NULL,                0,            0,            0,           0,           0,           0,                 1,           0,          0,            -1      },
 	{ "mpv",           NULL,       NULL,                0,            0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
 };
