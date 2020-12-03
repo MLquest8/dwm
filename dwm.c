@@ -139,8 +139,7 @@ struct Client {
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh;
 	int bw, oldbw;
 	unsigned int tags;
-	unsigned int switchtotag;
-	int isfixed, iscentered, isfloating, isfreesize, isurgent, neverfocus, oldstate, isfullscreen, isfakefullscreen, isforcedfullscreen, isterminal, noswallow, ispermanent;
+	int isfixed, switchtotag, iscentered, isfloating, isfreesize, isurgent, neverfocus, oldstate, isfullscreen, isfakefullscreen, isforcedfullscreen, isterminal, noswallow, ispermanent;
 	pid_t pid;
 	Client *next;
 	Client *snext;
@@ -209,7 +208,7 @@ typedef struct {
 	const char *instance;
 	const char *title;
 	unsigned int tags;
-	unsigned int switchtotag;
+	int switchtotag;
 	int iscentered;
 	int isfloating;
 	int isfreesize;
@@ -454,6 +453,7 @@ applyrules(Client *c)
 		&& (!r->class || strstr(class, r->class))
 		&& (!r->instance || strstr(instance, r->instance)))
 		{
+			c->switchtotag = r->switchtotag;
 			c->iscentered = r->iscentered;
 			c->isfloating = r->isfloating;
 			c->isfreesize = r->isfreesize;
@@ -465,9 +465,8 @@ applyrules(Client *c)
 			for (m = mons; m && m->num != r->monitor; m = m->next);
 			if (m)
 				c->mon = m;
-			if (r->switchtotag) {
-				Arg a = { .ui = r->tags };
-				c->switchtotag = selmon->tagset[selmon->seltags];
+			if (c->switchtotag ) {
+				Arg a = { .ui = c->tags };
 				view(&a);
 			}
 		}
@@ -887,7 +886,7 @@ clientmessage(XEvent *e)
 				      || (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */
                                       && (!c->isfullscreen || c->isfakefullscreen))));
 	} else if (cme->message_type == netatom[NetActiveWindow]) {
- 		if(!ISVISIBLE(c)) {
+ 		if(!ISVISIBLE(c) && c->switchtotag) {
 			for(i=0; !(c->tags & 1 << i); i++);
 			view(&(Arg){.ui = 1 << i});
 		}

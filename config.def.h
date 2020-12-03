@@ -243,11 +243,11 @@ static const Rule rules[] = {
 	 */
 	/* class           instance    title                tags mask     switchtotag   iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   ispermanent   monitor */
 	{ NULL,            NULL,       "Event Tester",      0,            0,            0,           1,           1,           0,                 0,           1,          0,            -1      },
-	{ "firefox",       NULL,       NULL,                1 << 1,       1,            0,           0,           0,           0,                 0,           -1,         0,            -1      },
-	{ "code-oss",      NULL,       NULL,                1 << 2,       1,            0,           0,           0,           0,                 0,           0,          0,            -1      },
+	{ "firefox",       NULL,       NULL,                1 << 1,       0,            0,           0,           0,           0,                 0,           -1,         0,            -1      },
+	{ "code-oss",      NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
 	{ "Steam",         NULL,       NULL,                1 << 7,       1,            0,           1,           1,           0,                 0,           0,          0,            -1      },
 	{ NULL,            NULL,       "Steam",             1 << 7,       1,            0,           0,           0,           0,                 0,           0,          1,            -1      },
-	{ "Gimp",          NULL,       NULL,                1 << 6,       1,            0,           1,           1,           0,                 0,           0,          0,            -1      },
+	{ "Gimp",          NULL,       NULL,                1 << 6,       0,            0,           1,           1,           0,                 0,           0,          0,            -1      },
 	{ "st",            NULL,       NULL,                0,            0,            0,           0,           0,           0,                 1,           0,          0,            -1      },
 	{ "mpv",           NULL,       NULL,                0,            0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
 };
