@@ -1704,9 +1704,14 @@ manage(Window w, XWindowAttributes *wa)
 		(unsigned char *) &(c->win), 1);
 	XMoveResizeWindow(dpy, c->win, c->x + 2 * sw, c->y, c->w, c->h); /* some windows require this */
 	setclientstate(c, NormalState);
-	if (c->mon == selmon)
-		unfocus(selmon->sel, 0);
-	c->mon->sel = c;
+	if (c->mon == selmon) {
+		if (selmon->sel && c != selmon->sel && ((selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen) || selmon->sel->isforcedfullscreen))
+			c->mon->sel = selmon->sel;
+		else {
+			unfocus(selmon->sel, 0);
+			c->mon->sel = c;
+		}
+	}
 	XkbGetState(dpy, XkbUseCoreKbd, &kbd_state);
 	c->kbdgrp = kbd_state.group;
 	arrange(c->mon);
