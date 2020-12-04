@@ -11,10 +11,10 @@ static const int startontag         = 1; /* 0 means no tag is active on start */
 static const int hidevactags        = 0; /* 1 means hide vacant tags          */
 static const int warponfocus        = 1; /* 1 Warp pointer to focused client  */
 static const int swallowfloating    = 0; /* 1 swallow all floating windows    */
-static const int showsystray        = 1; /* 0 means no systray                */
-static const int stfallbackmon      = 1; /* 1 means first monitor, 0 last     */
 static const int gapsforone         = 0; /* Gaps for only one window open     */
 static const int gapsformonocle     = 0; /* Gaps for only one window open     */
+static const int showsystray        = 1; /* 0 means no systray                */
+static const int stfallbackmon      = 1; /* 1 means first monitor, 0 last     */
 static const unsigned int stmonitor = 0; /* 0 means selected monitor          */
 static const unsigned int stspacing = 2; /* systray spacing                   */
 static const unsigned int igappx    = 5; /* Size of inner gaps                */
@@ -245,7 +245,7 @@ static const Rule rules[] = {
 	{ NULL,            NULL,       "Event Tester",      0,            0,            0,           1,           1,           0,                 0,           1,          0,            -1      },
 	{ "firefox",       NULL,       NULL,                1 << 1,       0,            0,           0,           0,           0,                 0,           -1,         0,            -1      },
 	{ "code-oss",      NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
-	{ "Steam",         NULL,       NULL,                1 << 7,       1,            0,           1,           1,           0,                 0,           0,          0,            -1      },
+	{ "Steam",         NULL,       NULL,                1 << 7,       1,            0,           1,           1,           0,                 0,           0,          1,            -1      },
 	{ NULL,            NULL,       "Steam",             1 << 7,       1,            0,           0,           0,           0,                 0,           0,          1,            -1      },
 	{ "Gimp",          NULL,       NULL,                1 << 6,       0,            0,           1,           1,           0,                 0,           0,          0,            -1      },
 	{ "st",            NULL,       NULL,                0,            0,            0,           0,           0,           0,                 1,           0,          0,            -1      },

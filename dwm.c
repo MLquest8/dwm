@@ -884,7 +884,7 @@ clientmessage(XEvent *e)
 		|| cme->data.l[2] == netatom[NetWMFullscreen])
 			setfullscreen(c, (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD    */
 				      || (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */
-                                      && (!c->isfullscreen || c->isfakefullscreen))));
+                                      && (!c->isfullscreen || (c->isfakefullscreen && !c->isforcedfullscreen) || !c->isforcedfullscreen))));
 	} else if (cme->message_type == netatom[NetActiveWindow]) {
  		if(!ISVISIBLE(c) && c->switchtotag) {
 			for(i=0; !(c->tags & 1 << i); i++);
@@ -1269,6 +1269,8 @@ expose(XEvent *e)
 void
 focus(Client *c)
 {
+	if (selmon->sel && c != selmon->sel && ((selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen) || selmon->sel->isforcedfullscreen))
+		return;
 	if (!c || !ISVISIBLE(c))
 		for (c = selmon->stack; c && !ISVISIBLE(c); c = c->snext);
 	if (selmon->sel && selmon->sel != c)
@@ -1282,8 +1284,13 @@ focus(Client *c)
 		detachstack(c);
 		attachstack(c);
 		grabbuttons(c, 1);
-		if (c->isfloating)
+		if (c->isfloating) {
 			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColFloat].pixel);
+			if (selmon->sel && c != selmon->sel && ((selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen) || selmon->sel->isforcedfullscreen)) 
+				XLowerWindow(dpy, c->win);
+			else
+				XRaiseWindow(dpy, c->win);
+		}
 		else
 			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 		if (c->isurgent)
@@ -1664,10 +1671,13 @@ manage(Window w, XWindowAttributes *wa)
 	grabbuttons(c, 0);
 	if (!c->isfloating)
 		c->isfloating = c->oldstate = trans != None || c->isfixed;
-	if (c->isfloating)
-		XRaiseWindow(dpy, c->win);
-	if (c->isfloating)
+	if (c->isfloating){
+		if (selmon->sel && c != selmon->sel && ((selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen) || selmon->sel->isforcedfullscreen)) {
+			XLowerWindow(dpy, c->win);
+		} else
+			XRaiseWindow(dpy, c->win);
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloat].pixel);
+	}
 	if (c->isurgent)
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColUrgent].pixel);
 	switch(selmon->attachdir){
