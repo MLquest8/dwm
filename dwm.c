@@ -1269,10 +1269,19 @@ expose(XEvent *e)
 void
 focus(Client *c)
 {
+	Client *fsc;
+	
 	if (selmon->sel && c != selmon->sel && ((selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen) || selmon->sel->isforcedfullscreen))
 		return;
-	if (!c || !ISVISIBLE(c))
+	if (!c || !ISVISIBLE(c)){
 		for (c = selmon->stack; c && !ISVISIBLE(c); c = c->snext);
+		for (fsc = c; fsc && ISVISIBLE(fsc); fsc = fsc->snext){
+			if ((fsc->isfullscreen && !fsc->isfakefullscreen) || fsc->isforcedfullscreen){
+				c = fsc;
+				break;
+			}
+		}
+	}
 	if (selmon->sel && selmon->sel != c)
 		unfocus(selmon->sel, 0);
 	if (c) {
@@ -3481,7 +3490,10 @@ view(const Arg *arg)
 	selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];
 	selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];
 	selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1];
-
+	if (selmon->sel && ((selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen) || selmon->sel->isforcedfullscreen)){
+		unfocus(selmon->sel, 1);
+		focus(selmon->sel);
+	}
 	if (selmon->showbar != selmon->pertag->showbars[selmon->pertag->curtag])
 		togglebar(&(Arg) { .i = 1 });
 	if (selmon->showextrabar != selmon->pertag->showextrabars[selmon->pertag->curtag])

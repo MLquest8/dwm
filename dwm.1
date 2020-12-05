@@ -51,6 +51,10 @@ prints version information to standard output, then exits.
 .SH USAGE(Keyboard)
 .SS Main commands
 .TP
+.B WinKey\-F1
+Open manual page for
+.BR dwm(1).
+.TP
 .B WinKey\-Return
 Start
 .BR st(1).
@@ -204,34 +208,34 @@ Execute all 3 size increasing functions (listed above.)
 .SS Tag functions
 .TP
 .B WinKey\-[1..9]
-Go to nth tag
+View windows tagged with nth tag.
 .TP
 .B WinKey\-Shift\-[1..9]
-Throw the focused window to nth tag.
+Tag the focused window with nth tag.
 .TP
 .B WinKey\-Control\-[1..9]
-View/remove all windows from nth tag.
+View/remove all windows tagged with nth tag.
 .TP
 .B WinKey\-Control\-Shift\-[1..9]
-Share the focused window with the nth tag.
+Apply nth tag to the focused window in addition to the tag(s) already applied to it.
 .TP
 .B WinKey\-0
-View all windows on all tags.
+View all tags together.
 .TP
 .B WinKey\-Shift\-0
-View the focused window on all tags.
+Tag the focused window with all tags.
 .TP
 .B WinKey\-Tab
 Toggle to last selected tags.
 .TP
 .B WinKey\-Shift\-Tab
-Go to tag on the left of the currently selected.
+Toggle to tag on the right of the currently selected.
 .TP
 .B WinKey\-Control\-Tab
-Go to tag on the right of the currently selected.
+Toggle to tag on the left of the currently selected.
 .TP
 .B WinKey\-v
-Toggle 'view on tag' function (follow the window to the tag it was thrown to.)
+Toggle 'view on tag' function (view the tag window was tagged with.)
 .SS Monitor functions
 .TP
 .B WinKey\-,
@@ -301,16 +305,16 @@ Set size of outer gaps to default on the selected screen.
 .SS Tags
 .TP
 .B Button1
-Switch to the selected tag.
+View windows tagged with the selected tag.
 .TP
 .B Button3
-Add/remove all windows from the tag to the currently selected tags.
+View/remove all windows tagged with the selected tag.
 .TP
 .B WinKey\-Button1
-Throw the focused window to the tag.
+Tag the focused window with the selected tag.
 .TP
 .B WinKey\-Button3
-Share the focused window with the tag.
+Apply the selected tag to the focused window in addition to the tag(s) already applied to it.
 .SS User@Hostname
 .TP
 .B Button1
@@ -318,11 +322,11 @@ Spawn
 .BR neofetch(1).
 .SS Window title
 .TP
-.B Button1
+.B WinKey\-Button1
 Start
 .BR st(1).
 .TP
-.B Button3
+.B WinKey\-Button3
 Spawn
 .BR dmenu(1)
 for launching other programs.
@@ -363,7 +367,7 @@ Toggle 'warp on focus.'
 .SS View on tag
 .TP
 .B Button1
-Toggle 'view on tag.'
+Toggle 'view on tag' function (view the tag window was tagged with.)
 .SS Keyboard lock
 .TP
 .B Button1

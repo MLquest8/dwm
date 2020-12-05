@@ -199,6 +199,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             9,         killunsel,                 {0} },
 	{ MODKEY|ControlMask,           9,         spawn,          {.v = dwmpwr } },
 	{ MODKEY|ShiftMask|ControlMask, 9,         quit,                      {0} },
+	{ MODKEY,                       67,        spawn,          {.v = dwmman } },
 };
 static Key altkeys[] = {
 	/* modifier                     key        function              argument */
@@ -216,8 +217,8 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 	{ ClkUser,              0,              Button1,        spawn,          {.v = dwmusr } },
 	{ ClkUser,              0,              Button3,        spawn,          {.v = dwmusr } },
-	{ ClkWinTitle,          0,              Button1,        spawn,          {.v = termcmd } },
-	{ ClkWinTitle,          0,              Button3,        spawn,          {.v = dmenucmd } },
+	{ ClkWinTitle,          MODKEY,         Button1,        spawn,          {.v = termcmd } },
+	{ ClkWinTitle,          MODKEY,         Button3,        spawn,          {.v = dmenucmd } },
 	{ ClkLtSymbol,          0,              Button2,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button1,        cyclelayout,    {.i = +1 } },
 	{ ClkLtSymbol,          0,              Button3,        cyclelayout,    {.i = -1 } },
