@@ -86,19 +86,14 @@ static const char *termcmd[]           = { "st", NULL };
 static const char *dwmpwr[]            = { "dwmpwr", NULL };
 static const char *dwmusr[]            = { "st", "dwmusr", NULL };
 static const char *dwmman[]            = { "st", "man", "dwm", NULL };
+static const char *dmenuman[]          = { "st", "man", "dmenu", NULL };
 static const char *xsrman[]            = { "st", "man", "xsetroot", NULL };
 static const char *xkbman[]            = { "st", "man", "setxkbmap", NULL };
 /*===================================Dmenu====================================*/
-/*  Dmenu appearance settings                                                 */
-static const char dmenufont[]          = "FreeMono:size=12";
-static const char dmenuprompt[]        = "Launch";
-/*  Dmenu launch options                                                      */
+static const char dmenuprompt[]        = "Launch";                              
 static char dmenumon[2] = "0"; /* Component of dmenucmd, manipulated in spawn */
-static const char *dmenucmd[] = { "dmenu_run",
-                                  "-m", dmenumon, "-fn", dmenufont, /* font   */
-                                  "-sf", barselfg, "-sb", barselbg, /* select */
-                                  "-nf", barnrmfg, "-nb", barnrmbg, /* normal */
-                                  "-p", dmenuprompt, NULL }; /* NULL to close */
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, 
+                                                      "-p", dmenuprompt, NULL };
 /*===================================Extra====================================*/
 /*  Helper for spawning shell commands in the pre dwm-5.0 fashion             */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -227,6 +222,7 @@ static Button buttons[] = {
 	{ ClkViewT,             0,              Button1,        toggleviewontag,{0} },
 	{ ClkWarpP,             0,              Button1,        togglewarp,     {0} },
 	{ ClkKeyboard,          0,              Button1,        spawn,          {.v = dwmman } },
+	{ ClkKeyboard,          0,              Button3,        spawn,          {.v = dmenuman } },
 	{ ClkLanguage,          0,              Button1,        spawn,          {.v = xkbman } },
 	{ ClkAttachDir,         0,              Button1,        toggleattachdir,{.i = +1 } },
 	{ ClkAttachDir,         0,              Button3,        toggleattachdir,{.i = -1 } },
