@@ -1311,8 +1311,6 @@ focus(Client *c)
 		}
 		else
 			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
-		if (c->isurgent)
-			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColUrgent].pixel);
 		setfocus(c);
 	} else {
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
@@ -1669,8 +1667,6 @@ manage(Window w, XWindowAttributes *wa)
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloat].pixel);
 	else
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColBorder].pixel);
-	if (c->isurgent)
-		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColUrgent].pixel);
 	configure(c); /* propagates border_width, if size doesn't change */
 	updatewindowtype(c);
 	updatesizehints(c);
@@ -1696,8 +1692,6 @@ manage(Window w, XWindowAttributes *wa)
 			XRaiseWindow(dpy, c->win);
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloat].pixel);
 	}
-	if (c->isurgent)
-		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColUrgent].pixel);
 	switch(selmon->attachdir){
 		case 1:
 			attachabove(c);
