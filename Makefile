@@ -42,7 +42,6 @@ scripts:
 	for script in ${SCR} ; do \
 		cp -f Scripts/$$script ${DESTDIR}${PREFIX}/bin ; \
 		chmod 755 ${DESTDIR}${PREFIX}/bin/$$script ; \
-		chmod +x ${DESTDIR}${PREFIX}/bin/$$script ; \
 	done
 
 install: all
@@ -52,7 +51,6 @@ install: all
 	for script in ${SCR} ; do \
 		cp -f Scripts/$$script ${DESTDIR}${PREFIX}/bin ; \
 		chmod 755 ${DESTDIR}${PREFIX}/bin/$$script ; \
-		chmod +x ${DESTDIR}${PREFIX}/bin/$$script ; \
 	done
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	sed "s/VERSION/${VERSION}/g" < dwm.1 > ${DESTDIR}${MANPREFIX}/man1/dwm.1
