@@ -105,6 +105,11 @@ static Sp scratchpads[]                = {
 	{"Spad1",                      spcmd1},
 	{"Spad2",                      spcmd2},
 };
+/*==================================AutoStart=================================*/
+static const char *const autostart[]   = {
+	"slstatus", NULL,
+	NULL /* terminate */
+};
 /*===================================Signals==================================*/
 /*  Signum must be greater than 0                                             */
 /*  Trigger signals using `xsetroot -name "fsignal:<signum>"                  */
