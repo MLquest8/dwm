@@ -67,7 +67,10 @@
 #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
 #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
 #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
-#define TAGMASK                 ((1 << LENGTH(tags)) - 1)
+#define NUMTAGS	                (LENGTH(tags) + LENGTH(scratchpads))
+#define TAGMASK                 ((1 << NUMTAGS) - 1)
+#define SPTAG(i)                ((1 << LENGTH(tags)) << (i))
+#define SPTAGMASK               (((1 << LENGTH(scratchpads))-1) << LENGTH(tags))
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
 #define TRUNC(X,A,B)            (MAX((A), MIN((X), (B))))
 
@@ -161,6 +164,11 @@ typedef struct {
 	void (*func)(const Arg *);
 	const Arg arg;
 } Signal;
+ 
+typedef struct {
+	const char *name;
+	const void *cmd;
+} Sp;
 
 typedef struct {
 	const char *symbol;
@@ -330,6 +338,7 @@ static void togglegapsformonocle();
 static void togglehidevactags();
 static void toggleisfakefs();
 static void toggleispermanent();
+static void togglescratch(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
 static void toggleviewontag();
@@ -476,7 +485,7 @@ applyrules(Client *c)
 	if (ch.res_name)
 		XFree(ch.res_name);
 	if(c->tags & TAGMASK)                    c->tags = c->tags & TAGMASK;
-	else if(c->mon->tagset[c->mon->seltags]) c->tags = c->mon->tagset[c->mon->seltags];
+	else if(c->mon->tagset[c->mon->seltags]) c->tags = (c->mon->tagset[c->mon->seltags] & ~SPTAGMASK);
 	else                                     c->tags = 1;
 }
 
@@ -2577,13 +2586,13 @@ void
 shiftview(const Arg *arg) {
 	Arg shifted;
 
-	if(arg->i > 0) // left circular shift
-		shifted.ui = (selmon->tagset[selmon->seltags] << arg->i)
-		   | (selmon->tagset[selmon->seltags] >> (LENGTH(tags) - arg->i));
+	if(arg->i > 0)
+		shifted.ui = (((selmon->tagset[selmon->seltags] & ~SPTAGMASK) << arg->i)
+		   | ((selmon->tagset[selmon->seltags] & ~SPTAGMASK) >> (LENGTH(tags) - arg->i))) & ~SPTAGMASK;
 
-	else // right circular shift
-		shifted.ui = selmon->tagset[selmon->seltags] >> (- arg->i)
-		   | selmon->tagset[selmon->seltags] << (LENGTH(tags) + arg->i);
+	else
+		shifted.ui = ((selmon->tagset[selmon->seltags] & ~SPTAGMASK) >> (- arg->i)
+		   | (selmon->tagset[selmon->seltags] & ~SPTAGMASK) << (LENGTH(tags) + arg->i)) & ~SPTAGMASK;
 
 	view(&shifted);
 }
@@ -2865,6 +2874,38 @@ togglekeys()
 	selmon->keyslocked = !selmon->keyslocked;
 	grabkeys();
 	drawbar(selmon);
+}
+
+void
+togglescratch(const Arg *arg)
+{
+	Client *c;
+	unsigned int found = 0;
+	unsigned int scratchtag = SPTAG(arg->ui);
+	Arg sparg = {.v = scratchpads[arg->ui].cmd};
+
+	for (c = selmon->clients; c && !(found = c->tags & scratchtag); c = c->next);
+	if (found) {
+		unsigned int newtagset = selmon->tagset[selmon->seltags] ^ scratchtag;
+		unsigned int curtagset = selmon->tagset[selmon->seltags] & scratchtag;
+		if (curtagset && c != selmon->sel) {
+			focus(c);
+			arrange(selmon);	
+			return;
+		}
+		if (newtagset) {
+			selmon->tagset[selmon->seltags] = newtagset;
+			focus(NULL);
+			arrange(selmon);
+		}
+		if (ISVISIBLE(c)) {
+			focus(c);
+			restack(selmon);
+		}
+	} else {
+		selmon->tagset[selmon->seltags] |= scratchtag;
+		spawn(&sparg);
+	}
 }
 
 void

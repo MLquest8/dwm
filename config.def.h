@@ -86,22 +86,29 @@ static const char *termcmd[]           = { "st", NULL };
 static const char *dwmpwr[]            = { "dwmpwr", NULL };
 static const char *dwmusr[]            = { "st", "dwmusr", NULL };
 static const char *dwmman[]            = { "st", "man", "dwm", NULL };
-static const char *dmenuman[]          = { "st", "man", "dmenu", NULL };
+static const char *dmnman[]            = { "st", "man", "dmenu", NULL };
 static const char *xsrman[]            = { "st", "man", "xsetroot", NULL };
 static const char *xkbman[]            = { "st", "man", "setxkbmap", NULL };
 /*===================================Dmenu====================================*/
 static const char dmenuprompt[]        = "Launch";                              
-static char dmenumon[2] = "0"; /* Component of dmenucmd, manipulated in spawn */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, 
+static char dmenumon[2]                = "0"; /* manipulated in spawn         */
+static const char *dmenucmd[]          = { "dmenu_run", "-m", dmenumon, 
                                                       "-p", dmenuprompt, NULL };
 /*===================================Extra====================================*/
 /*  Helper for spawning shell commands in the pre dwm-5.0 fashion             */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
-
+/*==================================Scratch===================================*/
+const char *spcmd1[]                   = {"st", "-n", "Spad1", NULL };
+const char *spcmd2[]                   = {"st", "-n", "Spad2", NULL };
+static Sp scratchpads[]                = {
+/*      name                           command                                */
+	{"Spad1",                      spcmd1},
+	{"Spad2",                      spcmd2},
+};
 /*===================================Signals==================================*/
 /*  Signum must be greater than 0                                             */
 /*  Trigger signals using `xsetroot -name "fsignal:<signum>"                  */
-static Signal signals[] = {
+static Signal signals[]                = {
 	/* signum                      function                      argument */
 	{ 99,                          quit,                              {0} },
 };
@@ -131,6 +138,8 @@ static Signal signals[] = {
 static Key keys[] = {
 	/* modifier                     key        function              argument */
 	{ MODKEY,                       36,        spawn,         {.v = termcmd } },
+	{ MODKEY|ShiftMask,             36,        togglescratch,      {.ui = 0 } },
+	{ MODKEY|ControlMask,           36,        togglescratch,      {.ui = 1 } },
 	{ MODKEY,                       22,        spawn,        {.v = dmenucmd } },
 	{ MODKEY,                       49,        setlayout,                 {0} },
 	{ MODKEY|ShiftMask,             49,        cyclelayout,        {.i = +1 } },
@@ -222,7 +231,7 @@ static Button buttons[] = {
 	{ ClkViewT,             0,              Button1,        toggleviewontag,{0} },
 	{ ClkWarpP,             0,              Button1,        togglewarp,     {0} },
 	{ ClkKeyboard,          0,              Button1,        spawn,          {.v = dwmman } },
-	{ ClkKeyboard,          0,              Button3,        spawn,          {.v = dmenuman } },
+	{ ClkKeyboard,          0,              Button3,        spawn,          {.v = dmnman } },
 	{ ClkLanguage,          0,              Button1,        spawn,          {.v = xkbman } },
 	{ ClkAttachDir,         0,              Button1,        toggleattachdir,{.i = +1 } },
 	{ ClkAttachDir,         0,              Button3,        toggleattachdir,{.i = -1 } },
@@ -240,11 +249,12 @@ static const Rule rules[] = {
 	 */
 	/* class           instance    title                tags mask     switchtotag   iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   ispermanent   monitor */
 	{ NULL,            NULL,       "Event Tester",      0,            0,            0,           1,           1,           0,                 0,           1,          0,            -1      },
+	{ "st",            NULL,       NULL,                0,            0,            0,           0,           0,           0,                 1,           0,          0,            -1      },
+	{ NULL,            "Spad1",    NULL,                SPTAG(0),     0,            1,           1,           0,           0,                 1,           0,          0,            -1      },
+	{ NULL,            "Spad2",    NULL,                SPTAG(1),     0,            1,           1,           0,           0,                 1,           0,          0,            -1      },
 	{ "firefox",       NULL,       NULL,                1 << 1,       0,            0,           0,           0,           0,                 0,           -1,         0,            -1      },
 	{ "code-oss",      NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
+	{ "Gimp",          NULL,       NULL,                1 << 6,       0,            0,           1,           1,           0,                 0,           0,          0,            -1      },
 	{ "Steam",         NULL,       NULL,                1 << 7,       1,            0,           1,           1,           0,                 0,           0,          1,            -1      },
 	{ NULL,            NULL,       "Steam",             1 << 7,       1,            0,           0,           0,           0,                 0,           0,          1,            -1      },
-	{ "Gimp",          NULL,       NULL,                1 << 6,       0,            0,           1,           1,           0,                 0,           0,          0,            -1      },
-	{ "st",            NULL,       NULL,                0,            0,            0,           0,           0,           0,                 1,           0,          0,            -1      },
-	{ "mpv",           NULL,       NULL,                0,            0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
 };
