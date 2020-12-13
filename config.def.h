@@ -107,7 +107,7 @@ static Sp scratchpads[]                = {
 };
 /*==================================AutoStart=================================*/
 static const char *const autostart[]   = {
-	"slstatus", NULL,
+	"dwmstatus", NULL,
 	NULL /* terminate */
 };
 /*===================================Signals==================================*/

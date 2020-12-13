@@ -1,0 +1,10 @@
+#!/bin/sh
+
+while true
+do
+	currentDate=`date +"%H:%M:%S, %A, %b %d, %Y"`
+	currentBat=$(cat /sys/class/power_supply/BAT1/capacity)
+	xsetroot -name "$currentDate | Battery: $currentBat"
+	sleep 1
+done
+		
