@@ -11,7 +11,7 @@ the spirit of the original - simple, fast, secure. It manages windows in tiled,
 monocle and floating layouts. Either layout can be applied dynamically,
 optimising the environment for the application in use and the task performed.
 .P
-In tiled layouts windows are managed in a master and stacking area. The master
+In tiled layout windows are managed in a master and stacking area. The master
 area contains one window by default, and the stacking area contains all other
 windows. The number of master area windows can be adjusted from zero to an
 arbitrary number. Master and stack areas, as well as open windows belonging
@@ -25,7 +25,7 @@ tags. Selecting certain tags displays all windows with these tags.
 .P
 Each screen contains a small status bar which displays all available tags,
 user@hostname, the title of the focused window, attach direction indicator,
-the layout,  the keyboard layout, easy access button to this manual, 'warp on
+the layout, the keyboard layout, easy access button to this manual, 'warp on
 focus' status/toggle button, 'view on tag' function status/toggle button, 'keyboard
 lock' status/toggle button and the 'power' button. A floating window is indicated
 with an empty square and a fixed floating window is indicated with a filled
@@ -56,7 +56,7 @@ Open manual page for
 .BR dwm(1).
 .TP
 .B WinKey\-Return
-Start
+Spawn
 .BR st(1).
 .TP
 .B WinKey\-Backspace
@@ -319,14 +319,18 @@ Apply the selected tag to the focused window in addition to the tag(s) already a
 .TP
 .B Button1
 Spawn
+.BR st(1).
+.TP
+.B Button3
+Spawn
 .BR neofetch(1).
 .SS Window title
 .TP
-.B WinKey\-Button1
-Start
-.BR st(1).
+.B -Button1
+Spawn
+.BR Scratchpad.
 .TP
-.B WinKey\-Button3
+.B -Button3
 Spawn
 .BR dmenu(1)
 for launching other programs.
