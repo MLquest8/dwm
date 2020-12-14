@@ -2323,6 +2323,10 @@ setclientstate(Client *c, long state)
 
 void
 setdirs(const Arg *arg) {
+
+	if(selmon->lt[selmon->sellt]->arrange != tile)
+		return;
+
 	int *dirs = (int *)arg->v, i, n;
 	Area *areas = selmon->pertag->areas[selmon->pertag->curtag];
 
@@ -2336,6 +2340,10 @@ setdirs(const Arg *arg) {
 
 void
 setfacts(const Arg *arg) {
+
+	if(selmon->lt[selmon->sellt]->arrange != tile)
+		return;
+
 	float *facts = (float *)arg->v;
 	Area *areas = selmon->pertag->areas[selmon->pertag->curtag];
 	int i;
