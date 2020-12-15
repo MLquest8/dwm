@@ -260,6 +260,6 @@ static const Rule rules[] = {
 	{ "firefox",       NULL,       NULL,                1 << 1,       0,            0,           0,           0,           0,                 0,           -1,         0,            -1      },
 	{ "code-oss",      NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
 	{ "Gimp",          NULL,       NULL,                1 << 6,       0,            0,           1,           1,           0,                 0,           0,          0,            -1      },
-	{ "Steam",         NULL,       NULL,                1 << 7,       1,            0,           1,           1,           0,                 0,           0,          1,            -1      },
-	{ NULL,            NULL,       "Steam",             1 << 7,       1,            0,           0,           0,           0,                 0,           0,          1,            -1      },
+	{ "Steam",         NULL,       NULL,                1 << 7,       0,            0,           1,           1,           0,                 0,           0,          1,            -1      },
+	{ NULL,            NULL,       "Steam",             1 << 7,       0,            0,           0,           0,           0,                 0,           0,          1,            -1      },
 };
