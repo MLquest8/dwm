@@ -293,7 +293,6 @@ static void pop(Client *);
 static void propertynotify(XEvent *e);
 static void pushstack(const Arg *arg);
 static void quit(const Arg *arg);
-static void raisefloating();
 static Monitor *recttomon(int x, int y, int w, int h);
 static void removesystrayicon(Client *i);
 static void resize(Client *c, int x, int y, int w, int h, int interact);
@@ -1872,6 +1871,7 @@ movemouse(const Arg *arg)
 			break;
 		}
 	} while (ev.type != ButtonRelease);
+	XRaiseWindow(dpy, c->win);
 	XUngrabPointer(dpy, CurrentTime);
 	if ((m = recttomon(c->x, c->y, c->w, c->h)) != selmon) {
 		sendmon(c, m);
@@ -1994,13 +1994,6 @@ quit(const Arg *arg)
 		}
 	}
 	running = 0;
-}
-
-void
-raisefloating()
-{
-	if (selmon->sel->isfloating && (!selmon->sel->isfullscreen || (selmon->sel->isfullscreen && selmon->sel->isfakefullscreen)) && !selmon->sel->isforcedfullscreen)
-		XRaiseWindow(dpy, selmon->sel->win);
 }
 
 Monitor *
