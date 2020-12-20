@@ -244,6 +244,7 @@ static Button buttons[] = {
 	{ ClkAttachDir,         0,              Button1,        toggleattachdir,{.i = +1 } },
 	{ ClkAttachDir,         0,              Button3,        toggleattachdir,{.i = -1 } },
 	{ ClkAttachDir,         0,              Button2,        toggleattachdir,{0} },
+	{ ClkClientWin,         0,              Button1,        raisefloating,  {0} },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        zoom,           {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },

@@ -293,6 +293,7 @@ static void pop(Client *);
 static void propertynotify(XEvent *e);
 static void pushstack(const Arg *arg);
 static void quit(const Arg *arg);
+static void raisefloating();
 static Monitor *recttomon(int x, int y, int w, int h);
 static void removesystrayicon(Client *i);
 static void resize(Client *c, int x, int y, int w, int h, int interact);
@@ -1333,10 +1334,7 @@ focus(Client *c)
 			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColFloat].pixel);
 			if (selmon->sel && c != selmon->sel && ((selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen) || selmon->sel->isforcedfullscreen)) 
 				XLowerWindow(dpy, c->win);
-			else
-				XRaiseWindow(dpy, c->win);
-		}
-		else
+		} else
 			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 		setfocus(c);
 	} else {
@@ -1713,11 +1711,9 @@ manage(Window w, XWindowAttributes *wa)
 	if (!c->isfloating)
 		c->isfloating = c->oldstate = trans != None || c->isfixed;
 	if (c->isfloating){
-		if (selmon->sel && c != selmon->sel && ((selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen) || selmon->sel->isforcedfullscreen)) {
-			XLowerWindow(dpy, c->win);
-		} else
-			XRaiseWindow(dpy, c->win);
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloat].pixel);
+		if (selmon->sel && c != selmon->sel && ((selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen) || selmon->sel->isforcedfullscreen))
+			XLowerWindow(dpy, c->win);	
 	}
 	switch(selmon->attachdir){
 		case 1:
@@ -1998,6 +1994,13 @@ quit(const Arg *arg)
 		}
 	}
 	running = 0;
+}
+
+void
+raisefloating()
+{
+	if (selmon->sel->isfloating && (!selmon->sel->isfullscreen || (selmon->sel->isfullscreen && selmon->sel->isfakefullscreen)) && !selmon->sel->isforcedfullscreen)
+		XRaiseWindow(dpy, selmon->sel->win);
 }
 
 Monitor *
