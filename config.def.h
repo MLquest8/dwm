@@ -100,10 +100,12 @@ static const char *dmenucmd[]          = { "dmenu_run", "-m", dmenumon,
 /*==================================Scratch===================================*/
 const char *spcmd1[]                   = {"st", "-n", "Spad1", NULL };
 const char *spcmd2[]                   = {"st", "-n", "Spad2", NULL };
+const char *spcmd3[]                   = {"keepassxc", NULL };
 static Sp scratchpads[]                = {
 /*      name                           command                                */
 	{"Spad1",                      spcmd1},
 	{"Spad2",                      spcmd2},
+	{"keepassxc",                  spcmd3},
 };
 /*==================================AutoStart=================================*/
 static const char *const autostart[]   = {
@@ -145,6 +147,7 @@ static Key keys[] = {
 	{ MODKEY,                       36,        spawn,         {.v = termcmd } },
 	{ MODKEY|ShiftMask,             36,        togglescratch,      {.ui = 0 } },
 	{ MODKEY|ControlMask,           36,        togglescratch,      {.ui = 1 } },
+	{ MODKEY|ShiftMask|ControlMask, 36,        togglescratch,      {.ui = 2 } },
 	{ MODKEY,                       22,        spawn,        {.v = dmenucmd } },
 	{ MODKEY,                       49,        setlayout,                 {0} },
 	{ MODKEY|ShiftMask,             49,        cyclelayout,        {.i = +1 } },
@@ -255,11 +258,11 @@ static const Rule rules[] = {
 	/* class           instance    title                tags mask     switchtotag   iscentered   isfloating   isfreesize   isfakefullscreen   isterminal   noswallow   ispermanent   monitor */
 	{ NULL,            NULL,       "Event Tester",      0,            0,            0,           1,           1,           0,                 0,           1,          0,            -1      },
 	{ "st",            NULL,       NULL,                0,            0,            0,           0,           0,           0,                 1,           0,          0,            -1      },
-	{ NULL,            "Spad1",    NULL,                SPTAG(0),     0,            1,           1,           0,           0,                 1,           0,          0,            -1      },
-	{ NULL,            "Spad2",    NULL,                SPTAG(1),     0,            1,           1,           0,           0,                 1,           0,          0,            -1      },
-	{ "firefox",       NULL,       NULL,                1 << 1,       0,            0,           0,           0,           0,                 0,           -1,         0,            -1      },
+	{ NULL,            "Spad1",    NULL,                SPTAG(0),     0,            1,           1,           0,           0,                 0,           0,          0,            -1      },
+	{ NULL,            "Spad2",    NULL,                SPTAG(1),     0,            1,           1,           0,           0,                 0,           0,          0,            -1      },
+	{ NULL,            "keepassxc",NULL,                SPTAG(2),     0,            1,           1,           0,           0,                 0,           0,          0,            -1      },
+	{ "firefox",       NULL,       NULL,                1 << 1,       0,            0,           0,           0,           0,                 0,           1,          0,            -1      },
 	{ "code-oss",      NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
-	{ "Gimp",          NULL,       NULL,                1 << 6,       0,            0,           1,           1,           0,                 0,           0,          0,            -1      },
-	{ "Steam",         NULL,       NULL,                1 << 7,       0,            0,           1,           1,           0,                 0,           0,          1,            -1      },
-	{ NULL,            NULL,       "Steam",             1 << 7,       0,            0,           0,           0,           0,                 0,           0,          1,            -1      },
+	{ "Gimp",          NULL,       NULL,                1 << 6,       0,            0,           1,           1,           0,                 0,           1,          0,            -1      },
+	{ "Steam",         NULL,       NULL,                1 << 7,       0,            0,           1,           1,           0,                 0,           1,          1,            -1      },
 };
