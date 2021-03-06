@@ -1,0 +1,18 @@
+#!/bin/sh
+
+if [ "$1" == "up" ]; then 
+	curvol=$(ponymix get-volume)
+	vol=$(($curvol + 5))
+	ponymix set-volume $vol
+elif [ "$1" == "down" ]; then 
+	curvol=$(ponymix get-volume)
+	vol=$(($curvol - 5))
+	ponymix set-volume $vol
+else
+	curvol=$(ponymix get-volume)
+	if [ "$curvol" -gt "0" ]; then
+		ponymix set-volume 0
+	else
+		ponymix set-volume 100
+	fi
+fi

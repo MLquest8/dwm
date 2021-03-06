@@ -89,6 +89,9 @@ static const char *dwmman[]            = { "st", "man", "dwm", NULL };
 static const char *dmnman[]            = { "st", "man", "dmenu", NULL };
 static const char *xsrman[]            = { "st", "man", "xsetroot", NULL };
 static const char *xkbman[]            = { "st", "man", "setxkbmap", NULL };
+static const char *pondwn[]            = { "dwmponymix", "down", NULL };
+static const char *ponvup[]            = { "dwmponymix", "up", NULL };
+static const char *pontog[]            = { "dwmponymix", NULL };
 /*===================================Dmenu====================================*/
 static const char dmenuprompt[]        = "Launch";                              
 static char dmenumon[2]                = "0"; /* manipulated in spawn         */
@@ -212,6 +215,10 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           9,         spawn,          {.v = dwmpwr } },
 	{ MODKEY|ShiftMask|ControlMask, 9,         quit,                      {0} },
 	{ MODKEY,                       67,        spawn,          {.v = dwmman } },
+
+	{ MODKEY,                       69,        spawn,          {.v = pontog } },
+	{ MODKEY,                       74,        spawn,          {.v = pondwn } },
+	{ MODKEY,                       75,        spawn,          {.v = ponvup } },
 };
 static Key altkeys[] = {
 	/* modifier                     key        function              argument */

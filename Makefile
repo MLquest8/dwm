@@ -4,7 +4,7 @@
 include config.mk
 
 SRC = drw.c dwm.c util.c
-SCR = dwmpwr dwmusr dwmstatus
+SCR = dwmpwr dwmusr dwmstatus dwmponymix
 OBJ = ${SRC:.c=.o}
 
 all: options dwm
