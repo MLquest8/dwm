@@ -56,7 +56,7 @@ static const char *mscsym[]                  = { "\uF011", "\uF11C", "\uF110" };
 static const char *lcksym[]                  = { "\uF13E", "\uF023", "\uF23E" };
 static const char *vntsym[]                  = { "\uF2D0", "\uF2D2", "\uF3C1" };  
 static const char *wnfsym[]                  = { "\uF245", "\uF0E7", "\uF3C1" };
-static const char *lngsym[]                  = { "EN", "KA", "RU", "DE", "CH" };
+static const char *lngsym[]                  = { "EN", "KA", "AR", "DE", "RU" };
 static const char *atdsym[]                  = { "\uF102", "\uF106", "\uF0D8",
                                                  "\uF107", "\uF103", "\uF0D7" };
 /*  DWM tags                                                                  */
