@@ -17,8 +17,8 @@ static const int showsystray        = 1; /* 0 means no systray                */
 static const int stfallbackmon      = 1; /* 1 means first monitor, 0 last     */
 static const unsigned int stmonitor = 0; /* 0 means selected monitor          */
 static const unsigned int stspacing = 2; /* systray spacing                   */
-static const unsigned int igappx    = 5; /* Size of inner gaps                */
-static const unsigned int ogappx    = 5; /* Size of outer gaps                */
+static const unsigned int igappx    = 0; /* Size of inner gaps                */
+static const unsigned int ogappx    = 0; /* Size of outer gaps                */
 static const unsigned int snap      = 32;/* Snap pixel                        */
 static const unsigned int borderpx  = 1; /* Border pixel of windows           */
 static const char *fonts[]          = { "FreeMono:size=12", /* Primary        */
