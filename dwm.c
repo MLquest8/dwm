@@ -1237,11 +1237,11 @@ drawbar(Monitor *m)
 			drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
 			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
 			if (m->sel->isfloating)
-				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
+				drw_rect(drw, x + boxs, boxs * 1, boxw, boxw, m->sel->isfixed, 0);
 			if (m->sel->isfakefullscreen)
-				drw_rect(drw, x + boxs, boxs + 5, boxw, boxw, m->sel->isfullscreen, 0);
+				drw_rect(drw, x + boxs, boxs * 10, boxw, boxw, m->sel->isfullscreen, 0);
 			if (m->sel->ispermanent)
-				drw_rect(drw, x + boxs, boxs + 10, boxw, boxw, m->sel->ispermanent, 0);
+				drw_rect(drw, x + boxs, boxs * 20, boxw, boxw, m->sel->ispermanent, 0);
 		} else {
 			drw_setscheme(drw, scheme[SchemeNorm]);
 			drw_rect(drw, x, 0, w, bh, 1, 1);
