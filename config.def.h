@@ -25,16 +25,16 @@ static const char *fonts[]          = { "FreeMono:size=12", /* Primary        */
                                         "FreeSerif:size=12", /* Secondary     */
                                         "FontAwesome:size=10" }; /* Iconic    */
 /*  DWM color scheme                                                          */
-static const char barselfg[]        = "#eeeeee"; /* Bar foreground selected   */
-static const char barselbg[]        = "#fc6e02"; /* Bar background selected   */
-static const char tlbrdsel[]        = "#fc6e02"; /* Tiled border selected     */
-static const char flbrdsel[]        = "#fc6e02"; /* Floating border selected  */
-static const char urbrdsel[]        = "#ff0202"; /* Urgent border selected    */
-static const char barnrmfg[]        = "#bbbbbb"; /* Bar foreground normal     */
-static const char barnrmbg[]        = "#222222"; /* Bar background normal     */
-static const char tlbrdnrm[]        = "#444444"; /* Tiled border normal       */
-static const char flbrdnrm[]        = "#444444"; /* Floating border normal    */
-static const char urbrdnrm[]        = "#ff0202"; /* Urgent border normal      */
+static const char barselfg[]        = "#282828"; /* Bar foreground selected   */
+static const char barselbg[]        = "#d65d0e"; /* Bar background selected   */
+static const char tlbrdsel[]        = "#a89984"; /* Tiled border selected     */
+static const char flbrdsel[]        = "#a89984"; /* Floating border selected  */
+static const char urbrdsel[]        = "#b8bb26"; /* Urgent border selected    */
+static const char barnrmfg[]        = "#a89984"; /* Bar foreground normal     */
+static const char barnrmbg[]        = "#282828"; /* Bar background normal     */
+static const char tlbrdnrm[]        = "#928374"; /* Tiled border normal       */
+static const char flbrdnrm[]        = "#928374"; /* Floating border normal    */
+static const char urbrdnrm[]        = "#b8bb26"; /* Urgent border normal      */
 static const char *colors[][5]      = {
 /*  Scheme           Foreground, Background, TileBorder, FltBorder, UrgBorder */
     [SchemeSel]  = { barselfg,   barselbg,   tlbrdsel,   flbrdsel,  urbrdsel  },
