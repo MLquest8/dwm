@@ -320,6 +320,7 @@ static void setogaps(const Arg *arg);
 static void setlayout(const Arg *arg);
 static void setup(void);
 static void seturgent(Client *c, int urg);
+static void setxkbmap(const Arg *arg);
 static void shiftview(const Arg *arg);
 static void showhide(Client *c);
 static void sigchld(int unused);
@@ -421,6 +422,7 @@ static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
 static xcb_connection_t *xcon;
 static int xkbEventType;
+static int xkbgrp = 0;
 
 static int useargb = 0;
 static Visual *visual;
@@ -1184,9 +1186,9 @@ drawbar(Monitor *m)
 		tw = TEXTW(mscsym[1]);
 		tray -= tw;
 		drw_text(drw, tray, 0, tw, bh, lrpad / 2, mscsym[1], 0);
-		tw = TEXTW(selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym);
+		tw = TEXTW(lngsym[xkbgrp]);
 		tray -= tw;
-		drw_text(drw, tray, 0, tw, bh, lrpad / 2, selmon->sel ? lngsym[selmon->sel->kbdgrp] : m->lngsym, 0);
+		drw_text(drw, tray, 0, tw, bh, lrpad / 2, lngsym[xkbgrp], 0);
 	}
 
 	if(m->lt[m->sellt]->arrange == monocle){
@@ -2614,6 +2616,45 @@ seturgent(Client *c, int urg)
 	wmh->flags = urg ? (wmh->flags | XUrgencyHint) : (wmh->flags & ~XUrgencyHint);
 	XSetWMHints(dpy, c->win, wmh);
 	XFree(wmh);
+}
+
+void
+setxkbmap(const Arg *arg)
+{	
+	int mcnt = LENGTH(xkbmap);
+
+	switch (arg->i)
+	{
+		case 0:
+			if (++xkbgrp >= mcnt || xkbgrp < 0)
+				xkbgrp = 0;
+			break;
+		case 1:
+			xkbgrp = 0;
+			break;
+		case 2:
+			xkbgrp = 1;
+			break;
+		case 3:
+			xkbgrp = 2;
+			break;
+		case 4:
+			xkbgrp = 3;
+			break;
+		case 5:
+			xkbgrp = 4;
+			break;
+		
+		default:
+			break;
+	}
+
+	Arg tempargs;
+	char *xkbargs[] = { "setxkbmap", xkbmap[xkbgrp], NULL };
+	tempargs.v = xkbargs;
+
+	spawn(&tempargs);
+	drawbar(selmon);
 }
 
 void

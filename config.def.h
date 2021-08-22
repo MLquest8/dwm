@@ -56,7 +56,8 @@ static const char *mscsym[]                  = { "\uF011", "\uF11C", "\uF110" };
 static const char *lcksym[]                  = { "\uF13E", "\uF023", "\uF23E" };
 static const char *vntsym[]                  = { "\uF2D0", "\uF2D2", "\uF3C1" };  
 static const char *wnfsym[]                  = { "\uF245", "\uF0E7", "\uF3C1" };
-static const char *lngsym[]                  = { "EN", "KA", "AR", "DE", "RU" };
+static const char *xkbmap[]                  = { "us", "ge", "ru", "de", "ar" };
+static const char *lngsym[]                  = { "EN", "KA", "RU", "DE", "AR" };
 static const char *atdsym[]                  = { "\uF102", "\uF106", "\uF0D8",
                                                  "\uF107", "\uF103", "\uF0D7" };
 /*  DWM tags                                                                  */
@@ -219,6 +220,13 @@ static Key keys[] = {
 	{ MODKEY,                       69,        spawn,          {.v = pontog } },
 	{ MODKEY,                       74,        spawn,          {.v = pondwn } },
 	{ MODKEY,                       75,        spawn,          {.v = ponvup } },
+
+	{ ShiftMask|Mod1Mask,           10,        setxkbmap,           {.i = 1 } },
+	{ ShiftMask|Mod1Mask,           11,        setxkbmap,           {.i = 2 } },
+	{ ShiftMask|Mod1Mask,           12,        setxkbmap,           {.i = 3 } },
+	{ ShiftMask|Mod1Mask,           13,        setxkbmap,           {.i = 4 } },
+	{ ShiftMask|Mod1Mask,           14,        setxkbmap,           {.i = 5 } },
+	{ ShiftMask|Mod1Mask,           23,        setxkbmap,           {.i = 0 } },
 };
 static Key altkeys[] = {
 	/* modifier                     key        function              argument */
