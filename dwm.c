@@ -371,7 +371,6 @@ static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void xinitvisual();
-static void xkbeventnotify(XEvent *e);
 static void zoom(const Arg *arg);
 
 static pid_t *autostart_pids;
@@ -421,7 +420,6 @@ static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
 static xcb_connection_t *xcon;
-static int xkbEventType;
 static int xkbgrp = 0;
 
 static int useargb = 0;
@@ -2205,14 +2203,9 @@ run(void)
 	XEvent ev;
 	/* main event loop */
 	XSync(dpy, False);
-	while (running && !XNextEvent(dpy, &ev)) {
-		if(ev.type == xkbEventType) {
-			xkbeventnotify(&ev);
-			continue;
-		}
+	while (running && !XNextEvent(dpy, &ev))
 		if (handler[ev.type])
 			handler[ev.type](&ev); /* call handler */
-	}
 }
 
 void
@@ -2598,8 +2591,6 @@ setup(void)
 		|LeaveWindowMask|StructureNotifyMask|PropertyChangeMask;
 	XChangeWindowAttributes(dpy, root, CWEventMask|CWCursor, &wa);
 	XSelectInput(dpy, root, wa.event_mask);
-	XkbQueryExtension(dpy, 0, &xkbEventType, 0, 0, 0);
-	XkbSelectEventDetails(dpy, XkbUseCoreKbd, XkbStateNotify, XkbAllStateComponentsMask, XkbGroupStateMask);
 	grabkeys();
 	focus(NULL);
 }
@@ -2650,9 +2641,10 @@ setxkbmap(const Arg *arg)
 	}
 
 	Arg tempargs;
-	char *xkbargs[] = { "setxkbmap", xkbmap[xkbgrp], NULL };
+	char tempstr[8]; // to keep "en" always buffered
+	sprintf(tempstr, "%s,%s", xkbmap[xkbgrp], xkbgrp ? xkbmap[0] : xkbmap[1]);
+	char *xkbargs[] = { "setxkbmap", "-rules", "evdev", "-model", "pc105", "-layout", tempstr, NULL };
 	tempargs.v = xkbargs;
-
 	spawn(&tempargs);
 	drawbar(selmon);
 }
@@ -3915,22 +3907,6 @@ systraytomon(Monitor *m) {
 	if(stfallbackmon && n < stmonitor)
 		return mons;
 	return t;
-}
-
-void
-xkbeventnotify(XEvent *e)
-{
-	XkbStateRec kbd_state;
-	
-	XkbEvent* xkbEvent = (XkbEvent*) e;
-	if (xkbEvent->any.xkb_type == XkbStateNotify) {
-		XkbGetState(dpy, XkbUseCoreKbd, &kbd_state);
-		if (selmon->sel)
-			selmon->sel->kbdgrp = kbd_state.group;
-		else
-			strncpy(selmon->lngsym, lngsym[kbd_state.group], sizeof selmon->lngsym);
-		drawbar(selmon);
-	}
 }
 
 void
