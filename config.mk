@@ -1,5 +1,5 @@
 # dwm version
-VERSION = 6.2.Orange
+VERSION = 6.3.Orange
 
 # Customize below to fit your system
 

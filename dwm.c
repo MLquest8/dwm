@@ -1181,7 +1181,10 @@ drawbarmain(Monitor *m)
 	int boxw = drw->fonts->h / 6 + 2;
 	int boxs = drw->fonts->h / 9;
 	Client *c;
-	
+
+	if (!m->showbar)
+		return;
+
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
 		drw_setscheme(drw, scheme[SchemeNorm]);
@@ -1267,6 +1270,9 @@ drawbarsecondary(Monitor *m)
 	int lthc = 2, loff = 1;
 	char token[256];
 	Client *c;
+
+	if (!m->showextrabar)
+		return;
 
 	if (showsystray && m == systraytomon(m)) { 
 		stw = getsystraywidth();
@@ -1469,7 +1475,7 @@ focusstack(const Arg *arg)
 	int i = stackpos(arg);
 	Client *c, *p;
 
-	if (selmon->sel->isforcedfullscreen || (selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen))
+	if (selmon->sel->isforcedfullscreen || (selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen && lockfullscreen))
 		return;
 
 	if(i < 0)

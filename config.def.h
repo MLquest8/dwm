@@ -65,6 +65,7 @@ static const int resizehints     = 0; /* 1 means size hints in tiled resizals */
 static const int decorhints      = 1; /* 1 means respect decoration hints     */
 static const int attachdirection = 4; /* 0 top, 1 above, 2 on top of stack,
                                          3 below, 4 bottom, 5 below I master  */
+static const int lockfullscreen  = 1; /* force focus on the fullscreen window */
 /*  DWM tags                                                                  */
 static const char *tags[]     = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 static const char *tagsalt[]  = { "?", "?", "?", "?", "?", "?", "?", "?", "?" };
