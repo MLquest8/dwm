@@ -57,9 +57,6 @@ static const char *vntsym[]                  = { "\uF2D0", "\uF2D2", "\uF3C1" };
 static const char *wnfsym[]                  = { "\uF245", "\uF0E7", "\uF3C1" };
 static const char *atdsym[]                  = { "\uF102", "\uF106", "\uF0D8",
                                                  "\uF107", "\uF103", "\uF0D7" };
-/*  DWM tags                                                                  */
-static const char *tags[]        = { "1", "2", "3", "4", "5" };
-static const char *tagsalt[]     = { "Con", "Web", "Code", "Media", "Run" };
 /*  DWM layout settings                                                       */
 static const int dirs[3]         = { DirHor, DirVer, DirVer }; /* Tiling dirs */
 static const float facts[3]      = { 1.1,    1.1,    1.1 }; /* Tiling facts   */
@@ -68,6 +65,9 @@ static const int resizehints     = 0; /* 1 means size hints in tiled resizals */
 static const int decorhints      = 1; /* 1 means respect decoration hints     */
 static const int attachdirection = 4; /* 0 top, 1 above, 2 on top of stack,
                                          3 below, 4 bottom, 5 below I master  */
+/*  DWM tags                                                                  */
+static const char *tags[]     = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tagsalt[]  = { "?", "?", "?", "?", "?", "?", "?", "?", "?" };
 /*  DWM layout symbols                                                        */
 static const Layout layouts[] = {
 /*  Symbol        Layout                                                      */
