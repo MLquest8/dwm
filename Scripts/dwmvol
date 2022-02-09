@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if [ "$1" == "ponymix" ]; then
+    curvol=$(ponymix get-volume)
+    if [ "$2" == "+" ]; then 
+        finvol=$(($curvol + 5))
+        ponymix set-volume $finvol
+    elif [ "$2" == "-" ]; then 
+        finvol=$(($curvol - 5))
+        ponymix set-volume $finvol
+    elif [ "$2" == "*" ]; then 
+        ponymix is-mute
+        if [ $? -eq 0 ]; then
+            ponymix unmute
+        else
+            ponymix mute
+        fi
+    fi
+fi

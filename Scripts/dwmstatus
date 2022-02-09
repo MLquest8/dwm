@@ -1,13 +1,20 @@
 #!/bin/sh
-
-DWMVer=$(dwm -v)
+let printDate
+let printBat
+let printVol
 
 while true
-do
-	currentDate=`date +"%H:%M:%S, %A, %b %d, %Y"`
-	currentBat=$(cat /sys/class/power_supply/BAT1/capacity)
-	currentVol=$(ponymix get-volume)
-	xsetroot -name "$currentDate | Battery: $currentBat | Volume: $currentVol | $DWMVer"
-	sleep 1
+do 
+    ponymix is-mute
+    if [ $? -eq 0 ]; then
+        printVol="--"
+    else
+        printVol=$(ponymix get-volume)
+    fi
+
+    printDate=`date +"%H:%M:%S, %A, %b %d, %Y"`
+    printBat=$(cat /sys/class/power_supply/BAT1/capacity)
+    xsetroot -name "$printDate|Bat: $printBat|Vol: $printVol|"
+
+    sleep 1
 done
-		

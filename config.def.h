@@ -3,7 +3,7 @@
 /*  DWM appearance settings                                                   */
 static const int topbar             = 1; /* 0 means bottom bar                */
 static const int showbar            = 1; /* 0 means no bar                    */
-static const int barheight          = 26;/* Specific bar height (0 for def)   */
+static const int barheight          = 22;/* Specific bar height (0 for def)   */
 static const int showextrabar       = 1; /* 0 means no extra bar              */
 static const int extrabarheight     = 16;/* Specific bar height (0 for def)   */
 static const int viewontag          = 1; /* 1 Switch view on tag switch       */
@@ -21,8 +21,7 @@ static const unsigned int igappx    = 0; /* Size of inner gaps                */
 static const unsigned int ogappx    = 0; /* Size of outer gaps                */
 static const unsigned int snap      = 32;/* Snap pixel                        */
 static const unsigned int borderpx  = 1; /* Border pixel of windows           */
-static const char *fonts[]          = { "FreeMono:size=12", /* Primary        */
-                                        "FreeSerif:size=12", /* Secondary     */
+static const char *fonts[]          = { "FreeMono:size=10:style=bold",
                                         "FontAwesome:size=10" }; /* Iconic    */
 /*  DWM color scheme                                                          */
 static const char barselfg[]        = "#282828"; /* Bar foreground selected   */
@@ -56,16 +55,11 @@ static const char *mscsym[]                  = { "\uF011", "\uF11C", "\uF110" };
 static const char *lcksym[]                  = { "\uF13E", "\uF023", "\uF23E" };
 static const char *vntsym[]                  = { "\uF2D0", "\uF2D2", "\uF3C1" };  
 static const char *wnfsym[]                  = { "\uF245", "\uF0E7", "\uF3C1" };
-static const char *xkbmap[]                  = { "us", "ge", "ru", "de", "ar" };
-static const char *lngsym[]                  = { "EN", "KA", "RU", "DE", "AR" };
 static const char *atdsym[]                  = { "\uF102", "\uF106", "\uF0D8",
                                                  "\uF107", "\uF103", "\uF0D7" };
 /*  DWM tags                                                                  */
-static const char *tags[]                    = { "\uF406", "\uF269", "\uF09B",
-                                                 "\uF04B", "\uF03D", "\uF130",
-                                                 "\uF0D0", "\uF1B6", "\uF085" };
-static const char *tagsalt[]                 = { "1", "2", "3", "4", "5", "6",
-                                                                "7", "8", "9" };
+static const char *tags[]        = { "1", "2", "3", "4", "5" };
+static const char *tagsalt[]     = { "Con", "Web", "Code", "Media", "Run" };
 /*  DWM layout settings                                                       */
 static const int dirs[3]         = { DirHor, DirVer, DirVer }; /* Tiling dirs */
 static const float facts[3]      = { 1.1,    1.1,    1.1 }; /* Tiling facts   */
@@ -83,21 +77,34 @@ static const Layout layouts[] = {
     { NULL,       NULL },
 };
 /*=====================================St=====================================*/
-static const char *termcmd[]           = { "st", NULL };
-static const char *dwmpwr[]            = { "dwmpwr", NULL };
-static const char *dwmusr[]            = { "st", "dwmusr", NULL };
-static const char *dwmman[]            = { "st", "man", "dwm", NULL };
-static const char *dmnman[]            = { "st", "man", "dmenu", NULL };
-static const char *xsrman[]            = { "st", "man", "xsetroot", NULL };
-static const char *xkbman[]            = { "st", "man", "setxkbmap", NULL };
-static const char *pondwn[]            = { "dwmponymix", "down", NULL };
-static const char *ponvup[]            = { "dwmponymix", "up", NULL };
-static const char *pontog[]            = { "dwmponymix", NULL };
+static const char *trmcmd[]     = { "st", NULL };
+static const char *dwmusr[]     = { "st", "dwmuser", NULL };
+static const char *dwmman[]     = { "st", "man", "dwm", NULL };
+static const char *dmnman[]     = { "st", "man", "dmenu", NULL };
+static const char *xsrman[]     = { "st", "man", "xsetroot", NULL };
+static const char *pondwn[]     = { "dwmvol", "ponymix", "-", NULL };
+static const char *ponvup[]     = { "dwmvol", "ponymix", "+", NULL };
+static const char *pontog[]     = { "dwmvol", "ponymix", "*", NULL };
 /*===================================Dmenu====================================*/
-static const char dmenuprompt[]        = "Launch";                              
-static char dmenumon[2]                = "0"; /* manipulated in spawn         */
-static const char *dmenucmd[]          = { "dmenu_run", "-m", dmenumon, 
-                                                      "-p", dmenuprompt, NULL };
+/* components of dmenucmd, manipulated in spawn() */
+static char dmenumon[2]         = "0"; 
+static char dmenutopbar[2]      = "0";
+static char dmenuheight[3]      = "0";
+/* components of dmenucmd applicable to all incantaions */
+static const char dmenuppt[]    = "Launch";
+static const char dmenufont[]   = "FreeMono:size=10:style=bold";
+/* dmenu - patched, restrictive, with history caching */
+static const char *dmenucmdh[]  = { "dmenu_run_whc", "-m", dmenumon, "--cmd", "st -e", "-r", "-b", dmenutopbar, "-h", dmenuheight, "-fn", dmenufont, "-p", dmenuppt, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
+/* dmenu - patched, unrestrictive, passes anything */
+static const char *dmenucmdu[]  = { "dmenu_run", "-m", dmenumon, "--cmd", "st -e", "-b", dmenutopbar, "-h", dmenuheight, "-fn", dmenufont, "-p", dmenuppt, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
+/* dmenu - patched, todo list with caching*/
+static const char *dmenutodo[]  = { "dmenu_todo", "-m", dmenumon, "--cmd", "!URGENT!", "-i", "-b", dmenutopbar, "-h", dmenuheight, "-fn", dmenufont, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
+/* dmenu - patched shutdown script */
+static const char *dmenupwrm[]  = { "dwmshutdown", "-m", dmenumon, "-i", "-b", dmenutopbar, "-h", dmenuheight, "-fn", dmenufont, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
+/* dmenu - legacy version (for compatibility) */
+static const char *dmenucmdl[]  = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-p", dmenuppt, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
+/* dmenu - legacy shutdown script (for compatibility) */
+static const char *dmenupwrl[]  = { "dwmshutdown", "-m", dmenumon, "-i", "-fn", dmenufont, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
 /*===================================Extra====================================*/
 /*  Helper for spawning shell commands in the pre dwm-5.0 fashion             */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -118,10 +125,10 @@ static const char *const autostart[]   = {
 };
 /*===================================Signals==================================*/
 /*  Signum must be greater than 0                                             */
-/*  Trigger signals using `xsetroot -name "fsignal:<signum>"                  */
+/*  Trigger signals using `xsetroot -name "fsignal:<signum>"`                 */
 static Signal signals[]                = {
-	/* signum                      function                      argument */
-	{ 99,                          quit,                              {0} },
+	/* signum                      function                          argument */
+	{ 99,                          quit,                                  {0} },
 };
 /*====================================Keys====================================*/
 /*  DWM macros                                                                */
@@ -148,11 +155,14 @@ static Signal signals[]                = {
 /*  DWM keys and definitions                                                      */
 static Key keys[] = {
 	/* modifier                     key        function              argument */
-	{ MODKEY,                       36,        spawn,         {.v = termcmd } },
+	{ MODKEY,                       22,        spawn,       {.v = dmenucmdh } },
+	{ MODKEY|ShiftMask,             22,        spawn,       {.v = dmenucmdu } },
+	{ MODKEY|ControlMask,           22,        spawn,       {.v = dmenutodo } },
+	{ MODKEY|ShiftMask|ControlMask, 22,        spawn,       {.v = dmenucmdl } },
+	{ MODKEY,                       36,        spawn,          {.v = trmcmd } },
 	{ MODKEY|ShiftMask,             36,        togglescratch,      {.ui = 0 } },
 	{ MODKEY|ControlMask,           36,        togglescratch,      {.ui = 1 } },
 	{ MODKEY|ShiftMask|ControlMask, 36,        togglescratch,      {.ui = 2 } },
-	{ MODKEY,                       22,        spawn,        {.v = dmenucmd } },
 	{ MODKEY,                       49,        setlayout,                 {0} },
 	{ MODKEY|ShiftMask,             49,        cyclelayout,        {.i = +1 } },
 	{ MODKEY|ControlMask,           49,        cyclelayout,        {.i = -1 } },
@@ -213,20 +223,13 @@ static Key keys[] = {
 	{ MODKEY,                       110,       togglekeys,                {0} },
 	{ MODKEY,                       9,         killclient,                {0} },
 	{ MODKEY|ShiftMask,             9,         killunsel,                 {0} },
-	{ MODKEY|ControlMask,           9,         spawn,          {.v = dwmpwr } },
+	{ MODKEY|ControlMask,           9,         spawn,        {.v = dmenupwrm } },
 	{ MODKEY|ShiftMask|ControlMask, 9,         quit,                      {0} },
 	{ MODKEY,                       67,        spawn,          {.v = dwmman } },
 
 	{ MODKEY,                       69,        spawn,          {.v = pontog } },
 	{ MODKEY,                       74,        spawn,          {.v = pondwn } },
 	{ MODKEY,                       75,        spawn,          {.v = ponvup } },
-
-	{ ShiftMask|Mod1Mask,           10,        setxkbmap,           {.i = 1 } },
-	{ ShiftMask|Mod1Mask,           11,        setxkbmap,           {.i = 2 } },
-	{ ShiftMask|Mod1Mask,           12,        setxkbmap,           {.i = 3 } },
-	{ ShiftMask|Mod1Mask,           13,        setxkbmap,           {.i = 4 } },
-	{ ShiftMask|Mod1Mask,           14,        setxkbmap,           {.i = 5 } },
-	{ ShiftMask|Mod1Mask,           23,        setxkbmap,           {.i = 0 } },
 };
 static Key altkeys[] = {
 	/* modifier                     key        function              argument */
@@ -242,20 +245,23 @@ static Button buttons[] = {
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
-	{ ClkUser,              0,              Button1,        spawn,          {.v = termcmd } },
+	{ ClkUser,              0,              Button1,        spawn,          {.v = trmcmd } },
 	{ ClkUser,              0,              Button3,        spawn,          {.v = dwmusr } },
 	{ ClkWinTitle,          0,              Button1,        togglescratch,  {.ui = 0 } },
-	{ ClkWinTitle,          0,              Button3,        spawn,          {.v = dmenucmd } },
+	{ ClkWinTitle,          0,              Button3,        spawn,          {.v = dmenucmdh } },
+	{ ClkWinTitle,          MODKEY,         Button3,        spawn,          {.v = dmenucmdu } },
+	{ ClkWinTitle,          ShiftMask,      Button3,        spawn,          {.v = dmenutodo } },
+	{ ClkWinTitle,          ControlMask,    Button3,        spawn,          {.v = dmenucmdl } },
 	{ ClkLtSymbol,          0,              Button2,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button1,        cyclelayout,    {.i = +1 } },
 	{ ClkLtSymbol,          0,              Button3,        cyclelayout,    {.i = -1 } },
-	{ ClkPower,             0,              Button1,        spawn,          {.v = dwmpwr } },
+	{ ClkPower,             0,              Button1,        spawn,          {.v = dmenupwrm } },
+	{ ClkPower,             0,              Button3,        spawn,          {.v = dmenupwrl } },
 	{ ClkLock,              0,              Button1,        togglekeys,     {0} },
 	{ ClkViewT,             0,              Button1,        toggleviewontag,{0} },
 	{ ClkWarpP,             0,              Button1,        togglewarp,     {0} },
 	{ ClkKeyboard,          0,              Button1,        spawn,          {.v = dwmman } },
 	{ ClkKeyboard,          0,              Button3,        spawn,          {.v = dmnman } },
-	{ ClkLanguage,          0,              Button1,        spawn,          {.v = xkbman } },
 	{ ClkAttachDir,         0,              Button1,        toggleattachdir,{.i = +1 } },
 	{ ClkAttachDir,         0,              Button3,        toggleattachdir,{.i = -1 } },
 	{ ClkAttachDir,         0,              Button2,        toggleattachdir,{0} },
@@ -263,6 +269,7 @@ static Button buttons[] = {
 	{ ClkClientWin,         MODKEY,         Button2,        zoom,           {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 	{ ClkStatusText,        MODKEY,         Button1,        spawn,          {.v = xsrman } },
+	{ ClkWinTab,            0,              Button1,        togglewin,      {0} },
 };
 /*===================================Rules====================================*/
 static const Rule rules[] = {
