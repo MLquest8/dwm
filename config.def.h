@@ -57,6 +57,10 @@ static const char *vntsym[]                  = { "\uF2D0", "\uF2D2", "\uF3C1" };
 static const char *wnfsym[]                  = { "\uF245", "\uF0E7", "\uF3C1" };
 static const char *atdsym[]                  = { "\uF102", "\uF106", "\uF0D8",
                                                  "\uF107", "\uF103", "\uF0D7" };
+/*  DWM tags                                                                  */
+static const char *tags[]                    = { "1", "2", "3", "4", "5" };
+static const char *tagsalt[]                 = { "\uF130", "\uF269", "\uF09B",
+                                                           "\uF120", "\uF085" };
 /*  DWM layout settings                                                       */
 static const int dirs[3]         = { DirHor, DirVer, DirVer }; /* Tiling dirs */
 static const float facts[3]      = { 1.1,    1.1,    1.1 }; /* Tiling facts   */
@@ -65,10 +69,8 @@ static const int resizehints     = 0; /* 1 means size hints in tiled resizals */
 static const int decorhints      = 1; /* 1 means respect decoration hints     */
 static const int attachdirection = 4; /* 0 top, 1 above, 2 on top of stack,
                                          3 below, 4 bottom, 5 below I master  */
-static const int lockfullscreen  = 1; /* force focus on the fullscreen window */
-/*  DWM tags                                                                  */
-static const char *tags[]     = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-static const char *tagsalt[]  = { "?", "?", "?", "?", "?", "?", "?", "?", "?" };
+static const int lockfullscreen  = 1; /* Force focus on the fullscreen window */
+static const int startonalttags  = 0; /* Use alttags by default               */
 /*  DWM layout symbols                                                        */
 static const Layout layouts[] = {
 /*  Symbol        Layout                                                      */
@@ -211,10 +213,10 @@ static Key keys[] = {
 	TAGKEYS(                        12,                                    2)
 	TAGKEYS(                        13,                                    3)
 	TAGKEYS(                        14,                                    4)
-	TAGKEYS(                        15,                                    5)
-	TAGKEYS(                        16,                                    6)
-	TAGKEYS(                        17,                                    7)
-	TAGKEYS(                        18,                                    8)
+//	TAGKEYS(                        15,                                    5)
+//	TAGKEYS(                        16,                                    6)
+//	TAGKEYS(                        17,                                    7)
+//	TAGKEYS(                        18,                                    8)
 	STACKKEYS(MODKEY,                                                  focus)
 	STACKKEYS(MODKEY|ShiftMask,                                         push)
 	TILEKEYS(MODKEY,                                                 1, 0, 0)
@@ -286,6 +288,4 @@ static const Rule rules[] = {
 	{ NULL,            "keepassxc",NULL,                SPTAG(2),     0,            1,           1,           0,           0,                 0,           0,          0,            -1      },
 	{ "firefox",       NULL,       NULL,                1 << 1,       0,            0,           0,           0,           0,                 0,           1,          0,            -1      },
 	{ "code-oss",      NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
-	{ "Gimp",          NULL,       NULL,                1 << 6,       0,            0,           1,           1,           0,                 0,           1,          0,            -1      },
-	{ "Steam",         NULL,       NULL,                1 << 7,       0,            0,           1,           1,           0,                 0,           1,          1,            -1      },
 };
