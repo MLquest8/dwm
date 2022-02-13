@@ -116,15 +116,10 @@ const char *spcmd1[]                   = {"st", "-n", "Spad1", NULL };
 const char *spcmd2[]                   = {"st", "-n", "Spad2", NULL };
 const char *spcmd3[]                   = {"keepassxc", NULL };
 static Sp scratchpads[]                = {
-/*      name                           command                                */
-	{"Spad1",                      spcmd1},
-	{"Spad2",                      spcmd2},
-	{"keepassxc",                  spcmd3},
-};
-/*==================================AutoStart=================================*/
-static const char *const autostart[]   = {
-	"dwmstatus", NULL,
-	NULL /* terminate */
+/*  name                                                             command  */
+	{"Spad1",                                                        spcmd1},
+	{"Spad2",                                                        spcmd2},
+	{"keepassxc",                                                    spcmd3},
 };
 /*===================================Signals==================================*/
 /*  Signum must be greater than 0                                             */
@@ -241,7 +236,6 @@ static Key altkeys[] = {
 };
 /*===================================Buttons==================================*/
 /*  DWM button definitions */
-/* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
