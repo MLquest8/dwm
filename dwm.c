@@ -197,7 +197,7 @@ struct Monitor {
 	int attachdir;
 	int viewontag;
 	int keyslocked;
-	int hidevactags;
+	int hidetagspast;
 	int warponfocus;
 	int gapsforone;
 	int gapsformonocle;
@@ -320,6 +320,7 @@ static void setfullscreenforced(const Arg *arg);
 static void setigaps(const Arg *arg);
 static void setogaps(const Arg *arg);
 static void setlayout(const Arg *arg);
+static void setshowmintags(const Arg *arg);
 static void setup(void);
 static void seturgent(Client *c, int urg);
 static void shiftview(const Arg *arg);
@@ -338,7 +339,6 @@ static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void togglegapsforone();
 static void togglegapsformonocle();
-static void togglehidevactags();
 static void toggleisfakefs();
 static void toggleispermanent();
 static void togglescratch(const Arg *arg);
@@ -736,11 +736,11 @@ attachstack(Client *c)
 void
 buttonpress(XEvent *e)
 {
+	XButtonPressedEvent *ev = &e->xbutton;
 	unsigned int i, x, click, occ = 0;
 	Arg arg = {0};
+	Monitor *m;	
 	Client *c;
-	Monitor *m;
-	XButtonPressedEvent *ev = &e->xbutton;
 
 	click = ClkRootWin;
 	/* focus monitor if necessary */
@@ -751,11 +751,11 @@ buttonpress(XEvent *e)
 	}
 	if (ev->window == selmon->barwin) { /* main bar window */
 		i = x = 0;
-		for (c = m->clients; c; c = c->next)
+		for (c = selmon->clients; c; c = c->next)
 			occ |= c->tags == 255 ? 0 : c->tags;
 		do {
-			/* do not reserve space for vacant tags */
-			if (m->hidevactags && !(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
+			/* do not reserve space for vacant or hidden tags */
+			if (selmon->hidetagspast - 1 < i && !(occ & 1 << i || selmon->tagset[selmon->seltags] & 1 << i))
 				continue;
 			x += selmon->alttag ? TEXTW(tagsalt[i]) : TEXTW(tags[i]);
 		}
@@ -768,17 +768,17 @@ buttonpress(XEvent *e)
 			click = ClkUser;
 		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]))
 			click = ClkPower;
-		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]))
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[selmon->keyslocked]))
 			click = ClkLock;
-		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]))
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[selmon->keyslocked]) - (int)TEXTW(vntsym[selmon->viewontag]))
 			click = ClkViewT;
-		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]))
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[selmon->keyslocked]) - (int)TEXTW(vntsym[selmon->viewontag]) - (int)TEXTW(wnfsym[selmon->warponfocus]))
 			click = ClkWarpP;
-		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]))
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[selmon->keyslocked]) - (int)TEXTW(vntsym[selmon->viewontag]) - (int)TEXTW(wnfsym[selmon->warponfocus]) - (int)TEXTW(mscsym[1]))
 			click = ClkKeyboard;
-		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(m->ltsymbol))
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[selmon->keyslocked]) - (int)TEXTW(vntsym[selmon->viewontag]) - (int)TEXTW(wnfsym[selmon->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(selmon->ltsymbol))
 			click = ClkLtSymbol;	
-		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[m->keyslocked]) - (int)TEXTW(vntsym[m->viewontag]) - (int)TEXTW(wnfsym[m->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(m->ltsymbol) - (int)TEXTW(atdsym[m->attachdir]))
+		else if (ev->x > selmon->ww - (int)TEXTW(mscsym[0]) - (int)TEXTW(lcksym[selmon->keyslocked]) - (int)TEXTW(vntsym[selmon->viewontag]) - (int)TEXTW(wnfsym[selmon->warponfocus]) - (int)TEXTW(mscsym[1]) - (int)TEXTW(selmon->ltsymbol) - (int)TEXTW(atdsym[selmon->attachdir]))
 			click = ClkAttachDir;
 		else
 			click = ClkWinTitle;
@@ -788,14 +788,14 @@ buttonpress(XEvent *e)
 			click = ClkStatusText;
 		else {
 			x += eblw;
-			c = m->clients;
+			c = selmon->clients;
 
 			if (c) {
 				do {
 					if (!ISVISIBLE(c))
 						continue;
 					else
-						x += (1.0 / (double)m->bt) * m->btw;
+						x += (1.0 / (double)selmon->bt) * selmon->btw;
 				} while (ev->x > x && (c = c->next));
 
 				click = ClkWinTab;
@@ -1067,7 +1067,7 @@ createmon(void)
 	m->attachdir = attachdirection;
 	m->viewontag = viewontag;
 	m->keyslocked = keyslocked;
-	m->hidevactags = hidevactags;
+	m->hidetagspast = hidetagspast;
 	m->warponfocus = warponfocus;
 	m->gapsforone = gapsforone;
 	m->gapsformonocle = gapsformonocle;
@@ -1221,8 +1221,8 @@ drawbarmain(Monitor *m)
 	}
 
 	for (i = 0, x = 0; i < LENGTH(tags); i++) {
-		if (m->hidevactags && !(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
-			continue; /* do not draw vacant tags */
+		if (m->hidetagspast - 1 < i && !(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
+			continue; /* hide tags past the var unless they are active*/
 
 		w = selmon->alttag ? TEXTW(tagsalt[i]) : TEXTW(tags[i]);
 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
@@ -2618,6 +2618,20 @@ setlayout(const Arg *arg)
 }
 
 void
+setshowmintags(const Arg *arg)
+{
+	if (arg->i == 0)
+		selmon->hidetagspast = hidetagspast;
+	else if (selmon->hidetagspast + arg->i <= 0)
+		return;
+	else if (selmon->hidetagspast + arg->i > LENGTH(tags))
+		return;
+	else
+		selmon->hidetagspast += arg->i;
+	drawbarmain(selmon);
+}
+
+void
 setup(void)
 {
 	int i;
@@ -2998,16 +3012,9 @@ togglegapsformonocle()
 }
 
 void
-togglehidevactags()
-{
-	selmon->hidevactags = !selmon->hidevactags;
-	drawbarmain(selmon);
-}
-
-void
 toggleisfakefs()
 {
-	if (selmon->sel->isfullscreen)
+	if (!selmon->sel || selmon->sel->isfullscreen)
 		return;
 
 	selmon->sel->isfakefullscreen = !selmon->sel->isfakefullscreen;
@@ -3017,6 +3024,9 @@ toggleisfakefs()
 void
 toggleispermanent()
 {
+	if (!selmon->sel)
+		return;
+
 	selmon->sel->ispermanent = !selmon->sel->ispermanent;
 	drawbarmain(selmon);
 }
@@ -3675,7 +3685,9 @@ view(const Arg *arg)
 
 	if(arg->ui && (arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
 		return;
+
 	selmon->seltags ^= 1; /* toggle sel tagset */
+
 	if (arg->ui & TAGMASK) {
 		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
 		selmon->pertag->prevtag = selmon->pertag->curtag;

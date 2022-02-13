@@ -8,7 +8,8 @@ static const int showextrabar       = 1; /* 0 means no extra bar              */
 static const int extrabarheight     = 16;/* Specific bar height (0 for def)   */
 static const int viewontag          = 1; /* 1 Switch view on tag switch       */
 static const int startontag         = 1; /* 0 means no tag is active on start */
-static const int hidevactags        = 0; /* 1 means hide vacant tags          */
+static const int startonalttags     = 0; /* Use alttags by default            */
+static const int hidetagspast       = 5; /* Hide tags past X unless active    */
 static const int warponfocus        = 1; /* 1 Warp pointer to focused client  */
 static const int swallowfloating    = 0; /* 1 swallow all floating windows    */
 static const int gapsforone         = 0; /* Gaps for only one window open     */
@@ -58,9 +59,9 @@ static const char *wnfsym[]                  = { "\uF245", "\uF0E7", "\uF3C1" };
 static const char *atdsym[]                  = { "\uF102", "\uF106", "\uF0D8",
                                                  "\uF107", "\uF103", "\uF0D7" };
 /*  DWM tags                                                                  */
-static const char *tags[]                    = { "1", "2", "3", "4", "5" };
-static const char *tagsalt[]                 = { "\uF130", "\uF269", "\uF09B",
-                                                           "\uF120", "\uF085" };
+static const char *tags[]     = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tagsalt[]  = { "<Home>", "<Web>", "<Code>", "<Console>",
+                            "<Media>", "<Tag6>", "<Tag7>", "<Tag8>", "<Tag9>" };
 /*  DWM layout settings                                                       */
 static const int dirs[3]         = { DirHor, DirVer, DirVer }; /* Tiling dirs */
 static const float facts[3]      = { 1.1,    1.1,    1.1 }; /* Tiling facts   */
@@ -70,7 +71,6 @@ static const int decorhints      = 1; /* 1 means respect decoration hints     */
 static const int attachdirection = 4; /* 0 top, 1 above, 2 on top of stack,
                                          3 below, 4 bottom, 5 below I master  */
 static const int lockfullscreen  = 1; /* Force focus on the fullscreen window */
-static const int startonalttags  = 0; /* Use alttags by default               */
 /*  DWM layout symbols                                                        */
 static const Layout layouts[] = {
 /*  Symbol        Layout                                                      */
@@ -136,8 +136,6 @@ static Signal signals[]                = {
 /*====================================Keys====================================*/
 /*  DWM macros                                                                */
 #define MODKEY Mod4Mask
-#define CTRL ControlMask
-#define SHIFT ShiftMask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -198,7 +196,9 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           56,        togglebar,           {.i = 2 } },
 	{ MODKEY|ShiftMask|ControlMask, 56,        togglebar,          {.i = -1 } },
 	{ MODKEY,                       28,        togglealttag,              {0} },
-	{ MODKEY|ShiftMask,             28,        togglehidevactags,         {0} },
+	{ MODKEY|ShiftMask,             28,        setshowmintags,     {.i = +1 } },
+	{ MODKEY|ControlMask,           28,        setshowmintags,     {.i = -1 } },
+	{ MODKEY|ShiftMask|ControlMask, 28,        setshowmintags,      {.i = 0 } },
 	{ MODKEY,                       59,        focusmon,           {.i = -1 } },
 	{ MODKEY,                       60,        focusmon,           {.i = +1 } },
 	{ MODKEY|ShiftMask,             59,        tagmon,             {.i = -1 } },
@@ -213,10 +213,10 @@ static Key keys[] = {
 	TAGKEYS(                        12,                                    2)
 	TAGKEYS(                        13,                                    3)
 	TAGKEYS(                        14,                                    4)
-//	TAGKEYS(                        15,                                    5)
-//	TAGKEYS(                        16,                                    6)
-//	TAGKEYS(                        17,                                    7)
-//	TAGKEYS(                        18,                                    8)
+	TAGKEYS(                        15,                                    5)
+	TAGKEYS(                        16,                                    6)
+	TAGKEYS(                        17,                                    7)
+	TAGKEYS(                        18,                                    8)
 	STACKKEYS(MODKEY,                                                  focus)
 	STACKKEYS(MODKEY|ShiftMask,                                         push)
 	TILEKEYS(MODKEY,                                                 1, 0, 0)
