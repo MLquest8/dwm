@@ -485,8 +485,8 @@ applyrules(Client *c)
 		XFree(ch.res_class);
 	if (ch.res_name)
 		XFree(ch.res_name);
-	if(c->tags & TAGMASK)                    c->tags = c->tags & TAGMASK;
-	else if(c->mon->tagset[c->mon->seltags]) c->tags = (c->mon->tagset[c->mon->seltags] & ~SPTAGMASK);
+	if (c->tags & TAGMASK)                    c->tags = c->tags & TAGMASK;
+	else if (c->mon->tagset[c->mon->seltags]) c->tags = (c->mon->tagset[c->mon->seltags] & ~SPTAGMASK);
 	else                                     c->tags = 1;
 }
 
@@ -649,7 +649,7 @@ attachabove(Client *c)
 void
 attachaside(Client *c) {
 	Client *at = nexttagged(c);
-	if(!at) {
+	if (!at) {
 		attach(c);
 		return;
 		}
@@ -660,7 +660,7 @@ attachaside(Client *c) {
 void
 attachbelow(Client *c)
 {
-	if(c->mon->sel == NULL || c->mon->sel == c || c->mon->sel->isfloating) {
+	if (c->mon->sel == NULL || c->mon->sel == c || c->mon->sel->isfloating) {
 		attach(c);
 		return;
 	}
@@ -914,8 +914,8 @@ clientmessage(XEvent *e)
 				      || (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */
                                       && (!c->isfullscreen || (c->isfakefullscreen && !c->isforcedfullscreen) || !c->isforcedfullscreen))));
 	} else if (cme->message_type == netatom[NetActiveWindow]) {
- 		if(!ISVISIBLE(c) && c->switchtotag) {
-			for(i=0; !(c->tags & 1 << i); i++);
+ 		if (!ISVISIBLE(c) && c->switchtotag) {
+			for (i=0; !(c->tags & 1 << i); i++);
 			view(&(Arg){.ui = 1 << i});
 		}
 		if (c != selmon->sel && !c->isurgent)
@@ -1057,7 +1057,7 @@ createmon(void)
 		m->pertag->nmasters[i] = m->nmaster;
 
 		/* init tiling dirs and facts */
-		for(j = 0; j < 3; j++) {
+		for (j = 0; j < 3; j++) {
 			m->pertag->areas[i][j].dir = MIN(dirs[j], ((int[]){ 3, 1, 1 }[j]));
 			m->pertag->areas[i][j].fact = TRUNC(facts[j], 0.1, 10);
 		}
@@ -1076,14 +1076,14 @@ createmon(void)
 void
 cyclelayout(const Arg *arg) {
 	Layout *l;
-	for(l = (Layout *)layouts; l != selmon->lt[selmon->sellt]; l++);
-	if(arg->i > 0) {
-		if(l->symbol && (l + 1)->symbol)
+	for (l = (Layout *)layouts; l != selmon->lt[selmon->sellt]; l++);
+	if (arg->i > 0) {
+		if (l->symbol && (l + 1)->symbol)
 			setlayout(&((Arg) { .v = (l + 1) }));
 		else
 			setlayout(&((Arg) { .v = layouts }));
 	} else {
-		if(l != layouts && (l - 1)->symbol)
+		if (l != layouts && (l - 1)->symbol)
 			setlayout(&((Arg) { .v = (l - 1) }));
 		else
 			setlayout(&((Arg) { .v = &layouts[LENGTH(layouts) - 2] }));
@@ -1448,13 +1448,13 @@ focusstack(const Arg *arg)
 	int i = stackpos(arg);
 	Client *c, *p;
 
+	if (i < 0)
+		return;
+
 	if (selmon->sel->isforcedfullscreen || (selmon->sel->isfullscreen && !selmon->sel->isfakefullscreen && lockfullscreen))
 		return;
 
-	if(i < 0)
-		return;
-
-	for(p = NULL, c = selmon->clients; c && (i || !ISVISIBLE(c));
+	for (p = NULL, c = selmon->clients; c && (i || !ISVISIBLE(c));
 	    i -= ISVISIBLE(c) ? 1 : 0, p = c, c = c->next);
 	focus(c ? c : p);
 	restack(selmon);
@@ -1557,8 +1557,8 @@ getsystraywidth()
 {
 	unsigned int w = 0;
 	Client *i;
-	if(showsystray)
-		for(i = systray->icons; i; w += i->w + stspacing, i = i->next) ;
+	if (showsystray)
+		for (i = systray->icons; i; w += i->w + stspacing, i = i->next) ;
 	return w ? w + stspacing : 1;
 }
 
@@ -1955,7 +1955,7 @@ movemouse(const Arg *arg)
 Client *
 nexttagged(Client *c) {
 	Client *walked = c->mon->clients;
-	for(;
+	for (;
 		walked && (walked->isfloating || !ISVISIBLEONTAG(walked, c->tags));
 		walked = walked->next
 	);
@@ -2037,15 +2037,15 @@ pushstack(const Arg *arg) {
 	int i = stackpos(arg);
 	Client *sel = selmon->sel, *c, *p;
 
-	if(i < 0)
+	if (i < 0)
 		return;
-	else if(i == 0) {
+	else if (i == 0) {
 		detach(sel);
 		attach(sel);
 	}
 	else {
-		for(p = NULL, c = selmon->clients; c; p = c, c = c->next)
-			if(!(i -= (ISVISIBLE(c) && c != sel)))
+		for (p = NULL, c = selmon->clients; c; p = c, c = c->next)
+			if (!(i -= (ISVISIBLE(c) && c != sel)))
 				break;
 		c = c ? c : p;
 		detach(sel);
@@ -2399,13 +2399,13 @@ setclientstate(Client *c, long state)
 void
 setdirs(const Arg *arg) {
 
-	if(selmon->lt[selmon->sellt]->arrange != tile)
+	if (selmon->lt[selmon->sellt]->arrange != tile)
 		return;
 
 	int *dirs = (int *)arg->v, i, n;
 	Area *areas = selmon->pertag->areas[selmon->pertag->curtag];
 
-	for(i = 0; i < 3; i++) {
+	for (i = 0; i < 3; i++) {
 		n = (int[]){ 4, 2, 2 }[i];
 		areas[i].dir = ISINC(dirs[i]) ?
 			MOD((int)areas[i].dir + GETINC(dirs[i]), n) : TRUNC(dirs[i], 0, n - 1);
@@ -2416,14 +2416,14 @@ setdirs(const Arg *arg) {
 void
 setfacts(const Arg *arg) {
 
-	if(selmon->lt[selmon->sellt]->arrange != tile)
+	if (selmon->lt[selmon->sellt]->arrange != tile)
 		return;
 
 	float *facts = (float *)arg->v;
 	Area *areas = selmon->pertag->areas[selmon->pertag->curtag];
 	int i;
 
-	for(i = 0; i < 3; i++)
+	for (i = 0; i < 3; i++)
 		areas[i].fact = TRUNC(ISINC(facts[i]) ?
 			areas[i].fact + GETINC(facts[i]) : facts[i], 0.1, 10);
 	arrange(selmon);
@@ -2511,7 +2511,7 @@ setfullscreen(Client *c, int fullscreen)
 void
 setfullscreennative(const Arg *arg)
 {
-	if(selmon->sel)
+	if (selmon->sel)
 		setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
 }
 
@@ -2552,7 +2552,7 @@ setfullscreenforced(const Arg *arg)
 void
 setfullscreenlayout(const Arg *arg)
 {
-	if(selmon->lt[selmon->sellt] != &layouts[2])
+	if (selmon->lt[selmon->sellt] != &layouts[2])
 		setlayout(&((Arg) { .v = &layouts[2] }));
 	else
 		setlayout(&((Arg) { .v = &layouts[0] }));
@@ -2713,7 +2713,7 @@ void
 shiftview(const Arg *arg) {
 	Arg shifted;
 
-	if(arg->i > 0)
+	if (arg->i > 0)
 		shifted.ui = (((selmon->tagset[selmon->seltags] & ~SPTAGMASK) << arg->i)
 		   | ((selmon->tagset[selmon->seltags] & ~SPTAGMASK) >> (LENGTH(tags) - arg->i))) & ~SPTAGMASK;
 
@@ -2777,25 +2777,25 @@ stackpos(const Arg *arg) {
 	int n, i;
 	Client *c, *l;
 
-	if(!selmon->clients)
+	if (!selmon->clients)
 		return -1;
 
-	if(arg->i == PREVSEL) {
-		for(l = selmon->stack; l && (!ISVISIBLE(l) || l == selmon->sel); l = l->snext);
-		if(!l)
+	if (arg->i == PREVSEL) {
+		for (l = selmon->stack; l && (!ISVISIBLE(l) || l == selmon->sel); l = l->snext);
+		if (!l)
 			return -1;
-		for(i = 0, c = selmon->clients; c != l; i += ISVISIBLE(c) ? 1 : 0, c = c->next);
+		for (i = 0, c = selmon->clients; c != l; i += ISVISIBLE(c) ? 1 : 0, c = c->next);
 		return i;
 	}
-	else if(ISINC(arg->i)) {
-		if(!selmon->sel)
+	else if (ISINC(arg->i)) {
+		if (!selmon->sel)
 			return -1;
-		for(i = 0, c = selmon->clients; c != selmon->sel; i += ISVISIBLE(c) ? 1 : 0, c = c->next);
-		for(n = i; c; n += ISVISIBLE(c) ? 1 : 0, c = c->next);
+		for (i = 0, c = selmon->clients; c != selmon->sel; i += ISVISIBLE(c) ? 1 : 0, c = c->next);
+		for (n = i; c; n += ISVISIBLE(c) ? 1 : 0, c = c->next);
 		return MOD(i + GETINC(arg->i), n);
 	}
-	else if(arg->i < 0) {
-		for(i = 0, c = selmon->clients; c; i += ISVISIBLE(c) ? 1 : 0, c = c->next);
+	else if (arg->i < 0) {
+		for (i = 0, c = selmon->clients; c; i += ISVISIBLE(c) ? 1 : 0, c = c->next);
 		return MAX(i + arg->i, 0);
 	}
 	else
@@ -2809,7 +2809,7 @@ tag(const Arg *arg)
 		selmon->sel->tags = arg->ui & TAGMASK;
 		focus(NULL);
 		arrange(selmon);
-		if(selmon->viewontag)
+		if (selmon->viewontag)
 			view(arg);
 	}
 }
@@ -2841,7 +2841,7 @@ tile(Monitor *m)
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
 	if (n == 0)
 		return;
-	if(n == 1 && m->gapsforone == 0){
+	if (n == 1 && m->gapsforone == 0){
 		c = nexttiled(m->clients);
 		resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, 0);
 		return;
@@ -2851,7 +2851,7 @@ tile(Monitor *m)
 	/* calculate area rectangles */
 	f = ma->n == 0 ? 0 : (sa->n == 0 ? 1 : ga->fact / 2);
 	g = ma->n == 0 || sa->n == 0 ? 0 : m->igappx;
-	if(ga->dir == DirHor || ga->dir == DirRotHor)
+	if (ga->dir == DirHor || ga->dir == DirRotHor)
 		ms = f * (m->ww - g), ss = m->ww - ms - g,
 		ma->x = ga->dir == DirHor ? 0 + m->ogappx : ss + g + m->ogappx, ma->y = 0 + m->ogappx, ma->fx = ma->x + ms - 2*m->ogappx, ma->fy = m->wh - m->ogappx,
 		sa->x = ga->dir == DirHor ? ms + g - m->ogappx : 0 + m->ogappx, sa->y = 0 + m->ogappx, sa->fx = sa->x + ss, sa->fy = m->wh - m->ogappx;
@@ -2860,7 +2860,7 @@ tile(Monitor *m)
 		ma->x = 0 + m->ogappx, ma->y = ga->dir == DirVer ? 0 + m->ogappx : ss + g + m->ogappx, ma->fx = m->ww - m->ogappx, ma->fy = ma->y + ms - 2*m->ogappx,
 		sa->x = 0 + m->ogappx, sa->y = ga->dir == DirVer ? ms + g - m->ogappx : 0 + m->ogappx, sa->fx = m->ww - m->ogappx, sa->fy = sa->y + ss;
 	/* tile clients */
-	for(c = nexttiled(m->clients), i = 0; i < n; c = nexttiled(c->next), i++) {
+	for (c = nexttiled(m->clients), i = 0; i < n; c = nexttiled(c->next), i++) {
 		a = ma->n > 0 ? ma : sa;
 		f = i == 0 || ma->n == 0 ? a->fact : 1, f /= --a->n + f;
 		w = a->dir == DirVer ? a->fx - a->x : f * (a->fx - a->x - a->n * m->igappx);
@@ -2949,7 +2949,7 @@ togglefloating(const Arg *arg)
 		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColBorder].pixel);
 	if (selmon->sel->isurgent)
 		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColUrgent].pixel);
-	if(selmon->sel->isfloating)
+	if (selmon->sel->isfloating)
 		/* restore last known float dimensions */
 		resize(selmon->sel, selmon->sel->sfx, selmon->sel->sfy,
 		       selmon->sel->sfw, selmon->sel->sfh, False);
@@ -3460,7 +3460,7 @@ updatesizehints(Client *c)
 		c->maxa = (float)size.max_aspect.x / size.max_aspect.y;
 	} else
 		c->maxa = c->mina = 0.0;
-	if((size.flags & PSize) && c->isfreesize) {
+	if ((size.flags & PSize) && c->isfreesize) {
 		c->basew = size.base_width;
 		c->baseh = size.base_height;
 		c->isfloating = 1;
@@ -3649,7 +3649,7 @@ view(const Arg *arg)
 	int i;
 	unsigned int tmptag;
 
-	if(arg->ui && (arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
+	if (arg->ui && (arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
 		return;
 
 	selmon->seltags ^= 1; /* toggle sel tagset */
@@ -3933,7 +3933,7 @@ xinitvisual()
 
 	infos = XGetVisualInfo(dpy, masks, &tpl, &nitems);
 	visual = NULL;
-	for(i = 0; i < nitems; i ++) {
+	for (i = 0; i < nitems; i ++) {
 		fmt = XRenderFindVisualFormat(dpy, infos[i].visual);
 		if (fmt->type == PictTypeDirect && fmt->direct.alphaMask) {
 			visual = infos[i].visual;
@@ -3957,14 +3957,14 @@ Monitor *
 systraytomon(Monitor *m) {
 	Monitor *t;
 	int i, n;
-	if(!stmonitor) {
-		if(!m)
+	if (!stmonitor) {
+		if (!m)
 			return selmon;
 		return m == selmon ? m : NULL;
 	}
-	for(n = 1, t = mons; t && t->next; n++, t = t->next) ;
-	for(i = 1, t = mons; t && t->next && i < stmonitor; i++, t = t->next) ;
-	if(stfallbackmon && n < stmonitor)
+	for (n = 1, t = mons; t && t->next; n++, t = t->next) ;
+	for (i = 1, t = mons; t && t->next && i < stmonitor; i++, t = t->next) ;
+	if (stfallbackmon && n < stmonitor)
 		return mons;
 	return t;
 }

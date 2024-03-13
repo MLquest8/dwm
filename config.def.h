@@ -96,16 +96,16 @@ static char dmenuheight[3]      = "0";
 /* components of dmenucmd applicable to all incantaions */
 static const char dmenuppt[]    = "Launch";
 static const char dmenufont[]   = "FreeMono:size=10:style=bold";
-/* dmenu - patched, restrictive, with history caching */
-static const char *dmenucmdh[]  = { "dmenu_run_whc", "-m", dmenumon, "--cmd", "st -e", "-r", "-b", dmenutopbar, "-h", dmenuheight, "-fn", dmenufont, "-p", dmenuppt, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
 /* dmenu - patched, unrestrictive, passes anything */
 static const char *dmenucmdu[]  = { "dmenu_run", "-m", dmenumon, "--cmd", "st -e", "-b", dmenutopbar, "-h", dmenuheight, "-fn", dmenufont, "-p", dmenuppt, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
+/* dmenu - patched, restrictive, with history caching */
+static const char *dmenucmdh[]  = { "dmenu_run_whc", "-m", dmenumon, "--cmd", "st -e", "-r", "-b", dmenutopbar, "-h", dmenuheight, "-fn", dmenufont, "-p", dmenuppt, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
 /* dmenu - patched, todo list with caching*/
-static const char *dmenutodo[]  = { "dmenu_todo", "-m", dmenumon, "--cmd", "!URGENT!", "-i", "-b", dmenutopbar, "-h", dmenuheight, "-fn", dmenufont, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
-/* dmenu - patched shutdown script */
-static const char *dmenupwrm[]  = { "dwmshutdown", "-m", dmenumon, "-i", "-b", dmenutopbar, "-h", dmenuheight, "-fn", dmenufont, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
+static const char *dmenutodo[]  = { "dmenu_run_todo", "-m", dmenumon, "--cmd", "!URGENT!", "-i", "-b", dmenutopbar, "-h", dmenuheight, "-fn", dmenufont, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
 /* dmenu - legacy version (for compatibility) */
 static const char *dmenucmdl[]  = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-p", dmenuppt, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
+/* dmenu - patched shutdown script */
+static const char *dmenupwrm[]  = { "dwmshutdown", "-m", dmenumon, "-i", "-b", dmenutopbar, "-h", dmenuheight, "-fn", dmenufont, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
 /* dmenu - legacy shutdown script (for compatibility) */
 static const char *dmenupwrl[]  = { "dwmshutdown", "-m", dmenumon, "-i", "-fn", dmenufont, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
 /*===================================Extra====================================*/
