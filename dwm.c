@@ -2130,6 +2130,13 @@ resizeclient(Client *c, int x, int y, int w, int h)
 {
 	XWindowChanges wc;
 
+	if (w < bh && h < bh)
+		return;
+
+	if (w < bh) w = c->w;
+
+	if (h < bh) h = c->h;
+
 	c->oldx = c->x; c->x = wc.x = x;
 	c->oldy = c->y; c->y = wc.y = y;
 	c->oldw = c->w; c->w = wc.width = w;
