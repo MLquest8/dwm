@@ -85,9 +85,6 @@ static const char *dwmusr[]     = { "st", "dwmuser", NULL };
 static const char *dwmman[]     = { "st", "man", "dwm", NULL };
 static const char *dmnman[]     = { "st", "man", "dmenu", NULL };
 static const char *xsrman[]     = { "st", "man", "xsetroot", NULL };
-static const char *pondwn[]     = { "dwmvol", "ponymix", "-", NULL };
-static const char *ponvup[]     = { "dwmvol", "ponymix", "+", NULL };
-static const char *pontog[]     = { "dwmvol", "ponymix", "*", NULL };
 /*===================================Dmenu====================================*/
 /* components of dmenucmd, manipulated in spawn() */
 static char dmenumon[2]         = "0"; 
@@ -108,6 +105,12 @@ static const char *dmenucmdl[]  = { "dmenu_run", "-m", dmenumon, "-fn", dmenufon
 static const char *dmenupwrm[]  = { "dwmshutdown", "-m", dmenumon, "-i", "-b", dmenutopbar, "-h", dmenuheight, "-fn", dmenufont, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
 /* dmenu - legacy shutdown script (for compatibility) */
 static const char *dmenupwrl[]  = { "dwmshutdown", "-m", dmenumon, "-i", "-fn", dmenufont, "-sf", barselfg, "-sb", barselbg, "-nf", barnrmfg, "-nb", barnrmbg, NULL };
+/*===================================Video====================================*/
+static const char *displayoff[]     = { "xset", "dpms", "force", "off", NULL };
+/*===================================Audio====================================*/
+static const char *pondwn[]     = { "dwmvol", "ponymix", "-", NULL };
+static const char *ponvup[]     = { "dwmvol", "ponymix", "+", NULL };
+static const char *pontog[]     = { "dwmvol", "ponymix", "*", NULL };
 /*===================================Extra====================================*/
 /*  Helper for spawning shell commands in the pre dwm-5.0 fashion             */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -148,17 +151,26 @@ static Signal signals[]                = {
 	{ MOD, 38,     ACTION##stack, {.i = 1 } }, \
 	{ MOD, 52,     ACTION##stack, {.i = 2 } }, \
 	{ MOD, 53,     ACTION##stack, {.i = -1 } },
-/*  DWM keys and definitions                                                      */
+/*  DWM keys and definitions                                                  */
 static Key keys[] = {
+	/*===============================*MACROS*=================================*/
+	TAGKEYS(                        10,                                       0)
+	TAGKEYS(                        11,                                       1)
+	TAGKEYS(                        12,                                       2)
+	TAGKEYS(                        13,                                       3)
+	TAGKEYS(                        14,                                       4)
+	TAGKEYS(                        15,                                       5)
+	TAGKEYS(                        16,                                       6)
+	TAGKEYS(                        17,                                       7)
+	TAGKEYS(                        18,                                       8)
+	STACKKEYS(MODKEY,                                                     focus)
+	STACKKEYS(MODKEY|ShiftMask,                                            push)
+	TILEKEYS(MODKEY,                                                    1, 0, 0)
+	TILEKEYS(MODKEY|ShiftMask,                                          0, 1, 0)
+	TILEKEYS(MODKEY|ControlMask,                                        0, 0, 1)
+	TILEKEYS(MODKEY|ShiftMask|ControlMask,                              1, 1, 1)
+	/*==============================*REGULARS*================================*/
 	/* modifier                     key        function              argument */
-	{ MODKEY,                       22,        spawn,       {.v = dmenucmdh } },
-	{ MODKEY|ShiftMask,             22,        spawn,       {.v = dmenucmdu } },
-	{ MODKEY|ControlMask,           22,        spawn,       {.v = dmenutodo } },
-	{ MODKEY|ShiftMask|ControlMask, 22,        spawn,       {.v = dmenucmdl } },
-	{ MODKEY,                       36,        spawn,          {.v = trmcmd } },
-	{ MODKEY|ShiftMask,             36,        togglescratch,      {.ui = 0 } },
-	{ MODKEY|ControlMask,           36,        togglescratch,      {.ui = 1 } },
-	{ MODKEY|ShiftMask|ControlMask, 36,        togglescratch,      {.ui = 2 } },
 	{ MODKEY,                       49,        setlayout,                 {0} },
 	{ MODKEY|ShiftMask,             49,        cyclelayout,        {.i = +1 } },
 	{ MODKEY|ControlMask,           49,        cyclelayout,        {.i = -1 } },
@@ -203,28 +215,27 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           23,        shiftview,          {.i = -1 } },
 	{ MODKEY,                       19,        view,              {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             19,        tag,               {.ui = ~0 } },
-	TAGKEYS(                        10,                                    0)
-	TAGKEYS(                        11,                                    1)
-	TAGKEYS(                        12,                                    2)
-	TAGKEYS(                        13,                                    3)
-	TAGKEYS(                        14,                                    4)
-	TAGKEYS(                        15,                                    5)
-	TAGKEYS(                        16,                                    6)
-	TAGKEYS(                        17,                                    7)
-	TAGKEYS(                        18,                                    8)
-	STACKKEYS(MODKEY,                                                  focus)
-	STACKKEYS(MODKEY|ShiftMask,                                         push)
-	TILEKEYS(MODKEY,                                                 1, 0, 0)
-	TILEKEYS(MODKEY|ShiftMask,                                       0, 1, 0)
-	TILEKEYS(MODKEY|ControlMask,                                     0, 0, 1)
-	TILEKEYS(MODKEY|ShiftMask|ControlMask,                           1, 1, 1)
 	{ MODKEY,                       110,       togglekeys,                {0} },
 	{ MODKEY,                       9,         killclient,                {0} },
 	{ MODKEY|ShiftMask,             9,         killunsel,                 {0} },
-	{ MODKEY|ControlMask,           9,         spawn,        {.v = dmenupwrm } },
+	/*==================================DWM===================================*/
+	{ MODKEY|ControlMask,           9,         spawn,       {.v = dmenupwrm } },
 	{ MODKEY|ShiftMask|ControlMask, 9,         quit,                      {0} },
 	{ MODKEY,                       67,        spawn,          {.v = dwmman } },
-
+	/*==================================ST====================================*/
+	{ MODKEY,                       36,        spawn,          {.v = trmcmd } },
+	/*=================================DMenu==================================*/
+	{ MODKEY,                       22,        spawn,       {.v = dmenucmdh } },
+	{ MODKEY|ShiftMask,             22,        spawn,       {.v = dmenucmdu } },
+	{ MODKEY|ControlMask,           22,        spawn,       {.v = dmenutodo } },
+	{ MODKEY|ShiftMask|ControlMask, 22,        spawn,       {.v = dmenucmdl } },
+	/*================================Scratch=================================*/
+	{ MODKEY|ShiftMask,             36,        togglescratch,      {.ui = 0 } },
+	{ MODKEY|ControlMask,           36,        togglescratch,      {.ui = 1 } },
+	{ MODKEY|ShiftMask|ControlMask, 36,        togglescratch,      {.ui = 2 } },
+	/*=================================Video==================================*/
+	{ MODKEY,                       76,        spawn,      {.v = displayoff } },
+	/*=================================Audio==================================*/
 	{ MODKEY,                       69,        spawn,          {.v = pontog } },
 	{ MODKEY,                       74,        spawn,          {.v = pondwn } },
 	{ MODKEY,                       75,        spawn,          {.v = ponvup } },
@@ -282,4 +293,5 @@ static const Rule rules[] = {
 	{ NULL,            "keepassxc",NULL,                SPTAG(2),     0,            1,           1,           0,           0,                 0,           0,          0,            -1      },
 	{ "firefox",       NULL,       NULL,                1 << 1,       0,            0,           0,           0,           0,                 0,           1,          0,            -1      },
 	{ "code-oss",      NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
+	{ "code",          NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
 };
