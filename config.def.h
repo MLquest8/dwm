@@ -293,5 +293,5 @@ static const Rule rules[] = {
 	{ NULL,            "keepassxc",NULL,                SPTAG(2),     0,            1,           1,           0,           0,                 0,           0,          0,            -1      },
 	{ "firefox",       NULL,       NULL,                1 << 1,       0,            0,           0,           0,           0,                 0,           1,          0,            -1      },
 	{ "code-oss",      NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
-	{ "code",          NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
+	{ "Code",          NULL,       NULL,                1 << 2,       0,            0,           0,           0,           0,                 0,           0,          0,            -1      },
 };
